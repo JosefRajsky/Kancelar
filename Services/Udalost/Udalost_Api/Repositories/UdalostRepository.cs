@@ -34,7 +34,7 @@ namespace Udalost_Api.Repositories
             return db.Udalosti;
         }
 
-        public bool Remove(int id)
+        public bool Delete(int id)
         {
             var remove = db.Udalosti.FirstOrDefault(b => b.Id == id);
             db.Udalosti.Remove(remove);

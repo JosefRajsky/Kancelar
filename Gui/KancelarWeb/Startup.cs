@@ -21,7 +21,7 @@ namespace KancelarWeb
         {
             services.AddMvc();
             services.AddRazorPages();
-            services.AddScoped<IKancelarWebProvider, KancelarWebProvider>();
+            services.AddScoped<IUdalostProvider, UdalostProvider>();
             services.AddControllers();
         }
 

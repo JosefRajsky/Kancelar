@@ -52,10 +52,10 @@ namespace Udalost_Api.Controllers
             return result;
         }
         [HttpDelete]
-        [Route("Remove")]
+        [Route("Delete")]
         public ActionResult<bool> Delete(int id)
         {
-           return _udalostRepository.Remove(Convert.ToInt32(id));   
+           return _udalostRepository.Delete(Convert.ToInt32(id));   
         }
         [HttpPost]
         [Route("Update")]

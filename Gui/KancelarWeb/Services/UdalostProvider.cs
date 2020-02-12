@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace KancelarWeb.Services
 {
-    public class KancelarWebProvider : IKancelarWebProvider
+    public class UdalostProvider : IUdalostProvider
     {
         public string udalostBase = "http://udalostapi/Udalost/";
         public IEnumerable<Udalost> UdalostList()
@@ -64,13 +64,13 @@ namespace KancelarWeb.Services
             }
             return false;
         }
-        public bool UdalostRemove(int id)
+        public bool UdalostDelete(int id)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(udalostBase);
                 var responseTask = client.DeleteAsync(string.Format("Delete?id={0}", id));
-                responseTask.Wait();
+                responseTask.Wait();                
                 var result = responseTask.Result;
                 if (result.IsSuccessStatusCode)
                 {

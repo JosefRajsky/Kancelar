@@ -15,10 +15,10 @@ namespace KancelarWeb.Controllers
 {
     public class HomeController : Controller
     {
-        IKancelarWebProvider provider;
-        public HomeController(IKancelarWebProvider kancelarWebProvider)
+        IUdalostProvider provider;
+        public HomeController(IUdalostProvider udalostProvider)
         {
-            provider = kancelarWebProvider;
+            provider = udalostProvider;
         }
         public IActionResult Index()
         {
@@ -46,7 +46,8 @@ namespace KancelarWeb.Controllers
             return RedirectToAction("Index");
         }
         public IActionResult RemoveUdalost(string id)
-        {          
+        {
+            provider.UdalostDelete(Convert.ToInt32(id));
             return RedirectToAction("Index");
         }
     }

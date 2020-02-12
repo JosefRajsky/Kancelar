@@ -14,7 +14,7 @@ services:
     expose:
       - 1433
     volumes:  
-      - ./data/mssql:/var/opt/mssql3
+      - /var/container_data/mysql:/var/lib/mysql mysql_image
     deploy:
       placement:
         constraints: [node.role == manager]

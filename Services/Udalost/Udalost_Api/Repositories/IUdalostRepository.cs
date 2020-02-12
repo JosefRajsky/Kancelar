@@ -16,7 +16,7 @@ namespace Udalost_Api.Repositories
 
         public bool Update(Udalost update);
 
-        public bool Remove(int blogId);
+        public bool Delete(int blogId);
          
 
     }

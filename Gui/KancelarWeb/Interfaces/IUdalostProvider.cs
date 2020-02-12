@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace KancelarWeb.Interfaces
 {
-    public interface IKancelarWebProvider
+    public interface IUdalostProvider
     {
         IEnumerable<Udalost> UdalostList();
         Udalost UdalostGet(int id);
 
         bool UdalostAdd(Udalost udalost);
 
-        bool UdalostRemove(int id);
+        bool UdalostDelete(int id);
     }
 }
