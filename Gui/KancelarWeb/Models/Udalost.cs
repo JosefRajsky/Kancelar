@@ -10,6 +10,7 @@ namespace KancelarWeb.Models
     {
         public int Id { get; set; }
         public string Nazev { get; set; }
-        public DateTime Datum { get; set; }
+        public DateTime DatumOd { get; set; }
+        public DateTime DatumDo { get; set; }
     }
 }

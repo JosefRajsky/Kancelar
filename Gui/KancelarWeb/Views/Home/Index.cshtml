@@ -4,16 +4,14 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
-
-
 <div class="container">
-    <table class="table">
+    <table class="table table-borderless">
         <thead>
             <tr>
                 <th scope="col">Id</th>
                 <th scope="col">Název</th>
-                <th scope="col">Datum</th>
+                <th scope="col">Od</th>
+                <th scope="col">Do</th>
                 <th scope="col"></th>
             </tr>
         </thead>
@@ -23,7 +21,7 @@
                 <tr>
                     <th scope="row">@item.Id</th>
                     <td>@item.Nazev</td>
-                    <td>@item.Datum.ToShortDateString()</td>
+                    <td>@item.DatumOd.ToShortDateString()</td>
                     <td><a class="btn btn-xs btn-warning" href='@Url.Action("RemoveUdalost", "Home", new {@id = item.Id })'> odebrat </a></td>
                 </tr>
 

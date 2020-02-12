@@ -5,7 +5,7 @@ ViewData["Title"] = "Edit";
 }
 
 
-<h1>Edit</h1>
+<h4>Nová událost</h4>
 
 @using (Html.BeginForm("AddUdalost", "Home", FormMethod.Post))
 {
@@ -20,17 +20,15 @@ ViewData["Title"] = "Edit";
                     <span asp-validation-for="Nazev" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(Model => Model.Datum)
-                    <label asp-for="Url" class="control-label"></label>
-                    <div class="input-group date" data-provide="datepicker">
-                        @Html.TextBoxFor(Model => Model.Datum, new { @class = "form-control" })
-                        <div class="input-group-addon">
-                            <span class="glyphicon glyphicon-th"></span>
-                        </div>
-                    </div>
-
-
-                    <span asp-validation-for="Datum" class="text-danger"></span>
+                    @Html.LabelFor(Model => Model.DatumOd)
+                    @Html.TextBoxFor(Model => Model.DatumOd, new { @class = "form-control datepicker", @name = "updatedDate" })
+                  
+                    <span asp-validation-for="DatumOd" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(Model => Model.DatumDo)
+                    @Html.TextBoxFor(Model => Model.DatumDo, new { @class = "form-control datepicker", @name = "updatedDate" })
+                    <span asp-validation-for="DatumDo" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <input type="submit" value="Create" class="btn btn-primary" />
@@ -41,7 +39,9 @@ ViewData["Title"] = "Edit";
   
 }
 <script type="text/javascript">
-    $('.datepicker').datepicker();
+    $(document).ready(function () {
+        $('.datepicker').datepicker();
+    });
 </script>
 
 

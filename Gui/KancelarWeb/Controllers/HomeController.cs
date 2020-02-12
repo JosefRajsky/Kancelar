@@ -37,7 +37,7 @@ namespace KancelarWeb.Controllers
         [HttpPost]
         public IActionResult AddUdalost(Udalost udalost)
         {
-            udalost.Datum = DateTime.Today;
+            udalost.DatumOd = DateTime.Today;
             var result = provider.UdalostAdd(udalost);
             if (!result)
             {
