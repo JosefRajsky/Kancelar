@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29728.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{88A6FD86-5A09-4B01-A108-0A3E5E46FA97}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{91054B8F-6B80-49D5-B3F1-415C43CAD059}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gui", "Gui", "{F5D5C0A9-DBA8-4D89-BED2-BC5E3CEA0E25}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Udalost", "Udalost", "{3EF95272-BE38-412B-8666-08F416A7BECE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Udalost_Api", "Services\Udalost\Udalost_Api\Udalost_Api.csproj", "{CBFC9C10-7825-4D86-A220-271C4A8206A5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KancelarWeb", "Gui\KancelarWeb\KancelarWeb.csproj", "{15127C39-D48F-403A-8903-9271B6D3A0AA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Uzivatel", "Uzivatel", "{C5C4FBA8-906D-4E27-9059-E1B30E181E2F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Soucast", "Soucast", "{FD480A8D-1A21-4608-A090-13F62CF8B3E3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{88A6FD86-5A09-4B01-A108-0A3E5E46FA97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88A6FD86-5A09-4B01-A108-0A3E5E46FA97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88A6FD86-5A09-4B01-A108-0A3E5E46FA97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88A6FD86-5A09-4B01-A108-0A3E5E46FA97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBFC9C10-7825-4D86-A220-271C4A8206A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBFC9C10-7825-4D86-A220-271C4A8206A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBFC9C10-7825-4D86-A220-271C4A8206A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBFC9C10-7825-4D86-A220-271C4A8206A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15127C39-D48F-403A-8903-9271B6D3A0AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15127C39-D48F-403A-8903-9271B6D3A0AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15127C39-D48F-403A-8903-9271B6D3A0AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15127C39-D48F-403A-8903-9271B6D3A0AA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3EF95272-BE38-412B-8666-08F416A7BECE} = {91054B8F-6B80-49D5-B3F1-415C43CAD059}
+		{CBFC9C10-7825-4D86-A220-271C4A8206A5} = {3EF95272-BE38-412B-8666-08F416A7BECE}
+		{15127C39-D48F-403A-8903-9271B6D3A0AA} = {F5D5C0A9-DBA8-4D89-BED2-BC5E3CEA0E25}
+		{C5C4FBA8-906D-4E27-9059-E1B30E181E2F} = {91054B8F-6B80-49D5-B3F1-415C43CAD059}
+		{FD480A8D-1A21-4608-A090-13F62CF8B3E3} = {91054B8F-6B80-49D5-B3F1-415C43CAD059}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FA02534C-DA03-44C8-9DAA-704670F31BEC}
+	EndGlobalSection
+EndGlobal

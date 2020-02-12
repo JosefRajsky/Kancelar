@@ -1,0 +1,41 @@
+version: '3.4'
+
+services:
+ 
+  sqlserver:
+    image: ${DOCKER_REGISTRY-}mcr.microsoft.com/mssql/server:2017-latest-ubuntu 
+    hostname: 'sqlserver'  
+    container_name: 'sqlserver'
+    environment:  
+      ACCEPT_EULA: Y  
+      SA_PASSWORD: "Password123"     
+    ports:  
+      - '1433:1433'
+    expose:
+      - 1433
+    volumes:  
+      - ./data/mssql:/var/opt/mssql3
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+  kancelarweb:
+    image: ${DOCKER_REGISTRY-}kancelarweb
+    ports:
+      - "80:80"
+    build:
+      context: .
+      dockerfile: Gui/KancelarWeb/Dockerfile
+  udalostapi:
+    image: ${DOCKER_REGISTRY-}udalost_api
+    hostname: "udalostapi"       
+    ports:
+      - "8080:80"
+    build:
+      context: .
+      dockerfile: Services/Udalost/Udalost_Api/Dockerfile
+    depends_on:
+      - sqlserver
+
+
+       
+
