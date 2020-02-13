@@ -8,22 +8,22 @@ using System.Threading.Tasks;
 
 namespace KancelarWeb.Services
 {
-    public class UdalostProvider : IUdalostProvider
+    public class DochazkaProvider : IDochazkaProvider
     {
-        public string udalostBase = "http://udalostapi/Udalost/";
-        public IEnumerable<UdalostModel> GetList()
+        public string DochazkaBase = "http://dochazkaapi/Dochazka/";
+        public IEnumerable<DochazkaModel> GetList()
         {
-            IEnumerable<UdalostModel> res = new List<UdalostModel>();
+            IEnumerable<DochazkaModel> res = new List<DochazkaModel>();
 
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(udalostBase);
+                client.BaseAddress = new Uri(DochazkaBase);
                 var response = client.GetAsync("GetList");
                 response.Wait();
                 var result = response.Result;
                 if (result.IsSuccessStatusCode)
                 {
-                    var readtask = result.Content.ReadAsAsync<IList<UdalostModel>>();
+                    var readtask = result.Content.ReadAsAsync<IList<DochazkaModel>>();
                     readtask.Wait();
 
                     res = readtask.Result;
@@ -31,30 +31,30 @@ namespace KancelarWeb.Services
             }
             return res;
         }
-        public UdalostModel Get(int id)
+        public DochazkaModel Get(int id)
         {
-            UdalostModel udalost = new UdalostModel();
+            DochazkaModel Dochazka = new DochazkaModel();
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(udalostBase);
+                client.BaseAddress = new Uri(DochazkaBase);
                 var response = client.GetAsync("/get?id=" + id);
                 response.Wait();
                 var result = response.Result;
                 if (result.IsSuccessStatusCode)
                 {
-                    var readtask = result.Content.ReadAsAsync<UdalostModel>();
+                    var readtask = result.Content.ReadAsAsync<DochazkaModel>();
                     readtask.Wait();
-                    udalost = readtask.Result;
+                    Dochazka = readtask.Result;
                 }
             }
-            return udalost;
+            return Dochazka;
         }
-        public bool Add(UdalostModel udalost)
+        public bool Add(DochazkaModel dochazka)
         {
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(udalostBase);
-                var responseTask = client.PutAsJsonAsync("Add", udalost);
+                client.BaseAddress = new Uri(DochazkaBase);
+                var responseTask = client.PutAsJsonAsync("Add", dochazka);
                 responseTask.Wait();
                 var result = responseTask.Result;
                 if (result.IsSuccessStatusCode)
@@ -68,7 +68,7 @@ namespace KancelarWeb.Services
         {
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(udalostBase);
+                client.BaseAddress = new Uri(DochazkaBase);
                 var responseTask = client.DeleteAsync(string.Format("Delete?id={0}", id));
                 responseTask.Wait();                
                 var result = responseTask.Result;

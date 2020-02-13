@@ -1,4 +1,4 @@
-﻿@model IEnumerable<KancelarWeb.Models.Udalost>
+﻿@model IEnumerable<KancelarWeb.Models.UdalostModel>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -23,7 +23,7 @@
                     <td>@item.Nazev</td>
                     <td>@item.DatumOd.ToShortDateString()</td>
                     <td>@item.DatumDo.ToShortDateString()</td>
-                    <td><a class="btn btn-xs btn-warning" href='@Url.Action("RemoveUdalost", "Udalost", new {@id = item.Id })'> odebrat </a></td>
+                    <td><a class="btn btn-xs btn-warning" href='@Url.Action("Remove", "Udalost", new {@id = item.Id })'> odebrat </a></td>
                 </tr>
 
             }

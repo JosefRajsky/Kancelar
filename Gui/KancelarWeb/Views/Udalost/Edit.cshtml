@@ -1,4 +1,4 @@
-﻿@model KancelarWeb.Models.Udalost
+﻿@model KancelarWeb.Models.UdalostModel
 @{
 ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -7,7 +7,7 @@ ViewData["Title"] = "Edit";
 
 <h4>Nová událost</h4>
 
-@using (Html.BeginForm("AddUdalost", "Udalost", FormMethod.Post))
+@using (Html.BeginForm("Add", "Udalost", FormMethod.Post))
 {
     <div class="row">
         <div class="col-md-4">

@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace KancelarWeb.Interfaces
 {
-    public interface IUdalostProvider
+    public interface IDochazkaProvider
     {
-        IEnumerable<UdalostModel> GetList();
-        UdalostModel Get(int id);
+        IEnumerable<DochazkaModel> GetList();
+        DochazkaModel Get(int id);
 
-        bool Add(UdalostModel udalost);
+        bool Add(DochazkaModel dochazka);
 
         bool Delete(int id);
     }

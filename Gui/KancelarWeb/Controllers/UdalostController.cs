@@ -24,7 +24,7 @@ namespace KancelarWeb.Controllers
 
         public IActionResult Index()
         {
-            var result = provider.UdalostList();
+            var result = provider.GetList();
             if (!result.Any())
             {
                 ViewBag.error = "Seznam je prázdný";
@@ -37,19 +37,20 @@ namespace KancelarWeb.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult AddUdalost(Udalost udalost)
+        public IActionResult Add(UdalostModel model)
         {
-            udalost.DatumOd = DateTime.Today;
-            var result = provider.UdalostAdd(udalost);
+            
+
+            var result = provider.Add(model);
             if (!result)
             {
                 ViewBag.error = "Seznam je prázdný";
             }
             return RedirectToAction("Index");
         }
-        public IActionResult RemoveUdalost(string id)
+        public IActionResult Remove(string id)
         {
-            provider.UdalostDelete(Convert.ToInt32(id));
+            provider.Delete(Convert.ToInt32(id));
             return RedirectToAction("Index");
         }
     }

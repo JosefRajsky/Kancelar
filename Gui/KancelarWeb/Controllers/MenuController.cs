@@ -10,7 +10,7 @@ namespace KancelarWeb.Controllers
     {
         public IActionResult Index()
         {
-            return PartialView("Index");
+            return View("Index");
         }
     }
 }

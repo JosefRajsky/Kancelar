@@ -1,7 +1,6 @@
 version: '3.4'
 
-services:
- 
+services: 
   sqlserver:
     image: ${DOCKER_REGISTRY-}mcr.microsoft.com/mssql/server:2017-latest-ubuntu 
     hostname: 'sqlserver'  
@@ -18,6 +17,7 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
+
   kancelarweb:
     image: ${DOCKER_REGISTRY-}kancelarweb
     ports:
@@ -25,6 +25,7 @@ services:
     build:
       context: .
       dockerfile: Gui/KancelarWeb/Dockerfile
+
   udalostapi:
     image: ${DOCKER_REGISTRY-}udalost_api
     hostname: "udalostapi"       
@@ -33,6 +34,17 @@ services:
     build:
       context: .
       dockerfile: Services/Udalost/Udalost_Api/Dockerfile
+    depends_on:
+      - sqlserver
+
+  dochazkaapi:
+    image: ${DOCKER_REGISTRY-}dochazka_api
+    hostname: "dochazkaapi"       
+    ports:
+      - "8081:80"
+    build:
+      context: .
+      dockerfile: Services/Dochazka/Dochazka_Api/Dockerfile
     depends_on:
       - sqlserver
 

@@ -9,7 +9,7 @@ namespace Udalost_Api.Repositories
 {
     public interface IUdalostRepository
     {
-        public IEnumerable<Udalost> List();
+        public IEnumerable<Udalost> GetList();
         public Udalost Get(int bloId);
 
         public Udalost Add(Udalost input);

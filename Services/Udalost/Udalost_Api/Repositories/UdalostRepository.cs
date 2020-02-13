@@ -29,7 +29,7 @@ namespace Udalost_Api.Repositories
            return db.Udalosti.FirstOrDefault(b => b.Id == id);
         }
 
-        public IEnumerable<Udalost> List()
+        public IEnumerable<Udalost> GetList()
         {
             return db.Udalosti;
         }

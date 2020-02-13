@@ -32,9 +32,9 @@ namespace Udalost_Api.Controllers
             return result;
         }
         [HttpGet]
-        [Route("List")]
-        public ActionResult<List<Udalost>> List() {
-            var result = _udalostRepository.List().ToList();
+        [Route("GetList")]
+        public ActionResult<List<Udalost>> GetList() {
+            var result = _udalostRepository.GetList().ToList();
             if (result == null || !result.Any()){
                 return NotFound();
             }
