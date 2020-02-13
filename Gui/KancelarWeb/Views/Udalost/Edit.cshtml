@@ -21,13 +21,13 @@ ViewData["Title"] = "Edit";
                 </div>
                 <div class="form-group">
                     @Html.LabelFor(Model => Model.DatumOd)
-                    @Html.TextBoxFor(Model => Model.DatumOd, new { @class = "form-control datepicker", @name = "updatedDate" })
-                  
+                    @Html.TextBoxFor(Model => Model.DatumOd, new { @class = "form-control datepicker"})
+
                     <span asp-validation-for="DatumOd" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     @Html.LabelFor(Model => Model.DatumDo)
-                    @Html.TextBoxFor(Model => Model.DatumDo, new { @class = "form-control datepicker", @name = "updatedDate" })
+                    @Html.TextBoxFor(Model => Model.DatumDo, new { @class = "form-control datepicker" })
                     <span asp-validation-for="DatumDo" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -40,7 +40,15 @@ ViewData["Title"] = "Edit";
 }
 <script type="text/javascript">
     $(document).ready(function () {
-        $('.datepicker').datepicker();
+       
+       $('.datepicker').datepicker({
+    todayBtn: true,
+    language: "cs",
+    orientation: "bottom right",
+    daysOfWeekHighlighted: "0,6",
+    calendarWeeks: true,
+    autoclose: true
+});
     });
 </script>
 

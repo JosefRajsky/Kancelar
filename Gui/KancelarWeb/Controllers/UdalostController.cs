@@ -38,9 +38,7 @@ namespace KancelarWeb.Controllers
         }
         [HttpPost]
         public IActionResult Add(UdalostModel model)
-        {
-            
-
+        {            
             var result = provider.Add(model);
             if (!result)
             {

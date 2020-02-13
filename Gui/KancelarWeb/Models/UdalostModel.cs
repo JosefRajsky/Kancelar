@@ -12,9 +12,11 @@ namespace KancelarWeb.Models
         public int Id { get; set; }
         [DisplayName("Název")]
         public string Nazev { get; set; }
-        [DisplayName("Do")]
-        public DateTime DatumOd { get; set; }
         [DisplayName("Od")]
+        [DisplayFormat(DataFormatString = "{0:dd. MM. yyyy}")]
+        public DateTime DatumOd { get; set; }
+        [DisplayName("Do")]
+        [DisplayFormat(DataFormatString = "{0:dd. MM. yyyy}")]
         public DateTime DatumDo { get; set; }
     }
 }

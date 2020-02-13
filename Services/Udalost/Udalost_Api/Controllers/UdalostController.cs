@@ -40,6 +40,7 @@ namespace Udalost_Api.Controllers
             }
             return result;
         }
+
         [HttpPut]
         [Route("Add")]
         public ActionResult<Udalost> Add(Udalost udalost)
@@ -51,6 +52,7 @@ namespace Udalost_Api.Controllers
             }
             return result;
         }
+
         [HttpDelete]
         [Route("Delete")]
         public ActionResult<bool> Delete(int id)
