@@ -6,11 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KancelarWeb.Controllers
 {
-    public class HomeController : Controller
+    public class StromController : Controller
     {
         public IActionResult Index()
         {
-            return View("Index");
+            return View();
+        }
+        public IActionResult List()
+        {
+            return PartialView("List");
         }
     }
 }

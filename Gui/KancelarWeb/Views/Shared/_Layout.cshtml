@@ -9,18 +9,14 @@
         <script src="~/lib/bootstrap/js/bootstrap.bundle.js"></script>
         <script src="~/lib/bootstrap/js/bootstrap-datepicker.js"></script>
         <script src="~/lib/jquery/jquery.min.js"></script>
-      
-   
-
 </head>
 <body>
-    <h2>Kancelář</h2>
-    <hr />
+   @Html.Partial("../Menu/Index")
     <div class="row">
-        <div class="col-xl-2"></div>
-        <div class="col-xl-8"> @RenderBody()</div>
-        <div class="col-xl-2"></div>
-
+        <div class="container col-xl-2 bg-light">
+            @Html.Partial("../Strom/List")
+        </div>
+        <div class="container col-xl-10"> @RenderBody()</div>
     </div>
 </body>
 </html>

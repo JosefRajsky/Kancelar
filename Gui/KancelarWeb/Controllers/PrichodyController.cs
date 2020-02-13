@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KancelarWeb.Controllers
 {
-    public class HomeController : Controller
+    public class PrichodyController : Controller
     {
         public IActionResult Index()
         {
-            return View("Index");
+            return View();
         }
     }
 }
