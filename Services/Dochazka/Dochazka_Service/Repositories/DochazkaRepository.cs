@@ -13,45 +13,55 @@ namespace Dochazka_Service.Repositories
 {
     public class DochazkaRepository : IDochazkaRepository
     {
-        private readonly DochazkaDbContext db;
-        public DochazkaRepository(DochazkaDbContext dochazkaDbContext) {
-            db = dochazkaDbContext;           
-        }
-
-        public DochazkaRepository()
-        {
-        }
-
+   
         public Dochazka Add(Dochazka input)
         {
             var add = new Dochazka();
             add = input;
-            db.Dochazka.Add(add);
-            db.SaveChanges();
+            using (var db = new DochazkaDbContextFactory().CreateDbContext())
+            {
+                db.Dochazka.Add(add);
+                db.SaveChanges();
+            }   
             return add;
         }
         public Dochazka Get(int id)
         {
-           return db.Dochazka.FirstOrDefault(b => b.Id == id);
+            using (var db = new DochazkaDbContextFactory().CreateDbContext())
+            {
+                return db.Dochazka.FirstOrDefault(b => b.Id == id);
+            }
+            
         }
         public IEnumerable<Dochazka> GetList()
         {
-            return db.Dochazka;
+            using (var db = new DochazkaDbContextFactory().CreateDbContext())
+            {
+ return db.Dochazka;
+            }
+           
         }
         public bool Delete(int id)
         {
-            var remove = db.Dochazka.FirstOrDefault(b => b.Id == id);
-            db.Dochazka.Remove(remove);
-            db.SaveChanges();
+            using (var db = new DochazkaDbContextFactory().CreateDbContext())
+            {
+                var remove = db.Dochazka.FirstOrDefault(b => b.Id == id);
+                db.Dochazka.Remove(remove);
+                db.SaveChanges();
+            }
             return true;
         }
 
         public bool Update(Dochazka update)
         {
+            using (var db = new DochazkaDbContextFactory().CreateDbContext())
+            {
             var forUpdate = db.Dochazka.FirstOrDefault(b => b.Id == update.Id);
             forUpdate = update;
             db.Dochazka.Update(forUpdate);
             db.SaveChanges();
+            }
+
             return true;
         }
 
@@ -66,13 +76,20 @@ namespace Dochazka_Service.Repositories
                 Rok = msg.Datum.Year,
                 Prichod =msg.Prichod,
                 Tick = msg.Datum.Ticks,
-                UzivatelId = msg.UzivatelId,
-               
-            };            
+                UzivatelId = msg.UzivatelId,               
+            };         
+
+                switch (msg.MessageType)
+                {
+                    case EventEnum.MessageType.DochazkaCreate:
+                        Add(add);
+                        break; 
+                    default:
+                        break;
+                }
+
            
-            db.Dochazka.Add(add);
-            db.SaveChanges();
-            //return add;
+
         }
     }
 }

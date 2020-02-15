@@ -8,6 +8,7 @@ namespace Dochazka_Service.Entities
 {
     public class Dochazka
     {
+  
         [Key]
         public int Id { get; set; }
         public int UzivatelId { get; set; }

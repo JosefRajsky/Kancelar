@@ -36,11 +36,8 @@ namespace KancelarWeb.Controllers
             model.Prichod = model.Prichod;
             model.UzivatelCeleJmeno = "Jmeno Prijmeni";
  
-            var result = provider.Add(model);
-            if (!result)
-            {
-                ViewBag.error = "Seznam je prázdný";
-            }
+            provider.Add(model);
+            
             return RedirectToAction("Index");
         }
        
@@ -54,11 +51,8 @@ namespace KancelarWeb.Controllers
             model.Prichod = Convert.ToBoolean(prichod);
             model.UzivatelCeleJmeno = "Jmeno Prijmeni";
 
-            var result = provider.Add(model);
-            if (!result)
-            {
-                ViewBag.error = "Seznam je prázdný";
-            }
+            provider.Add(model);
+            
             return RedirectToAction("Index");
         }
         public IActionResult Remove(string id)
