@@ -1,9 +1,13 @@
-﻿using KancelarWeb.Interfaces;
+﻿using EventShop;
+using KancelarWeb.Interfaces;
 using KancelarWeb.Models;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace KancelarWeb.Services
@@ -49,19 +53,46 @@ namespace KancelarWeb.Services
             }
             return Dochazka;
         }
-        public bool Add(DochazkaModel dochazka)
+        public bool Add(DochazkaModel model)
         {
-            using (var client = new HttpClient())
+            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
+            using (var connection = factory.CreateConnection())
+            using (var channel = connection.CreateModel())
             {
-                client.BaseAddress = new Uri(DochazkaBase);
-                var responseTask = client.PutAsJsonAsync("Add", dochazka);
-                responseTask.Wait();
-                var result = responseTask.Result;
-                if (result.IsSuccessStatusCode)
-                {
-                    return true;
-                }
+                var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(
+                   new EventDochazkaCreate()
+                   {
+                       Prichod = model.Prichod,
+                       UzivatelId = model.UzivatelId,
+                       CteckaId = model.CteckaId,
+                       Datum = DateTime.Now,
+                   }));
+                var ex = "dochazka.ex";
+                channel.ExchangeDeclare(ex, ExchangeType.Fanout);
+                
+                channel.BasicPublish(
+                     exchange: ex,
+                     routingKey: "",
+                     basicProperties: null,
+                     body: body);
+                var queueName = channel.QueueDeclare().QueueName;
+                channel.QueueBind(queue: queueName,
+                  exchange: ex,
+                  routingKey: "");
+
+                return true;
             }
+            //using (var client = new HttpClient())
+            //{
+            //    client.BaseAddress = new Uri(DochazkaBase);
+            //    var responseTask = client.PutAsJsonAsync("Add", model);
+            //    responseTask.Wait();
+            //    var result = responseTask.Result;
+            //    if (result.IsSuccessStatusCode)
+            //    {
+            //        return true;
+            //    }
+            //}
             return false;
         }
         public bool Delete(int id)

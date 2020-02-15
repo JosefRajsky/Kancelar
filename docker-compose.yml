@@ -45,6 +45,7 @@ services:
       dockerfile: Services/Udalost/Udalost_Api/Dockerfile
     depends_on:
       - sqlserver
+      - rabbitmq
 
   dochazkaapi:
     image: ${DOCKER_REGISTRY-}dochazka_api
@@ -54,6 +55,17 @@ services:
     build:
       context: .
       dockerfile: Services/Dochazka/Dochazka_Api/Dockerfile
+    depends_on:
+      - sqlserver
+
+  dochazkaservice:
+    image: ${DOCKER_REGISTRY-}dochazka_service
+    hostname: "dochazkaservice"       
+    ports:
+      - "8083:80"
+    build:
+      context: .
+      dockerfile: Services/Dochazka/Dochazka_Service/Dockerfile
     depends_on:
       - sqlserver
 

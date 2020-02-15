@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Dochazka_Service": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

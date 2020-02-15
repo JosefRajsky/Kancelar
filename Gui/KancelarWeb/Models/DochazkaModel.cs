@@ -17,5 +17,7 @@ namespace KancelarWeb.Models
         public string UzivatelCeleJmeno { get; set; }
         [DisplayName("Druh")]
         public bool Prichod { get; set; }
+        [DisplayName("Čtečka")]
+        public string CteckaId { get; set; }
     }
 }
