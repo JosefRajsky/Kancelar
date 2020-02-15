@@ -1,0 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using static EventLibrary.EventEnum;
+
+namespace EventLibrary
+{
+    public class EventBase
+    {
+        public int Id { get; set; }
+        public MessageType MessageType { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public int Version { get; set; }     
+    }
+}

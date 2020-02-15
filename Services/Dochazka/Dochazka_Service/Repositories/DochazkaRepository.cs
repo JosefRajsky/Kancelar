@@ -1,6 +1,6 @@
 ﻿
 using Dochazka_Service.Entities;
-using EventShop;
+using EventLibrary;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

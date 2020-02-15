@@ -1,4 +1,4 @@
-﻿using EventShop;
+﻿using EventLibrary;
 using KancelarWeb.Interfaces;
 using KancelarWeb.Models;
 using Newtonsoft.Json;
