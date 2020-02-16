@@ -29,6 +29,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dochazka_Service", "Service
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventLibrary", "Library\EventLibrary\EventLibrary.csproj", "{87168ECD-E203-4A52-BE90-24AFA8929A4A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RabbitHandlers", "RabbitHandlers", "{17C6D484-1F80-4161-A899-259D2DAF4B9D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommandHandler", "RabbitHandlers\CommandHandler\CommandHandler.csproj", "{8C6EDD88-C53B-45B2-9BB0-D46C5C5A307E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +63,10 @@ Global
 		{87168ECD-E203-4A52-BE90-24AFA8929A4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87168ECD-E203-4A52-BE90-24AFA8929A4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87168ECD-E203-4A52-BE90-24AFA8929A4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C6EDD88-C53B-45B2-9BB0-D46C5C5A307E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C6EDD88-C53B-45B2-9BB0-D46C5C5A307E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C6EDD88-C53B-45B2-9BB0-D46C5C5A307E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C6EDD88-C53B-45B2-9BB0-D46C5C5A307E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -73,6 +81,7 @@ Global
 		{189BB438-64B2-4924-B858-8ABA775A526D} = {97ADFF6C-54B4-437E-B624-699BF2C91FCB}
 		{4630862B-1FA6-4E36-9468-42102B3BD182} = {97ADFF6C-54B4-437E-B624-699BF2C91FCB}
 		{87168ECD-E203-4A52-BE90-24AFA8929A4A} = {C8722B0A-7A4C-4A3D-8177-5659C881AAF0}
+		{8C6EDD88-C53B-45B2-9BB0-D46C5C5A307E} = {17C6D484-1F80-4161-A899-259D2DAF4B9D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FA02534C-DA03-44C8-9DAA-704670F31BEC}

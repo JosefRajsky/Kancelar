@@ -36,10 +36,8 @@ namespace Dochazka_Service.Controllers
             if (result == null || !result.Any()){
                 return NotFound();
             }
-
             //TODO: WORKAROUND
             var dochazkaList = new List<DochazkaModel>();
-
             foreach (var item in result)
             {
                 var dochazka = new DochazkaModel()
@@ -54,40 +52,39 @@ namespace Dochazka_Service.Controllers
             }
             return dochazkaList;
         }
-        [HttpPut]
-        [Route("Add")]
-        public ActionResult<Dochazka> Add(DochazkaModel model)       {
+        //[HttpPut]
+        //[Route("Add")]
+        //public ActionResult<Dochazka> Add(DochazkaModel model)       {
 
-            var dochazka = new Dochazka() {
-                Rok = model.Datum.Year,
-                Mesic = model.Datum.Month,
-                Den = model.Datum.Day,
-                DenTydne =(int) model.Datum.DayOfWeek,
-                UzivatelId = model.UzivatelId,
-                Tick = model.Datum.Ticks,
-                Prichod = model.Prichod,
-            };
+        //    var dochazka = new Dochazka() {
+        //        Rok = model.Datum.Year,
+        //        Mesic = model.Datum.Month,
+        //        Den = model.Datum.Day,
+        //        DenTydne =(int) model.Datum.DayOfWeek,
+        //        UzivatelId = model.UzivatelId,
+        //        Tick = model.Datum.Ticks,
+        //        Prichod = model.Prichod,
+        //    };
 
 
-            var result = _dochazkaRepository.Add(dochazka);
-            if (result == null)
-            {
-                return NotFound();
-            }
-            return result;
-        }
-        [HttpDelete]
-        [Route("Delete")]
-        public ActionResult<bool> Delete(int id)
-        {
-           return _dochazkaRepository.Delete(Convert.ToInt32(id));   
-        }
+        //    var result = _dochazkaRepository.Add(dochazka);
+        //    if (result == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return result;
+        //}
+        //[HttpDelete]
+        //[Route("Delete")]
+        //public ActionResult<bool> Delete(int id)
+        //{
+        //   return _dochazkaRepository.Delete(Convert.ToInt32(id));   
+        //}
         [HttpPost]
         [Route("Update")]
         public ActionResult<bool> Update(Dochazka dochazka)
         {
-            var result = _dochazkaRepository.Update(dochazka);
-           
+            var result = _dochazkaRepository.Update(dochazka);           
             return result;
         }
     }

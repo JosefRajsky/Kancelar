@@ -17,4 +17,15 @@ namespace EventLibrary
             CreatedDate = DateTime.Now;
         }
     }
+    public class EventDochazkaRemove : EventBase
+    {
+        public int DochazkaId { get; set; }
+
+        public EventDochazkaRemove()
+        {
+            MessageType = MessageType.DochazkaRemove;
+            Version = 1;
+            CreatedDate = DateTime.Now;
+        }
+    }
 }

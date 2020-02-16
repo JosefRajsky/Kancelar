@@ -9,7 +9,8 @@ namespace EventLibrary
         public enum MessageType
         {
             DochazkaCreate = 0,
-            UdalostCreate = 1,
+            DochazkaRemove = 1,
+            UdalostCreate = 2,
 
         }
     }

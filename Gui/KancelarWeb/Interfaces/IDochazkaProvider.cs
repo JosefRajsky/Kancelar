@@ -13,6 +13,6 @@ namespace KancelarWeb.Interfaces
 
         void Add(DochazkaModel dochazka);
 
-        bool Delete(int id);
+        void Delete(int id);
     }
 }

@@ -1,6 +1,7 @@
 ﻿
 using Dochazka_Service.Entities;
 using EventLibrary;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,21 +14,40 @@ namespace Dochazka_Service.Repositories
 {
     public class DochazkaRepository : IDochazkaRepository
     {
-   
-        public Dochazka Add(Dochazka input)
+
+        private string _connectionString;
+     
+
+        public DochazkaRepository(string connectionString)
         {
-            var add = new Dochazka();
-            add = input;
-            using (var db = new DochazkaDbContextFactory().CreateDbContext())
+            _connectionString = connectionString;
+        }
+
+        public void Add(EventDochazkaCreate msg)
+        {
+            //Description: Vytvoření entity podle obdržené zprávy
+            var add = new Dochazka()
             {
+                Den = msg.Datum.Day,
+                DenTydne = (int)msg.Datum.DayOfWeek,
+                Mesic = msg.Datum.Month,
+                Rok = msg.Datum.Year,
+                Prichod = msg.Prichod,
+                Tick = msg.Datum.Ticks,
+                UzivatelId = msg.UzivatelId,
+            };
+            //Description: Založení připojení k databázi
+            using (var db = new DochazkaDbContextFactory(_connectionString).CreateDbContext())
+            {
+                //Description: Přidání a uložení do DB; Ukončení spojení
                 db.Dochazka.Add(add);
                 db.SaveChanges();
+                db.Dispose();
             }   
-            return add;
         }
         public Dochazka Get(int id)
         {
-            using (var db = new DochazkaDbContextFactory().CreateDbContext())
+            using (var db = new DochazkaDbContextFactory(_connectionString).CreateDbContext())
             {
                 return db.Dochazka.FirstOrDefault(b => b.Id == id);
             }
@@ -35,56 +55,57 @@ namespace Dochazka_Service.Repositories
         }
         public IEnumerable<Dochazka> GetList()
         {
-            using (var db = new DochazkaDbContextFactory().CreateDbContext())
+            using (var db = new DochazkaDbContextFactory(_connectionString).CreateDbContext())
             {
- return db.Dochazka;
+                return db.Dochazka;
             }
            
         }
-        public bool Delete(int id)
+        public void Remove(EventDochazkaRemove msg)
         {
-            using (var db = new DochazkaDbContextFactory().CreateDbContext())
+            using (var db = new DochazkaDbContextFactory(_connectionString).CreateDbContext())
             {
-                var remove = db.Dochazka.FirstOrDefault(b => b.Id == id);
+                var remove = db.Dochazka.FirstOrDefault(b => b.Id == msg.DochazkaId);
                 db.Dochazka.Remove(remove);
                 db.SaveChanges();
-            }
-            return true;
+            }           
         }
 
         public bool Update(Dochazka update)
         {
-            using (var db = new DochazkaDbContextFactory().CreateDbContext())
+            using (var db = new DochazkaDbContextFactory(_connectionString).CreateDbContext())
             {
             var forUpdate = db.Dochazka.FirstOrDefault(b => b.Id == update.Id);
             forUpdate = update;
             db.Dochazka.Update(forUpdate);
             db.SaveChanges();
-            }
-
+            }           
             return true;
         }
-
+        //Description: Zpracování zpráv získaných po přihlášení k RabbitMQ Exchange
         public void AddMessage(string message)
         {
-            var msg = JsonConvert.DeserializeObject<EventDochazkaCreate>(message);
-            var add = new Dochazka()
-            {
-                Den =  msg.Datum.Day,
-                DenTydne = (int) msg.Datum.DayOfWeek,
-                Mesic =msg.Datum.Month,
-                Rok = msg.Datum.Year,
-                Prichod =msg.Prichod,
-                Tick = msg.Datum.Ticks,
-                UzivatelId = msg.UzivatelId,               
-            };         
+            //Description: Deserializace Json objektu na základní typ zprávy
+            var envelope = JsonConvert.DeserializeObject<EventBase>(message);
+      
 
-                switch (msg.MessageType)
+            //Description: Rozhodnutí o typu získazné zprávy
+            switch (envelope.MessageType)
                 {
                     case EventEnum.MessageType.DochazkaCreate:
-                        Add(add);
-                        break; 
-                    default:
+                    //Description: Kontrola verze zprávy 
+                    if (envelope.Version == 1) {
+                        //Description: Deserializace zprávy do správného typu a odeslání k uložení do DB; 
+                        this.Add(JsonConvert.DeserializeObject<EventDochazkaCreate>(message));
+                    }                   
+                    break;
+                case EventEnum.MessageType.DochazkaRemove:
+                    if (envelope.Version == 1)
+                    {
+                        this.Remove(JsonConvert.DeserializeObject<EventDochazkaRemove>(message));
+                    }
+                    break;
+                default:
                         break;
                 }
 

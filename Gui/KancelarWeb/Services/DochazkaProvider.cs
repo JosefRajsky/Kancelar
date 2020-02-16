@@ -1,4 +1,5 @@
-﻿using EventLibrary;
+﻿using CommandHandler;
+using EventLibrary;
 using KancelarWeb.Interfaces;
 using KancelarWeb.Models;
 using Newtonsoft.Json;
@@ -53,35 +54,51 @@ namespace KancelarWeb.Services
             }
             return Dochazka;
         }
-        public bool Add(DochazkaModel model)
+        public void Add(DochazkaModel model)
         {
             var factory = new ConnectionFactory() { HostName = "rabbitmq" };
-            using (var connection = factory.CreateConnection())
-            using (var channel = connection.CreateModel())
-            {
-                var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(
+            var publisher = new PublishCommand(factory, "dochazka.ex");
+            var body = JsonConvert.SerializeObject(
                    new EventDochazkaCreate()
                    {
                        Prichod = model.Prichod,
                        UzivatelId = model.UzivatelId,
                        CteckaId = model.CteckaId,
                        Datum = DateTime.Now,
-                   }));
-                var ex = "dochazka.ex";
-                channel.ExchangeDeclare(ex, ExchangeType.Fanout);
-                
-                channel.BasicPublish(
-                     exchange: ex,
-                     routingKey: "",
-                     basicProperties: null,
-                     body: body);
-                var queueName = channel.QueueDeclare().QueueName;
-                channel.QueueBind(queue: queueName,
-                  exchange: ex,
-                  routingKey: "");
+                   });
+            publisher.Push(body);
 
-                return true;
-            }
+
+            //Odeslani Command Create
+            //var factory = new ConnectionFactory() { HostName = "rabbitmq" };
+            //using (var connection = factory.CreateConnection())
+            //using (var channel = connection.CreateModel())
+            //{
+            //    var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(
+            //       new EventDochazkaCreate()
+            //       {
+            //           Prichod = model.Prichod,
+            //           UzivatelId = model.UzivatelId,
+            //           CteckaId = model.CteckaId,
+            //           Datum = DateTime.Now,
+            //       }));
+            //    var ex = "dochazka.ex";
+            //    channel.ExchangeDeclare(ex, ExchangeType.Fanout);
+                
+            //    channel.BasicPublish(
+            //         exchange: ex,
+            //         routingKey: "",
+            //         basicProperties: null,
+            //         body: body);
+            //    var queueName = channel.QueueDeclare().QueueName;
+            //    channel.QueueBind(queue: queueName,
+            //      exchange: ex,
+            //      routingKey: "");
+
+            //    return;
+            //}
+            //Description: Původni komunikace na přímo.
+            //puvodni komunikace
             //using (var client = new HttpClient())
             //{
             //    client.BaseAddress = new Uri(DochazkaBase);
@@ -93,22 +110,34 @@ namespace KancelarWeb.Services
             //        return true;
             //    }
             //}
-            return false;
+            
         }
-        public bool Delete(int id)
+        public void Delete(int id)
         {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(DochazkaBase);
-                var responseTask = client.DeleteAsync(string.Format("Delete?id={0}", id));
-                responseTask.Wait();                
-                var result = responseTask.Result;
-                if (result.IsSuccessStatusCode)
-                {
-                    return true;
-                }
-            }
-            return false;
+            //Odeslani Command Create
+            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
+            var publisher = new PublishCommand(factory, "dochazka.ex");
+            var body = JsonConvert.SerializeObject(
+                 new EventDochazkaRemove()
+                 {
+                     DochazkaId = id
+                 });
+            publisher.Push(body);         
+            
+            
+
+            //using (var client = new HttpClient())
+            //{
+            //    client.BaseAddress = new Uri(DochazkaBase);
+            //    var responseTask = client.DeleteAsync(string.Format("Delete?id={0}", id));
+            //    responseTask.Wait();                
+            //    var result = responseTask.Result;
+            //    if (result.IsSuccessStatusCode)
+            //    {
+            //        return true;
+            //    }
+            //}
+            //return false;
         }
     }
 }

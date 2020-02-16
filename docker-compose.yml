@@ -60,7 +60,7 @@ services:
 
   dochazkaservice:
     image: ${DOCKER_REGISTRY-}dochazka_service
-    hostname: "dochazkaservice"       
+    hostname: "dochazkaservice"    
     ports:
       - "8083:80"
     build:
