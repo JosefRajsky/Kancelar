@@ -12,7 +12,9 @@ namespace Udalost_Service
     public class UdalostDbContext : DbContext
     {
          public UdalostDbContext(DbContextOptions options) : base(options) {
+ 
             this.Database.EnsureCreated();
+           
         }  
        
         public  DbSet<Udalost> Udalosti { get; set; }

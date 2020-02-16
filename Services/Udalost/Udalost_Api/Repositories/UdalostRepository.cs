@@ -27,11 +27,12 @@ namespace Udalost_Api.Repositories
             var body = JsonConvert.SerializeObject(
                    new EventUdalostCreate()
                    {
+                       UdalostTypId = input.UdalostTypId,
                        UzivatelId = input.UzivatelId,
                        DatumOd = input.DatumOd,
                        DatumDo = input.DatumDo,
                        DatumZadal = DateTime.Now,
-                       Nazev = input.Nazev,
+                       Popis = input.Popis,
                    });
             await publisher.Push(body);
         }
@@ -71,7 +72,8 @@ namespace Udalost_Api.Repositories
                        DatumOd = update.DatumOd,
                        DatumDo = update.DatumDo,
                        DatumZadal = DateTime.Now,
-                       Nazev = update.Nazev,
+                       UdalostTypId = update.UdalostTypId,
+                       Popis = update.Popis
                    }); ;
             await publisher.Push(body);
         }

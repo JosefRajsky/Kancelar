@@ -16,19 +16,18 @@ namespace KancelarWeb.Services
     public class DochazkaProvider : IDochazkaProvider
     {
         public string DochazkaBase = "http://dochazkaapi/Dochazka/";
-        public IEnumerable<DochazkaModel> GetList()
+        public async Task<IEnumerable<DochazkaModel>> GetList()
         {
             IEnumerable<DochazkaModel> res = new List<DochazkaModel>();
 
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(DochazkaBase);
-                var response = client.GetAsync("GetList");
-                response.Wait();
-                var result = response.Result;
-                if (result.IsSuccessStatusCode)
+                var response = await client.GetAsync("GetList");
+             
+                if (response.IsSuccessStatusCode)
                 {
-                    var readtask = result.Content.ReadAsAsync<IList<DochazkaModel>>();
+                    var readtask = response.Content.ReadAsAsync<IList<DochazkaModel>>();
                     readtask.Wait();
 
                     res = readtask.Result;
@@ -54,21 +53,24 @@ namespace KancelarWeb.Services
             }
             return Dochazka;
         }
-        public async Task Add(DochazkaModel model)
+        public async Task<bool> Add(DochazkaModel model)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(DochazkaBase);
-                await client.PutAsJsonAsync("Add", model);                
+                var response = await client.PutAsJsonAsync("Add", model);
+                return response.IsSuccessStatusCode;
             }
         }
-        public async Task Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(DochazkaBase);
-                await client.DeleteAsync(string.Format("Delete?id={0}", id));
+                var response = await client.DeleteAsync(string.Format("Delete?id={0}", id));
+                return response.IsSuccessStatusCode;
             }
+
             //Odeslani Command Create
             //var factory = new ConnectionFactory() { HostName = "rabbitmq" };
             //var publisher = new PublishCommand(factory, "dochazka.ex");
@@ -78,8 +80,8 @@ namespace KancelarWeb.Services
             //         DochazkaId = id
             //     });
             //publisher.Push(body);         
-            
-            
+
+
 
             //using (var client = new HttpClient())
             //{

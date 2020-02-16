@@ -8,10 +8,10 @@ namespace KancelarWeb.Interfaces
 {
     public interface IDochazkaProvider
     {
-        IEnumerable<DochazkaModel> GetList();
+        Task<IEnumerable<DochazkaModel>> GetList();
         DochazkaModel Get(int id);
-        Task Add(DochazkaModel dochazka);
+        Task<bool> Add(DochazkaModel dochazka);
 
-        Task Delete(int id);
+        Task<bool> Delete(int id);
     }
 }

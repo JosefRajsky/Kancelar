@@ -64,7 +64,8 @@ namespace KancelarWeb.Services
                        DatumOd = model.DatumOd,
                        DatumDo = model.DatumDo,
                        DatumZadal = DateTime.Now,
-                       Nazev = model.Nazev,
+                       UdalostTypId = model.UdalostTypId,
+                       Popis = model.Popis,
                    });
             publisher.Push(body);
         }

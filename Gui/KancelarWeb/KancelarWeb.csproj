@@ -9,16 +9,21 @@
 
   <ItemGroup>
     <PackageReference Include="Bootstrap.Datepicker" Version="1.8.0.1" />
+    <PackageReference Include="Enums.NET" Version="3.0.3" />
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.7" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.10" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.0.96" />
+    <PackageReference Include="Polly" Version="7.2.0" />
     <PackageReference Include="RabbitMQ.Client" Version="5.1.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Library\EventLibrary\EventLibrary.csproj" />
+    <ProjectReference Include="..\..\Library\UdalostLibrary\UdalostLibrary.csproj" />
     <ProjectReference Include="..\..\RabbitHandlers\CommandHandler\CommandHandler.csproj" />
   </ItemGroup>
 

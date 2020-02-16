@@ -1,5 +1,5 @@
 ﻿using System;
-using static EventLibrary.EventEnum;
+using static EventLibrary.MessageType;
 
 namespace EventLibrary
 {
@@ -7,7 +7,7 @@ namespace EventLibrary
     {
         public EventDochazkaCreate()
         {
-            MessageType = MessageType.DochazkaCreate;
+            MessageType = EventLibrary.MessageType.DochazkaCreate;
             Version = 1;
             CreatedDate = DateTime.Now;
         }
@@ -22,7 +22,7 @@ namespace EventLibrary
     {
         public EventDochazkaUpdate()
         {
-            MessageType = MessageType.DochazkaUpdate;
+            MessageType = EventLibrary.MessageType.DochazkaUpdate;
             Version = 1;
             CreatedDate = DateTime.Now;
         }
@@ -38,7 +38,7 @@ namespace EventLibrary
     {
         public EventDochazkaRemove()
         {
-            MessageType = MessageType.DochazkaRemove;
+            MessageType = EventLibrary.MessageType.DochazkaRemove;
             Version = 1;
             CreatedDate = DateTime.Now;
         }

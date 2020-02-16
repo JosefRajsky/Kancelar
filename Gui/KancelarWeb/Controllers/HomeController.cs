@@ -12,5 +12,10 @@ namespace KancelarWeb.Controllers
         {
             return View("Index");
         }
+        public IActionResult Error()
+        {
+            ViewBag.ErrorMsg = "Na stránce došlo k chybě";
+            return View("Index");
+        }
     }
 }

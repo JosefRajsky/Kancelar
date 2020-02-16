@@ -5,10 +5,9 @@ using System.Text;
 
 namespace EventLibrary
 {
-    public class EventEnum
+    public enum MessageType
     {
-        public enum MessageType
-        {
+       
             [Description("Command: Vytvoření nové docházky")]
             DochazkaCreate = 0,
 
@@ -27,6 +26,6 @@ namespace EventLibrary
             [Description("Command: Update události")]
             UdalostUpdate = 5,
 
-        }
+        
     }
 }

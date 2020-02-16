@@ -59,10 +59,10 @@ namespace Dochazka_Api.Controllers
 
         [HttpPut]
         [Route("Add")]
-        public async Task Add(DochazkaModel model)      
+        public async Task<bool> Add(DochazkaModel model)      
         {
-            await _dochazkaRepository.Add(model);
-             //return CreatedAtRoute("GetList", new { });
+        return await _dochazkaRepository.Add(model); ;
+            
         }
 
         [HttpDelete]

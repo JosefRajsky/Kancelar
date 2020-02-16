@@ -10,9 +10,10 @@ namespace Udalost_Api.Models
     public class UdalostModel
     {
         public int Id { get; set; }
+        public int UdalostTypId { get; set; }
 
-        [DisplayName("Název")]
-        public string Nazev { get; set; }
+        [DisplayName("Popis")]
+        public string Popis { get; set; }
 
         [DisplayName("Od")]
         [DisplayFormat(DataFormatString = "{0:dd. MM. yyyy}")]

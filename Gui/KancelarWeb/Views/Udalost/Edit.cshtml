@@ -16,8 +16,10 @@ ViewData["Title"] = "Edit";
                 <div class="form-group">
                     @Html.LabelFor(Model => Model.Nazev)
                     <label asp-for="Url" class="control-label"></label>
-                    @Html.TextBoxFor(Model => Model.Nazev, new { @class = "form-control" })
+                    @Html.DropDownListFor(Model => Model.Nazev, Model.UdalostTypList,
+                    "Typ dovolené", new { @class = "form-control" })
                     <span asp-validation-for="Nazev" class="text-danger"></span>
+                   
                 </div>
                 <div class="form-group">
                     @Html.LabelFor(Model => Model.DatumOd)

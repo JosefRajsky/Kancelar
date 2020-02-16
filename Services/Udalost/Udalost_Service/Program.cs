@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
 using System;
 using System.Text;
+using System.Threading.Tasks;
 using Udalost_Service.Repositories;
 
 namespace Udalost_Service
@@ -12,8 +13,7 @@ namespace Udalost_Service
     {
         static void Main(string[] args)
         {
-            try
-            {
+           
                 //-------------Description: Načtení konfiguračního souboru
                 IConfiguration config = new ConfigurationBuilder()
                     .AddJsonFile("appsettings.json", true, true)
@@ -25,7 +25,7 @@ namespace Udalost_Service
                     .BuildServiceProvider()
                     .GetService<IAcceptCommand>()
                     .Start();
-                consumer.Received += (model, ea) =>
+                consumer.Received += async (model, ea) =>
                 {
                     //-------------Description: Formátování přijaté zprávy
                     var body = ea.Body;
@@ -34,13 +34,9 @@ namespace Udalost_Service
                     //-------------Description: Název ConnectionString získán z konfiguračního souboru appsetting.json
                     var repository = new UdalostRepository(config.GetValue<string>("Setting:ConnectionString"));
                     //-------------Description: Odeslání zprávy do repositáře
-                    repository.AddMessage(message);
+                   await repository.AddMessage(message);
                 };
-            }
-            catch (Exception exception)
-            {
-                throw exception;
-            }
+           
         }
     }
 }

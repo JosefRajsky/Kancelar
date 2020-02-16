@@ -16,21 +16,31 @@ namespace CommandHandler
         private IConnection _connection { get; set; }
         private IModel _channel { get; set; }
         private string _exchange { get; set; }
-        public async Task Push(string message) {
-            await Task.Run(() =>
+        public async Task<bool> Push(string message) {
+            try
             {
-                var body = Encoding.UTF8.GetBytes(message);
-                _channel.ExchangeDeclare(_exchange, ExchangeType.Fanout);
-                _channel.BasicPublish(
-                     exchange: _exchange,
-                     routingKey: "",
-                     basicProperties: null,
-                     body: body);
-                var queueName = _channel.QueueDeclare().QueueName;
-                _channel.QueueBind(queue: queueName,
-                              exchange: _exchange,
-                              routingKey: "");
-            });           
+                await Task.Run(() =>
+                {
+                    var body = Encoding.UTF8.GetBytes(message);
+                    _channel.ExchangeDeclare(_exchange, ExchangeType.Fanout);
+                    _channel.BasicPublish(
+                         exchange: _exchange,
+                         routingKey: "",
+                         basicProperties: null,
+                         body: body);
+                    var queueName = _channel.QueueDeclare().QueueName;
+                    _channel.QueueBind(queue: queueName,
+                                  exchange: _exchange,
+                                  routingKey: "");
+                    return true;
+                });
+            }
+            catch (Exception e)
+            {
+                throw e;          
+            }
+            return false;
+           
         }
         public PublishCommand(ConnectionFactory connectionFactory, string exchange)
         {

@@ -4,13 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-
-
 using System.Text;
 using Newtonsoft.Json;
 using KancelarWeb.Interfaces;
 using KancelarWeb.Models;
 using KancelarWeb.Services;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using UdalostLibrary;
 
 namespace KancelarWeb.Controllers
 {
@@ -34,7 +34,14 @@ namespace KancelarWeb.Controllers
         }
         public IActionResult Edit()
         {
-            return View();
+            var model = new UdalostModel();
+            model.UdalostTypList = new List<SelectListItem>();
+            foreach (var item in (UdalostTyp[])Enum.GetValues(typeof(UdalostTyp)))
+            {
+             
+                model.UdalostTypList.Add(new SelectListItem() { Text = EmumExtension.GetDescription(item), Value = item.ToString() });
+            }
+            return View(model);
         }
         [HttpPost]
         public IActionResult Add(UdalostModel model)

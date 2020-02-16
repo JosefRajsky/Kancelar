@@ -32,7 +32,7 @@ namespace Dochazka_Service.Repositories
             //-------------Description: Rozhodnutí o typu získazné zprávy
             switch (envelope.MessageType)
             {
-                case EventEnum.MessageType.DochazkaCreate:
+                case MessageType.DochazkaCreate:
                     //-------------Description: Kontrola verze zprávy 
                     if (envelope.Version == 1)
                     {
@@ -40,19 +40,20 @@ namespace Dochazka_Service.Repositories
                         this.Add(JsonConvert.DeserializeObject<EventDochazkaCreate>(message));
                     }
                     break;
-                case EventEnum.MessageType.DochazkaRemove:
+                case MessageType.DochazkaRemove:
                     if (envelope.Version == 1)
                     {
                         this.Remove(JsonConvert.DeserializeObject<EventDochazkaRemove>(message));
                     }
                     break;
-                case EventEnum.MessageType.DochazkaUpdate:
+                case MessageType.DochazkaUpdate:
                     if (envelope.Version == 1)
                     {
                         this.Update(JsonConvert.DeserializeObject<EventDochazkaUpdate>(message));
                     }
                     break;
                 default:
+                    
                     break;
             }
         }
@@ -84,8 +85,11 @@ namespace Dochazka_Service.Repositories
             using (var db = new DochazkaDbContextFactory(_connectionString).CreateDbContext())
             {
                 var remove = db.Dochazka.FirstOrDefault(b => b.Id == msg.DochazkaId);
-                db.Dochazka.Remove(remove);
-                db.SaveChanges();
+                if (remove != null) {
+                    db.Dochazka.Remove(remove);
+                    db.SaveChanges();
+                }
+  
             }           
         }
         public bool Update(EventDochazkaUpdate msg)
@@ -93,17 +97,21 @@ namespace Dochazka_Service.Repositories
             using (var db = new DochazkaDbContextFactory(_connectionString).CreateDbContext())
             {
                 var forUpdate = db.Dochazka.FirstOrDefault(b => b.Id == msg.DochazkaId);
-                forUpdate.Den = msg.Datum.Day;
-                forUpdate.DenTydne = (int)msg.Datum.DayOfWeek;
-                forUpdate.Mesic = msg.Datum.Month;
-                forUpdate.Rok = msg.Datum.Year;
-                forUpdate.Prichod = msg.Prichod;
-                forUpdate.Tick = msg.Datum.Ticks;
-                forUpdate.UzivatelId = msg.UzivatelId;
-                db.Dochazka.Update(forUpdate);
-                db.SaveChanges();
+                if (forUpdate != null) {
+                    forUpdate.Den = msg.Datum.Day;
+                    forUpdate.DenTydne = (int)msg.Datum.DayOfWeek;
+                    forUpdate.Mesic = msg.Datum.Month;
+                    forUpdate.Rok = msg.Datum.Year;
+                    forUpdate.Prichod = msg.Prichod;
+                    forUpdate.Tick = msg.Datum.Ticks;
+                    forUpdate.UzivatelId = msg.UzivatelId;
+                    db.Dochazka.Update(forUpdate);
+                    db.SaveChanges();
+                    return true;
+                }
+             
             }
-            return true;
+            return false;
         }
         //public Dochazka Get(int id)
         //{

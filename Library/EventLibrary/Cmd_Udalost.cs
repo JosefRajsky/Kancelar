@@ -1,5 +1,5 @@
 ﻿using System;
-using static EventLibrary.EventEnum;
+using static EventLibrary.MessageType;
 
 namespace EventLibrary
 {
@@ -7,12 +7,12 @@ namespace EventLibrary
     {
         public EventUdalostCreate()
         {
-            MessageType = MessageType.DochazkaCreate;
+            MessageType = EventLibrary.MessageType.DochazkaCreate;
             Version = 1;
             CreatedDate = DateTime.Now;
         }
-        
-        public string Nazev { get; set; }
+        public int UdalostTypId { get; set; }
+        public string Popis { get; set; }
         public int UzivatelId { get; set; }
         public DateTime DatumZadal { get; set; }
         public DateTime DatumOd { get; set; }
@@ -22,12 +22,13 @@ namespace EventLibrary
     {
         public EventUdalostUpdate()
         {
-            MessageType = MessageType.DochazkaUpdate;
+            MessageType = EventLibrary.MessageType.DochazkaUpdate;
             Version = 1;
             CreatedDate = DateTime.Now;
         }
-        public int UdalostId { get; set; }
-        public string Nazev { get; set; }
+        public int UdalostTypId { get; set; }
+        public string Popis { get; set; }
+        public int UdalostId { get; set; }       
         public int UzivatelId { get; set; }
         public DateTime DatumZadal { get; set; }
         public DateTime DatumOd { get; set; }
@@ -37,7 +38,7 @@ namespace EventLibrary
     {
         public EventUdalostRemove()
         {
-            MessageType = MessageType.DochazkaRemove;
+            MessageType = EventLibrary.MessageType.DochazkaRemove;
             Version = 1;
             CreatedDate = DateTime.Now;
         }

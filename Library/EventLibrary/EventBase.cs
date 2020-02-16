@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using static EventLibrary.EventEnum;
+using static EventLibrary.MessageType;
 
 namespace EventLibrary
 {

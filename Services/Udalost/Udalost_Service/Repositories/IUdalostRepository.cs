@@ -11,10 +11,10 @@ namespace Udalost_Service.Repositories
     public interface IUdalostRepository
     {
 
-        public void AddMessage(string message);
-        public void Add(EventUdalostCreate message);
-        public void Remove(EventUdalostRemove udalostId);
-        public bool Update(EventUdalostUpdate udalostId);
+        Task AddMessage(string message);
+        Task Add(EventUdalostCreate message);
+        Task Remove(EventUdalostRemove udalostId);
+        Task Update(EventUdalostUpdate udalostId);
         //public IEnumerable<Udalost> GetList();
         //public Udalost Get(int bloId);
 
