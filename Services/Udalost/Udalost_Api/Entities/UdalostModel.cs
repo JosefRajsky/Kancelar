@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace KancelarWeb.Models
+namespace Udalost_Api.Models
 {
     public class UdalostModel
     {

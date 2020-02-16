@@ -1,5 +1,10 @@
 ﻿
+using CommandHandler;
 using Dochazka_Api.Entities;
+using EventLibrary;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,14 +20,30 @@ namespace Dochazka_Api.Repositories
             db = dochazkaDbContext;
            
         }
-        public Dochazka Add(Dochazka input)
+        public async Task Add(DochazkaModel input)
         {
-            var add = new Dochazka();
-            add = input;
-            db.Add(add);
-            db.SaveChanges();
-            return add;
+            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
+            var publisher = new PublishCommand(factory, "dochazka.ex");
+            var body = JsonConvert.SerializeObject(
+                   new EventDochazkaCreate()
+                   {
+                       Prichod = input.Prichod,
+                       UzivatelId = input.UzivatelId,
+                       CteckaId = input.CteckaId,
+                       Datum = DateTime.Now,
+                   });
+            //var result = publisher.Push(body);
+            await publisher.Push(body);
+
+            //var add = new Dochazka();
+            //add = input;
+            //db.Add(add);
+            //db.SaveChanges();
+            //return add;
         }
+
+ 
+
         public Dochazka Get(int id)
         {
            return db.Dochazka.FirstOrDefault(b => b.Id == id);
@@ -31,21 +52,27 @@ namespace Dochazka_Api.Repositories
         {
             return db.Dochazka;
         }
-        public bool Delete(int id)
+        public async Task Delete(int id)
         {
             var remove = db.Dochazka.FirstOrDefault(b => b.Id == id);
             db.Dochazka.Remove(remove);
-            db.SaveChanges();
-            return true;
+            await db.SaveChangesAsync();           
         }
 
-        public bool Update(Dochazka update)
+        public async Task Update(DochazkaModel update)
         {
-            var forUpdate = db.Dochazka.FirstOrDefault(b => b.Id == update.Id);
-            forUpdate = update;
-            db.Dochazka.Update(forUpdate);
-            db.SaveChanges();
-            return true;
+            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
+            var publisher = new PublishCommand(factory, "dochazka.ex");
+            var body = JsonConvert.SerializeObject(
+                   new EventDochazkaUpdate()
+                   {
+                       DochazkaId = update.Id,
+                       Prichod = update.Prichod,
+                       UzivatelId = update.UzivatelId,
+                       CteckaId = update.CteckaId,
+                       Datum = DateTime.Now,
+                   }) ;            
+            await publisher.Push(body);
         }
 
  

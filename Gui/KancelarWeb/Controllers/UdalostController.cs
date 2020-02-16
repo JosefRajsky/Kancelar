@@ -38,17 +38,14 @@ namespace KancelarWeb.Controllers
         }
         [HttpPost]
         public IActionResult Add(UdalostModel model)
-        {            
-            var result = provider.Add(model);
-            if (!result)
-            {
-                ViewBag.error = "Seznam je prázdný";
-            }
+        {
+            provider.Add(model);
+            
             return RedirectToAction("Index");
         }
         public IActionResult Remove(string id)
         {
-            provider.Delete(Convert.ToInt32(id));
+            provider.Remove(Convert.ToInt32(id));
             return RedirectToAction("Index");
         }
     }

@@ -1,5 +1,9 @@
-﻿using KancelarWeb.Interfaces;
+﻿using CommandHandler;
+using EventLibrary;
+using KancelarWeb.Interfaces;
 using KancelarWeb.Models;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,35 +53,44 @@ namespace KancelarWeb.Services
             }
             return udalost;
         }
-        public bool Add(UdalostModel udalost)
+        public void Add(UdalostModel model)
         {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(udalostBase);
-                var responseTask = client.PutAsJsonAsync("Add", udalost);
-                responseTask.Wait();
-                var result = responseTask.Result;
-                if (result.IsSuccessStatusCode)
-                {
-                    return true;
-                }
-            }
-            return false;
+            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
+            var publisher = new PublishCommand(factory, "udalost.ex");
+            var body = JsonConvert.SerializeObject(
+                   new EventUdalostCreate()
+                   {
+                       UzivatelId = model.UzivatelId,
+                       DatumOd = model.DatumOd,
+                       DatumDo = model.DatumDo,
+                       DatumZadal = DateTime.Now,
+                       Nazev = model.Nazev,
+                   });
+            publisher.Push(body);
         }
-        public bool Delete(int id)
+        public void Remove(int id)
         {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(udalostBase);
-                var responseTask = client.DeleteAsync(string.Format("Delete?id={0}", id));
-                responseTask.Wait();                
-                var result = responseTask.Result;
-                if (result.IsSuccessStatusCode)
-                {
-                    return true;
-                }
-            }
-            return false;
+            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
+            var publisher = new PublishCommand(factory, "udalost.ex");
+            var body = JsonConvert.SerializeObject(
+                 new EventUdalostRemove()
+                 {
+                    UdalostId = id
+                 });
+            publisher.Push(body);
+
+            //using (var client = new HttpClient())
+            //{
+            //    client.BaseAddress = new Uri(udalostBase);
+            //    var responseTask = client.DeleteAsync(string.Format("Delete?id={0}", id));
+            //    responseTask.Wait();                
+            //    var result = responseTask.Result;
+            //    if (result.IsSuccessStatusCode)
+            //    {
+            //        return true;
+            //    }
+            //}
+            //return false;
         }
     }
 }

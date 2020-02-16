@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Udalost_Service": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

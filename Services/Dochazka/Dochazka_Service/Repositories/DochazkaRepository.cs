@@ -22,10 +22,44 @@ namespace Dochazka_Service.Repositories
         {
             _connectionString = connectionString;
         }
+        //-------------Description: Zpracování zpráv získaných po přihlášení k RabbitMQ Exchange
+        public void AddMessage(string message)
+        {
+            //-------------Description: Deserializace Json objektu na základní typ zprávy
+            var envelope = JsonConvert.DeserializeObject<EventBase>(message);
+
+
+            //-------------Description: Rozhodnutí o typu získazné zprávy
+            switch (envelope.MessageType)
+            {
+                case EventEnum.MessageType.DochazkaCreate:
+                    //-------------Description: Kontrola verze zprávy 
+                    if (envelope.Version == 1)
+                    {
+                        //-------------Description: Deserializace zprávy do správného typu a odeslání k uložení do DB; 
+                        this.Add(JsonConvert.DeserializeObject<EventDochazkaCreate>(message));
+                    }
+                    break;
+                case EventEnum.MessageType.DochazkaRemove:
+                    if (envelope.Version == 1)
+                    {
+                        this.Remove(JsonConvert.DeserializeObject<EventDochazkaRemove>(message));
+                    }
+                    break;
+                case EventEnum.MessageType.DochazkaUpdate:
+                    if (envelope.Version == 1)
+                    {
+                        this.Update(JsonConvert.DeserializeObject<EventDochazkaUpdate>(message));
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
 
         public void Add(EventDochazkaCreate msg)
         {
-            //Description: Vytvoření entity podle obdržené zprávy
+            //-------------Description: Vytvoření entity podle obdržené zprávy
             var add = new Dochazka()
             {
                 Den = msg.Datum.Day,
@@ -36,30 +70,14 @@ namespace Dochazka_Service.Repositories
                 Tick = msg.Datum.Ticks,
                 UzivatelId = msg.UzivatelId,
             };
-            //Description: Založení připojení k databázi
+            //-------------Description: Založení připojení k databázi
             using (var db = new DochazkaDbContextFactory(_connectionString).CreateDbContext())
             {
-                //Description: Přidání a uložení do DB; Ukončení spojení
+                //-------------Description: Přidání a uložení do DB; Ukončení spojení
                 db.Dochazka.Add(add);
                 db.SaveChanges();
                 db.Dispose();
             }   
-        }
-        public Dochazka Get(int id)
-        {
-            using (var db = new DochazkaDbContextFactory(_connectionString).CreateDbContext())
-            {
-                return db.Dochazka.FirstOrDefault(b => b.Id == id);
-            }
-            
-        }
-        public IEnumerable<Dochazka> GetList()
-        {
-            using (var db = new DochazkaDbContextFactory(_connectionString).CreateDbContext())
-            {
-                return db.Dochazka;
-            }
-           
         }
         public void Remove(EventDochazkaRemove msg)
         {
@@ -70,47 +88,43 @@ namespace Dochazka_Service.Repositories
                 db.SaveChanges();
             }           
         }
-
-        public bool Update(Dochazka update)
+        public bool Update(EventDochazkaUpdate msg)
         {
             using (var db = new DochazkaDbContextFactory(_connectionString).CreateDbContext())
             {
-            var forUpdate = db.Dochazka.FirstOrDefault(b => b.Id == update.Id);
-            forUpdate = update;
-            db.Dochazka.Update(forUpdate);
-            db.SaveChanges();
-            }           
+                var forUpdate = db.Dochazka.FirstOrDefault(b => b.Id == msg.DochazkaId);
+                forUpdate.Den = msg.Datum.Day;
+                forUpdate.DenTydne = (int)msg.Datum.DayOfWeek;
+                forUpdate.Mesic = msg.Datum.Month;
+                forUpdate.Rok = msg.Datum.Year;
+                forUpdate.Prichod = msg.Prichod;
+                forUpdate.Tick = msg.Datum.Ticks;
+                forUpdate.UzivatelId = msg.UzivatelId;
+                db.Dochazka.Update(forUpdate);
+                db.SaveChanges();
+            }
             return true;
         }
-        //Description: Zpracování zpráv získaných po přihlášení k RabbitMQ Exchange
-        public void AddMessage(string message)
-        {
-            //Description: Deserializace Json objektu na základní typ zprávy
-            var envelope = JsonConvert.DeserializeObject<EventBase>(message);
-      
+        //public Dochazka Get(int id)
+        //{
+        //    using (var db = new DochazkaDbContextFactory(_connectionString).CreateDbContext())
+        //    {
+        //        return db.Dochazka.FirstOrDefault(b => b.Id == id);
+        //    }
 
-            //Description: Rozhodnutí o typu získazné zprávy
-            switch (envelope.MessageType)
-                {
-                    case EventEnum.MessageType.DochazkaCreate:
-                    //Description: Kontrola verze zprávy 
-                    if (envelope.Version == 1) {
-                        //Description: Deserializace zprávy do správného typu a odeslání k uložení do DB; 
-                        this.Add(JsonConvert.DeserializeObject<EventDochazkaCreate>(message));
-                    }                   
-                    break;
-                case EventEnum.MessageType.DochazkaRemove:
-                    if (envelope.Version == 1)
-                    {
-                        this.Remove(JsonConvert.DeserializeObject<EventDochazkaRemove>(message));
-                    }
-                    break;
-                default:
-                        break;
-                }
+        //}
+        //public IEnumerable<Dochazka> GetList()
+        //{
+        //    using (var db = new DochazkaDbContextFactory(_connectionString).CreateDbContext())
+        //    {
+        //        return db.Dochazka;
+        //    }
 
-           
+        //}
 
-        }
+
+
+
+
     }
 }

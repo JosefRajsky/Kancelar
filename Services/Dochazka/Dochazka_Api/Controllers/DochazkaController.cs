@@ -56,41 +56,26 @@ namespace Dochazka_Api.Controllers
             }
             return dochazkaList;
         }
+
         [HttpPut]
         [Route("Add")]
-        public ActionResult<Dochazka> Add(DochazkaModel model)       {
-
-            var dochazka = new Dochazka() {
-                Rok = model.Datum.Year,
-                Mesic = model.Datum.Month,
-                Den = model.Datum.Day,
-                DenTydne =(int) model.Datum.DayOfWeek,
-                UzivatelId = model.UzivatelId,
-                Tick = model.Datum.Ticks,
-                Prichod = model.Prichod,
-            };
-
-
-            var result = _dochazkaRepository.Add(dochazka);
-            if (result == null)
-            {
-                return NotFound();
-            }
-            return result;
+        public async Task Add(DochazkaModel model)      
+        {
+            await _dochazkaRepository.Add(model);
+             //return CreatedAtRoute("GetList", new { });
         }
+
         [HttpDelete]
         [Route("Delete")]
-        public ActionResult<bool> Delete(int id)
+        public async Task Delete(int id)
         {
-           return _dochazkaRepository.Delete(Convert.ToInt32(id));   
+           await _dochazkaRepository.Delete(Convert.ToInt32(id));   
         }
         [HttpPost]
         [Route("Update")]
-        public ActionResult<bool> Update(Dochazka dochazka)
+        public async Task Update(DochazkaModel model)
         {
-            var result = _dochazkaRepository.Update(dochazka);
-           
-            return result;
+            await _dochazkaRepository.Update(model);        
         }
     }
 }

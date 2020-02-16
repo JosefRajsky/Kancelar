@@ -10,9 +10,8 @@ namespace KancelarWeb.Interfaces
     {
         IEnumerable<DochazkaModel> GetList();
         DochazkaModel Get(int id);
+        Task Add(DochazkaModel dochazka);
 
-        void Add(DochazkaModel dochazka);
-
-        void Delete(int id);
+        Task Delete(int id);
     }
 }

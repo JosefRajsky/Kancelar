@@ -8,11 +8,11 @@ namespace KancelarWeb.Interfaces
 {
     public interface IUdalostProvider
     {
-        IEnumerable<UdalostModel> GetList();
-        UdalostModel Get(int id);
+        public IEnumerable<UdalostModel> GetList();
+        public UdalostModel Get(int id);
 
-        bool Add(UdalostModel udalost);
+        public void Add(UdalostModel udalost);
 
-        bool Delete(int id);
+        public void Remove(int id);
     }
 }

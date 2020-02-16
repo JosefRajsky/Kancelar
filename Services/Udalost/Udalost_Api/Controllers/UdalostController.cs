@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Udalost_Api.Entities;
+using Udalost_Api.Models;
 using Udalost_Api.Repositories;
 
 namespace Udalost_Api.Controllers
@@ -43,29 +44,22 @@ namespace Udalost_Api.Controllers
 
         [HttpPut]
         [Route("Add")]
-        public ActionResult<Udalost> Add(Udalost udalost)
+        public async Task Add(UdalostModel model)
         {
-            var result = _udalostRepository.Add(udalost);
-            if (result == null)
-            {
-                return NotFound();
-            }
-            return result;
+            await _udalostRepository.Add(model);           
         }
 
         [HttpDelete]
         [Route("Delete")]
-        public ActionResult<bool> Delete(int id)
+        public async Task Delete(int id)
         {
-           return _udalostRepository.Delete(Convert.ToInt32(id));   
+           await _udalostRepository.Delete(Convert.ToInt32(id));   
         }
         [HttpPost]
         [Route("Update")]
-        public ActionResult<bool> Update(Udalost udalost)
+        public async Task Update(UdalostModel model)
         {
-            var result = _udalostRepository.Update(udalost);
-           
-            return result;
+            await _udalostRepository.Update(model);   
         }
     }
 }

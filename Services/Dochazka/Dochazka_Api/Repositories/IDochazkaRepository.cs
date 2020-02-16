@@ -13,11 +13,11 @@ namespace Dochazka_Api.Repositories
         public IEnumerable<Dochazka> GetList();
         public Dochazka Get(int bloId);
 
-        public Dochazka Add(Dochazka input);
+        public Task Add(DochazkaModel model);
 
-        public bool Update(Dochazka update);
+        public Task Update(DochazkaModel update);
 
-        public bool Delete(int blogId);
+        public Task Delete(int blogId);
          
 
     }

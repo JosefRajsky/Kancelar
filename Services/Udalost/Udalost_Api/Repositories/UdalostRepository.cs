@@ -1,9 +1,14 @@
 ﻿
+using CommandHandler;
+using EventLibrary;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Udalost_Api.Entities;
+using Udalost_Api.Models;
 
 namespace Udalost_Api.Repositories
 {
@@ -15,13 +20,20 @@ namespace Udalost_Api.Repositories
            
         }
 
-        public Udalost Add(Udalost input)
+        public async Task Add(UdalostModel input)
         {
-            var newUdalost = new Udalost();
-            newUdalost = input;
-            db.Add(newUdalost);
-            db.SaveChanges();
-            return newUdalost;
+            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
+            var publisher = new PublishCommand(factory, "udalost.ex");
+            var body = JsonConvert.SerializeObject(
+                   new EventUdalostCreate()
+                   {
+                       UzivatelId = input.UzivatelId,
+                       DatumOd = input.DatumOd,
+                       DatumDo = input.DatumDo,
+                       DatumZadal = DateTime.Now,
+                       Nazev = input.Nazev,
+                   });
+            await publisher.Push(body);
         }
 
         public Udalost Get(int id)
@@ -34,23 +46,36 @@ namespace Udalost_Api.Repositories
             return db.Udalosti;
         }
 
-        public bool Delete(int id)
+        public async Task Delete(int id)
         {
-            var remove = db.Udalosti.FirstOrDefault(b => b.Id == id);
-            db.Udalosti.Remove(remove);
-            db.SaveChanges();
-            return true;
+            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
+            var publisher = new PublishCommand(factory, "udalost.ex");
+            var body = JsonConvert.SerializeObject(
+                   new EventUdalostRemove()
+                   {
+                       UdalostId = id
+                   });
+            await publisher.Push(body);
+
         }
 
-        public bool Update(Udalost update)
+        public async Task Update(UdalostModel update)
         {
-            var forUpdate = db.Udalosti.FirstOrDefault(b => b.Id == update.Id);
-            forUpdate = update;
-            db.Udalosti.Update(forUpdate);
-            db.SaveChanges();
-            return true;
+            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
+            var publisher = new PublishCommand(factory, "udalost.ex");
+            var body = JsonConvert.SerializeObject(
+                   new EventUdalostUpdate()
+                   {
+                       UdalostId = update.Id,
+                       UzivatelId = update.UzivatelId,
+                       DatumOd = update.DatumOd,
+                       DatumDo = update.DatumDo,
+                       DatumZadal = DateTime.Now,
+                       Nazev = update.Nazev,
+                   }); ;
+            await publisher.Push(body);
         }
 
- 
+
     }
 }

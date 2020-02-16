@@ -27,35 +27,16 @@ namespace KancelarWeb.Controllers
           
         }
                
-        public IActionResult AddPrichod(string prichod)
+        public async Task<IActionResult> AddPrichod(string prichod)
         {
-
-            #region TEST CODE
-            for (int i = 1; i < 5; i++)
-            {
-                Random testrnd= new Random();
-
-                var test = new DochazkaModel();
-                test.UzivatelId = testrnd.Next(100, 1000);
-                test.Datum = (Convert.ToBoolean(prichod)) ? DateTime.Now.AddHours(-testrnd.Next(1, 5)) : DateTime.Now.AddHours(testrnd.Next(1, 4));
-              test.Prichod = Convert.ToBoolean(prichod);
-               test.UzivatelCeleJmeno = "Jmeno Prijmeni";
-
-                provider.Add(test);
-            }
-            #endregion
-
             Random rnd = new Random();
             var model = new DochazkaModel();
             model.UzivatelId = rnd.Next(100, 1000);
             model.Datum = (Convert.ToBoolean(prichod)) ? DateTime.Now.AddHours(-rnd.Next(1, 5)) : DateTime.Now.AddHours(rnd.Next(1, 4));
             model.Prichod = Convert.ToBoolean(prichod);
             model.UzivatelCeleJmeno = "Jmeno Prijmeni";
-            provider.Add(model);
 
-
-
-
+            await provider.Add(model);
             return RedirectToAction("Index");
         }
         public IActionResult Remove(string id)

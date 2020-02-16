@@ -17,6 +17,7 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
+
   rabbitmq:
     image: "rabbitmq:3-management"
     hostname: "rabbit"
@@ -27,6 +28,7 @@ services:
       NAME: "rabbitmq"
     volumes:
       - ./rabbitmq-isolated.conf:/etc/rabbitmq/rabbitmq.config
+
   kancelarweb:
     image: ${DOCKER_REGISTRY-}kancelarweb
     ports:
@@ -34,6 +36,30 @@ services:
     build:
       context: .
       dockerfile: Gui/KancelarWeb/Dockerfile
+
+  dochazkaservice:
+    image: ${DOCKER_REGISTRY-}dochazka_service
+    hostname: "dochazkaservice"    
+    ports:
+      - "8083:80"
+    build:
+      context: .
+      dockerfile: Services/Dochazka/Dochazka_Service/Dockerfile
+    depends_on:
+      - sqlserver
+      - rabbitmq
+
+  udalostservice:
+    image: ${DOCKER_REGISTRY-}udalost_service
+    hostname: "udalostservice"    
+    ports:
+      - "8084:80"
+    build:
+      context: .
+      dockerfile: Services/Udalost/Udalost_Service/Dockerfile
+    depends_on:
+      - sqlserver
+      - rabbitmq
 
   udalostapi:
     image: ${DOCKER_REGISTRY-}udalost_api
@@ -57,17 +83,9 @@ services:
       dockerfile: Services/Dochazka/Dochazka_Api/Dockerfile
     depends_on:
       - sqlserver
+      - rabbitmq
 
-  dochazkaservice:
-    image: ${DOCKER_REGISTRY-}dochazka_service
-    hostname: "dochazkaservice"    
-    ports:
-      - "8083:80"
-    build:
-      context: .
-      dockerfile: Services/Dochazka/Dochazka_Service/Dockerfile
-    depends_on:
-      - sqlserver
+
 
 
        

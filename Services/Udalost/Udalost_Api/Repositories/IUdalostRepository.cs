@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Udalost_Api.Entities;
+using Udalost_Api.Models;
 
 namespace Udalost_Api.Repositories
 {
@@ -12,11 +13,11 @@ namespace Udalost_Api.Repositories
         public IEnumerable<Udalost> GetList();
         public Udalost Get(int bloId);
 
-        public Udalost Add(Udalost input);
+        public Task Add(UdalostModel input);
 
-        public bool Update(Udalost update);
+        public Task Update(UdalostModel update);
 
-        public bool Delete(int blogId);
+        public Task Delete(int blogId);
          
 
     }

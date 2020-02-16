@@ -11,15 +11,14 @@ namespace Dochazka_Service.Repositories
 {
     public interface IDochazkaRepository
     {
-        public IEnumerable<Dochazka> GetList();
-        public Dochazka Get(int bloId);
 
-        public void Add(EventDochazkaCreate message);
-
-        public bool Update(Dochazka update);
-
+        public void AddMessage(string message);
+        public void Add(EventDochazkaCreate message);      
         public void Remove(EventDochazkaRemove message);
-         
+        public bool Update(EventDochazkaUpdate message);
+        //public IEnumerable<Dochazka> GetList();
+        //public Dochazka Get(int bloId);
+
 
     }
 }
