@@ -23,10 +23,10 @@ namespace Dochazka_Service.Repositories
             _connectionString = connectionString;
         }
         //-------------Description: Zpracování zpráv získaných po přihlášení k RabbitMQ Exchange
-        public void AddMessage(string message)
+        public void AddCommand(string message)
         {
             //-------------Description: Deserializace Json objektu na základní typ zprávy
-            var envelope = JsonConvert.DeserializeObject<EventBase>(message);
+            var envelope = JsonConvert.DeserializeObject<Base>(message);
 
 
             //-------------Description: Rozhodnutí o typu získazné zprávy
@@ -37,19 +37,19 @@ namespace Dochazka_Service.Repositories
                     if (envelope.Version == 1)
                     {
                         //-------------Description: Deserializace zprávy do správného typu a odeslání k uložení do DB; 
-                        this.Add(JsonConvert.DeserializeObject<EventDochazkaCreate>(message));
+                        this.Add(JsonConvert.DeserializeObject<CommandDochazkaCreate>(message));
                     }
                     break;
                 case MessageType.DochazkaRemove:
                     if (envelope.Version == 1)
                     {
-                        this.Remove(JsonConvert.DeserializeObject<EventDochazkaRemove>(message));
+                        this.Remove(JsonConvert.DeserializeObject<CommandDochazkaRemove>(message));
                     }
                     break;
                 case MessageType.DochazkaUpdate:
                     if (envelope.Version == 1)
                     {
-                        this.Update(JsonConvert.DeserializeObject<EventDochazkaUpdate>(message));
+                        this.Update(JsonConvert.DeserializeObject<CommandDochazkaUpdate>(message));
                     }
                     break;
                 default:
@@ -58,7 +58,7 @@ namespace Dochazka_Service.Repositories
             }
         }
 
-        public void Add(EventDochazkaCreate msg)
+        public void Add(CommandDochazkaCreate msg)
         {
             //-------------Description: Vytvoření entity podle obdržené zprávy
             var add = new Dochazka()
@@ -80,7 +80,7 @@ namespace Dochazka_Service.Repositories
                 db.Dispose();
             }   
         }
-        public void Remove(EventDochazkaRemove msg)
+        public void Remove(CommandDochazkaRemove msg)
         {
             using (var db = new DochazkaDbContextFactory(_connectionString).CreateDbContext())
             {
@@ -92,7 +92,7 @@ namespace Dochazka_Service.Repositories
   
             }           
         }
-        public bool Update(EventDochazkaUpdate msg)
+        public bool Update(CommandDochazkaUpdate msg)
         {
             using (var db = new DochazkaDbContextFactory(_connectionString).CreateDbContext())
             {

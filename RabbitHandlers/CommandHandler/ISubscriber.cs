@@ -7,7 +7,7 @@ using System.Text;
 
 namespace CommandHandler
 {
-    public interface IAcceptCommand
+    public interface ISubscriber
     {
         EventingBasicConsumer Start();
         public void Stop();

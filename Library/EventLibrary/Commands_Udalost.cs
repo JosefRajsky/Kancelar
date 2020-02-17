@@ -3,9 +3,9 @@ using static EventLibrary.MessageType;
 
 namespace EventLibrary
 {
-    public class EventUdalostCreate : EventBase
+    public class CommandUdalostCreate : Base
     {
-        public EventUdalostCreate()
+        public CommandUdalostCreate()
         {
             MessageType = EventLibrary.MessageType.DochazkaCreate;
             Version = 1;
@@ -18,9 +18,9 @@ namespace EventLibrary
         public DateTime DatumOd { get; set; }
         public DateTime DatumDo { get; set; }
     }
-    public class EventUdalostUpdate : EventBase
+    public class CommandUdalostUpdate : Base
     {
-        public EventUdalostUpdate()
+        public CommandUdalostUpdate()
         {
             MessageType = EventLibrary.MessageType.DochazkaUpdate;
             Version = 1;
@@ -34,9 +34,9 @@ namespace EventLibrary
         public DateTime DatumOd { get; set; }
         public DateTime DatumDo { get; set; }
     }
-    public class EventUdalostRemove : EventBase
+    public class CommandUdalostRemove : Base
     {
-        public EventUdalostRemove()
+        public CommandUdalostRemove()
         {
             MessageType = EventLibrary.MessageType.DochazkaRemove;
             Version = 1;

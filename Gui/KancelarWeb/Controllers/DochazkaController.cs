@@ -11,19 +11,16 @@ namespace KancelarWeb.Controllers
     public class DochazkaController : Controller
     {
         IDochazkaProvider provider;
-        private ResiliencyHelper _resiliencyHelper;
+        
         public DochazkaController(IDochazkaProvider baseProvider)
         {
             provider = baseProvider;
-            _resiliencyHelper = new ResiliencyHelper(provider);
+          
         }
         public async Task<IActionResult> Index()
         {
             var result = await provider.GetList();
-            if (!result.Any())
-            {
-                ViewBag.error = "Seznam je prázdný";
-            }
+           
 
             return View(result);
           
@@ -31,11 +28,7 @@ namespace KancelarWeb.Controllers
                
         public async Task<IActionResult> AddPrichod(string prichod)
         {
-            if (!ModelState.IsValid)
-            {
-                return RedirectToAction("Index");
             
-        }
             Random rnd = new Random();
             var model = new DochazkaModel();
             model.UzivatelId = rnd.Next(100, 1000);
@@ -43,25 +36,19 @@ namespace KancelarWeb.Controllers
             model.Prichod = Convert.ToBoolean(prichod);
             model.UzivatelCeleJmeno = "Jmeno Prijmeni";
 
-            var result = await provider.Add(model);
-            if (result) {               
-                return RedirectToAction("Index");
-            } 
-            else {
-                return RedirectToAction("Error","Home");
-            }
-            
+            await provider.Add(model);
+            return RedirectToAction("Index");
+          
+
+
         }
         public async Task<IActionResult> Remove(string id)
         {
-
-            return await _resiliencyHelper.ExecuteResilient(async () =>
-            {
-                var response = await provider.Delete(Convert.ToInt32(id));
+            await provider.Remove(Convert.ToInt32(id));
                 return RedirectToAction("Index");
-            }, RedirectToAction("Error", "Home"));
-
            
+
+
         }
     }
 }

@@ -22,9 +22,9 @@ namespace KancelarWeb.Controllers
             provider = baseProvider;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var result = provider.GetList();
+            var result = await provider.GetList();
             if (!result.Any())
             {
                 ViewBag.error = "Seznam je prázdný";

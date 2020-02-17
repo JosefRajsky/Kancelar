@@ -21,9 +21,9 @@ namespace Udalost_Service
                 //-------------Description: Zápis o konzumaci RabbitMq Exchange pro konzumaci publikovaných zpráv
                 //-------------Description: Název Exchange získán z konfiguračního souboru appsetting.json
                 var consumer = new ServiceCollection()
-                    .AddSingleton<IAcceptCommand>(s => new AcceptCommand(new ConnectionFactory() { HostName = "rabbitmq" }, config.GetValue<string>("Setting:Exchange")))
+                    .AddSingleton<ISubscriber>(s => new Subscriber(new ConnectionFactory() { HostName = "rabbitmq" }, config.GetValue<string>("Setting:Exchange")))
                     .BuildServiceProvider()
-                    .GetService<IAcceptCommand>()
+                    .GetService<ISubscriber>()
                     .Start();
                 consumer.Received += async (model, ea) =>
                 {
@@ -34,7 +34,7 @@ namespace Udalost_Service
                     //-------------Description: Název ConnectionString získán z konfiguračního souboru appsetting.json
                     var repository = new UdalostRepository(config.GetValue<string>("Setting:ConnectionString"));
                     //-------------Description: Odeslání zprávy do repositáře
-                   await repository.AddMessage(message);
+                   await repository.AddCommand(message);
                 };
            
         }

@@ -7,7 +7,7 @@ using RabbitMQ.Client.Events;
 
 namespace CommandHandler
 {
-    public class AcceptCommand : IAcceptCommand
+    public class Subscriber : ISubscriber
     {
         ConnectionFactory factory { get; set; }
         IConnection connection { get; set; }
@@ -43,7 +43,7 @@ namespace CommandHandler
             this.connection.Close();
         }
 
-        public AcceptCommand(ConnectionFactory connectionFactory, string exchange)
+        public Subscriber(ConnectionFactory connectionFactory, string exchange)
         {
             this._exchange = exchange;
             this.factory = connectionFactory;

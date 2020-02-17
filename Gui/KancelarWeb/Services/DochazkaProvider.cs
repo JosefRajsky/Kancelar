@@ -15,14 +15,14 @@ namespace KancelarWeb.Services
 {
     public class DochazkaProvider : IDochazkaProvider
     {
-        public string DochazkaBase = "http://dochazkaapi/Dochazka/";
+        public string baseUri = "http://dochazkaapi/Dochazka/";
         public async Task<IEnumerable<DochazkaModel>> GetList()
         {
             IEnumerable<DochazkaModel> res = new List<DochazkaModel>();
 
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(DochazkaBase);
+                client.BaseAddress = new Uri(baseUri);
                 var response = await client.GetAsync("GetList");
              
                 if (response.IsSuccessStatusCode)
@@ -40,8 +40,8 @@ namespace KancelarWeb.Services
             DochazkaModel Dochazka = new DochazkaModel();
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(DochazkaBase);
-                var response = client.GetAsync("/get?id=" + id);
+                client.BaseAddress = new Uri(baseUri);
+                var response = client.GetAsync("" + id);
                 response.Wait();
                 var result = response.Result;
                 if (result.IsSuccessStatusCode)
@@ -53,49 +53,35 @@ namespace KancelarWeb.Services
             }
             return Dochazka;
         }
-        public async Task<bool> Add(DochazkaModel model)
+        public async Task Add(DochazkaModel model)
         {
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(DochazkaBase);
-                var response = await client.PutAsJsonAsync("Add", model);
-                return response.IsSuccessStatusCode;
+                client.BaseAddress = new Uri(baseUri);
+                var response = await client.PutAsJsonAsync("", model);
+              
             }
         }
-        public async Task<bool> Delete(int id)
+        public async Task Update(DochazkaModel model)
         {
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(DochazkaBase);
-                var response = await client.DeleteAsync(string.Format("Delete?id={0}", id));
-                return response.IsSuccessStatusCode;
+                client.BaseAddress = new Uri(baseUri);
+                var response = await client.PostAsJsonAsync("", model);
+              
+            }
+        }
+        public async Task Remove(int id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(baseUri);
+                var response = await client.DeleteAsync(string.Format("", id));
+               
             }
 
-            //Odeslani Command Create
-            //var factory = new ConnectionFactory() { HostName = "rabbitmq" };
-            //var publisher = new PublishCommand(factory, "dochazka.ex");
-            //var body = JsonConvert.SerializeObject(
-            //     new EventDochazkaRemove()
-            //     {
-            //         DochazkaId = id
-            //     });
-            //publisher.Push(body);         
-
-
-
-            //using (var client = new HttpClient())
-            //{
-            //    client.BaseAddress = new Uri(DochazkaBase);
-            //    var responseTask = client.DeleteAsync(string.Format("Delete?id={0}", id));
-            //    responseTask.Wait();                
-            //    var result = responseTask.Result;
-            //    if (result.IsSuccessStatusCode)
-            //    {
-            //        return true;
-            //    }
-            //}
-            //return false;
         }
+
 
         
     }

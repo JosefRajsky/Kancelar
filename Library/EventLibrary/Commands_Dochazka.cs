@@ -3,9 +3,9 @@ using static EventLibrary.MessageType;
 
 namespace EventLibrary
 {
-    public class EventDochazkaCreate : EventBase
+    public class CommandDochazkaCreate : Base
     {
-        public EventDochazkaCreate()
+        public CommandDochazkaCreate()
         {
             MessageType = EventLibrary.MessageType.DochazkaCreate;
             Version = 1;
@@ -18,9 +18,9 @@ namespace EventLibrary
 
 
     }
-    public class EventDochazkaUpdate : EventBase
+    public class CommandDochazkaUpdate : Base
     {
-        public EventDochazkaUpdate()
+        public CommandDochazkaUpdate()
         {
             MessageType = EventLibrary.MessageType.DochazkaUpdate;
             Version = 1;
@@ -34,9 +34,9 @@ namespace EventLibrary
 
 
     }
-    public class EventDochazkaRemove : EventBase
+    public class CommandDochazkaRemove : Base
     {
-        public EventDochazkaRemove()
+        public CommandDochazkaRemove()
         {
             MessageType = EventLibrary.MessageType.DochazkaRemove;
             Version = 1;

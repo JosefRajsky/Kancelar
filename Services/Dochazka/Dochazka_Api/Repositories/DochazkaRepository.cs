@@ -16,16 +16,18 @@ namespace Dochazka_Api.Repositories
     public class DochazkaRepository : IDochazkaRepository
     {
         private readonly DochazkaDbContext db;
+        private ConnectionFactory factory;
+        private Publisher publisher;
         public DochazkaRepository(DochazkaDbContext dochazkaDbContext) {
             db = dochazkaDbContext;
-           
+            factory = new ConnectionFactory() { HostName = "rabbitmq" };
+           publisher = new Publisher(factory, "dochazka.ex");
         }
         public async Task<bool> Add(DochazkaModel input)
         {
-            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
-            var publisher = new PublishCommand(factory, "dochazka.ex");
+          
             var body = JsonConvert.SerializeObject(
-                   new EventDochazkaCreate()
+                   new CommandDochazkaCreate()
                    {
                        Prichod = input.Prichod,
                        UzivatelId = input.UzivatelId,
@@ -45,10 +47,9 @@ namespace Dochazka_Api.Repositories
         }
         public async Task<bool> Delete(int id)
         {
-            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
-            var publisher = new PublishCommand(factory, "dochazka.ex");
+          
             var body = JsonConvert.SerializeObject(
-                   new EventDochazkaRemove()
+                   new CommandDochazkaRemove()
                    {
                        DochazkaId = id
                    });
@@ -57,10 +58,9 @@ namespace Dochazka_Api.Repositories
 
         public async Task Update(DochazkaModel update)
         {
-            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
-            var publisher = new PublishCommand(factory, "dochazka.ex");
+           
             var body = JsonConvert.SerializeObject(
-                   new EventDochazkaUpdate()
+                   new CommandDochazkaUpdate()
                    {
                        DochazkaId = update.Id,
                        Prichod = update.Prichod,

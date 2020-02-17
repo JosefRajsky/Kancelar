@@ -22,9 +22,9 @@ namespace Dochazka_Service
                 //-------------Description: Zápis o konzumaci RabbitMq Exchange pro konzumaci publikovaných zpráv
                 //-------------Description: Název Exchange získán z konfiguračního souboru appsetting.json
                 var consumer = new ServiceCollection()
-                    .AddSingleton<IAcceptCommand>(s => new AcceptCommand(new ConnectionFactory() { HostName = "rabbitmq" }, config.GetValue<string>("Setting:Exchange")))
+                    .AddSingleton<ISubscriber>(s => new Subscriber(new ConnectionFactory() { HostName = "rabbitmq" }, config.GetValue<string>("Setting:Exchange")))
                     .BuildServiceProvider()
-                    .GetService<IAcceptCommand>()
+                    .GetService<ISubscriber>()
                     .Start();
                 consumer.Received += (model, ea) =>
                 {
@@ -35,7 +35,7 @@ namespace Dochazka_Service
                     //-------------Description: Název ConnectionString získán z konfiguračního souboru appsetting.json
                     var repository = new DochazkaRepository(config.GetValue<string>("Setting:ConnectionString"));
                     //-------------Description: Odeslání zprávy do repositáře
-                    repository.AddMessage(message);
+                    repository.AddCommand(message);
                 };
             }
             catch (Exception exception)

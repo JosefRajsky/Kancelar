@@ -5,7 +5,7 @@ using static EventLibrary.MessageType;
 
 namespace EventLibrary
 {
-    public class EventBase
+    public class Base
     {
         public int Id { get; set; }
         public MessageType MessageType { get; set; }

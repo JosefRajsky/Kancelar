@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Udalost_Service", "Services
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UdalostLibrary", "Library\UdalostLibrary\UdalostLibrary.csproj", "{A7DD8D94-2AC2-4E5A-B4CE-00A9635F8FDF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventStore", "Services\EventStore\EventStore.csproj", "{F4C7CBBE-2720-429F-A937-38925BD05E87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,10 @@ Global
 		{A7DD8D94-2AC2-4E5A-B4CE-00A9635F8FDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7DD8D94-2AC2-4E5A-B4CE-00A9635F8FDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7DD8D94-2AC2-4E5A-B4CE-00A9635F8FDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4C7CBBE-2720-429F-A937-38925BD05E87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4C7CBBE-2720-429F-A937-38925BD05E87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4C7CBBE-2720-429F-A937-38925BD05E87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4C7CBBE-2720-429F-A937-38925BD05E87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,6 +102,7 @@ Global
 		{8C6EDD88-C53B-45B2-9BB0-D46C5C5A307E} = {17C6D484-1F80-4161-A899-259D2DAF4B9D}
 		{760842CF-16AA-437E-8D74-EA81F2CBC21D} = {3EF95272-BE38-412B-8666-08F416A7BECE}
 		{A7DD8D94-2AC2-4E5A-B4CE-00A9635F8FDF} = {C8722B0A-7A4C-4A3D-8177-5659C881AAF0}
+		{F4C7CBBE-2720-429F-A937-38925BD05E87} = {91054B8F-6B80-49D5-B3F1-415C43CAD059}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FA02534C-DA03-44C8-9DAA-704670F31BEC}

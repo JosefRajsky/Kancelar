@@ -14,33 +14,33 @@ namespace KancelarWeb.Services
 {
     public class UdalostProvider : IUdalostProvider
     {
-        public string udalostBase = "http://udalostapi/Udalost/";
-        public IEnumerable<UdalostModel> GetList()
+        public string baseUri = "http://udalostapi/Udalost/";
+        public async Task<IEnumerable<UdalostModel>> GetList()
         {
             IEnumerable<UdalostModel> res = new List<UdalostModel>();
 
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(udalostBase);
-                var response = client.GetAsync("GetList");
-                response.Wait();
-                var result = response.Result;
-                if (result.IsSuccessStatusCode)
+                client.BaseAddress = new Uri(baseUri);
+                var response = await client.GetAsync("GetList");
+
+                if (response.IsSuccessStatusCode)
                 {
-                    var readtask = result.Content.ReadAsAsync<IList<UdalostModel>>();
+                    var readtask = response.Content.ReadAsAsync<IList<UdalostModel>>();
                     readtask.Wait();
 
                     res = readtask.Result;
                 }
             }
             return res;
+
         }
         public UdalostModel Get(int id)
         {
-            UdalostModel udalost = new UdalostModel();
+            UdalostModel Udalost = new UdalostModel();
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(udalostBase);
+                client.BaseAddress = new Uri(baseUri);
                 var response = client.GetAsync("/get?id=" + id);
                 response.Wait();
                 var result = response.Result;
@@ -48,50 +48,36 @@ namespace KancelarWeb.Services
                 {
                     var readtask = result.Content.ReadAsAsync<UdalostModel>();
                     readtask.Wait();
-                    udalost = readtask.Result;
+                    Udalost = readtask.Result;
                 }
             }
-            return udalost;
+            return Udalost;
         }
-        public void Add(UdalostModel model)
+        public async Task Add(UdalostModel model)
         {
-            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
-            var publisher = new PublishCommand(factory, "udalost.ex");
-            var body = JsonConvert.SerializeObject(
-                   new EventUdalostCreate()
-                   {
-                       UzivatelId = model.UzivatelId,
-                       DatumOd = model.DatumOd,
-                       DatumDo = model.DatumDo,
-                       DatumZadal = DateTime.Now,
-                       UdalostTypId = model.UdalostTypId,
-                       Popis = model.Popis,
-                   });
-            publisher.Push(body);
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(baseUri);
+                var response = await client.PutAsJsonAsync("Add", model);                
+            }
         }
-        public void Remove(int id)
+        public async Task Update(UdalostModel model)
         {
-            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
-            var publisher = new PublishCommand(factory, "udalost.ex");
-            var body = JsonConvert.SerializeObject(
-                 new EventUdalostRemove()
-                 {
-                    UdalostId = id
-                 });
-            publisher.Push(body);
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(baseUri);
+                var response = await client.PostAsJsonAsync("Update", model);
+            }
+        }
+        public async Task Remove(int id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(baseUri);
+                var response = await client.DeleteAsync(string.Format("Delete?id={0}", id));
+                
+            }
 
-            //using (var client = new HttpClient())
-            //{
-            //    client.BaseAddress = new Uri(udalostBase);
-            //    var responseTask = client.DeleteAsync(string.Format("Delete?id={0}", id));
-            //    responseTask.Wait();                
-            //    var result = responseTask.Result;
-            //    if (result.IsSuccessStatusCode)
-            //    {
-            //        return true;
-            //    }
-            //}
-            //return false;
         }
     }
 }

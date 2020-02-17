@@ -10,7 +10,7 @@ using RabbitMQ.Client.Events;
 
 namespace CommandHandler
 {
-    public class PublishCommand
+    public class Publisher
     {
         private ConnectionFactory _factory { get; set; }
         private IConnection _connection { get; set; }
@@ -42,7 +42,7 @@ namespace CommandHandler
             return false;
            
         }
-        public PublishCommand(ConnectionFactory connectionFactory, string exchange)
+        public Publisher(ConnectionFactory connectionFactory, string exchange)
         {
             this._exchange = exchange;
             this._factory = connectionFactory;

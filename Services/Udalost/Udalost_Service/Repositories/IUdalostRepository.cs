@@ -11,7 +11,7 @@ namespace Udalost_Service.Repositories
     public interface IUdalostRepository
     {
 
-        Task AddMessage(string message);
+        Task AddCommand(string message);
         Task Add(EventUdalostCreate message);
         Task Remove(EventUdalostRemove udalostId);
         Task Update(EventUdalostUpdate udalostId);

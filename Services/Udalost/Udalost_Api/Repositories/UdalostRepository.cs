@@ -15,15 +15,17 @@ namespace Udalost_Api.Repositories
     public class UdalostRepository : IUdalostRepository
     {
         private readonly UdalostDbContext db;
+        private ConnectionFactory factory;
+        private Publisher publisher;
+       
         public UdalostRepository(UdalostDbContext udalostDbContext) {
             db = udalostDbContext;
-           
+            factory = new ConnectionFactory() { HostName = "rabbitmq" };
+            publisher = new Publisher(factory, "udalost.ex");
         }
 
         public async Task Add(UdalostModel input)
-        {
-            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
-            var publisher = new PublishCommand(factory, "udalost.ex");
+        {         
             var body = JsonConvert.SerializeObject(
                    new EventUdalostCreate()
                    {
@@ -48,22 +50,17 @@ namespace Udalost_Api.Repositories
         }
 
         public async Task Delete(int id)
-        {
-            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
-            var publisher = new PublishCommand(factory, "udalost.ex");
+        {           
             var body = JsonConvert.SerializeObject(
                    new EventUdalostRemove()
                    {
                        UdalostId = id
                    });
             await publisher.Push(body);
-
         }
 
         public async Task Update(UdalostModel update)
-        {
-            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
-            var publisher = new PublishCommand(factory, "udalost.ex");
+        {           
             var body = JsonConvert.SerializeObject(
                    new EventUdalostUpdate()
                    {
@@ -77,7 +74,5 @@ namespace Udalost_Api.Repositories
                    }); ;
             await publisher.Push(body);
         }
-
-
     }
 }

@@ -8,11 +8,13 @@ namespace KancelarWeb.Interfaces
 {
     public interface IUdalostProvider
     {
-        public IEnumerable<UdalostModel> GetList();
-        public UdalostModel Get(int id);
+        Task<IEnumerable<UdalostModel>> GetList();
+        UdalostModel Get(int id);
 
-        public void Add(UdalostModel udalost);
+        Task Add(UdalostModel udalost);
 
-        public void Remove(int id);
+        Task Update(UdalostModel udalost);
+
+        Task Remove(int id);
     }
 }

@@ -19,31 +19,31 @@ namespace Udalost_Service.Repositories
         {
             _connectionString = connectionString;
         }
-        public async Task AddMessage(string message)
+        public async Task AddCommand(string message)
         {
             //-------------Description: Deserializace Json objektu na základní typ zprávy
-            var envelope = JsonConvert.DeserializeObject<EventBase>(message);
-            //-------------Description: Rozhodnutí o typu získazné zprávy
+            var envelope = JsonConvert.DeserializeObject<Base>(message);
+            //-------------Description: Rozhodnutí o typu získazné zprávy. Typ vázaný na Enum z knihovny
             switch (envelope.MessageType)
             {
-                case MessageType.DochazkaCreate:
+                case MessageType.UdalostCreate:
                     //-------------Description: Kontrola verze zprávy 
                     if (envelope.Version == 1)
                     {
                         //-------------Description: Deserializace zprávy do správného typu a odeslání k uložení do DB; 
-                        await this.Add(JsonConvert.DeserializeObject<EventUdalostCreate>(message));
+                        await this.Add(JsonConvert.DeserializeObject<CommandUdalostCreate>(message));
                     }
                     break;
-                case MessageType.DochazkaRemove:
+                case MessageType.UdalostRemove:
                     if (envelope.Version == 1)
                     {
-                        await this.Remove(JsonConvert.DeserializeObject<EventUdalostRemove>(message));
+                        await this.Remove(JsonConvert.DeserializeObject<CommandUdalostRemove>(message));
                     }
                     break;
-               case MessageType.DochazkaUpdate:
+               case MessageType.UdalostUpdate:
                     if (envelope.Version == 1)
                     {
-                        await this.Update(JsonConvert.DeserializeObject<EventUdalostUpdate>(message));
+                        await this.Update(JsonConvert.DeserializeObject<CommandUdalostUpdate>(message));
                     }
                     break;
       
