@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Dochazka_Service.Repositories
 {
-    public interface IDochazkaRepository
+    public interface IDochazkaServiceRepository
     {
 
         public void AddCommand(string message);

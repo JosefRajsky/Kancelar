@@ -41,7 +41,6 @@ namespace Dochazka_Api.Controllers
 
             //TODO: WORKAROUND
             var dochazkaList = new List<DochazkaModel>();
-
             foreach (var item in result)
             {
                 var dochazka = new DochazkaModel()
@@ -58,6 +57,7 @@ namespace Dochazka_Api.Controllers
         }
 
         [HttpPut]
+        //[Route("Add")]
         public async Task Add(DochazkaModel model)      
         {
         await _dochazkaRepository.Add(model);            

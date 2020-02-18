@@ -27,7 +27,7 @@ namespace Udalost_Api.Repositories
         public async Task Add(UdalostModel input)
         {         
             var body = JsonConvert.SerializeObject(
-                   new EventUdalostCreate()
+                   new CommandUdalostCreate()
                    {
                        UdalostTypId = input.UdalostTypId,
                        UzivatelId = input.UzivatelId,
@@ -52,7 +52,7 @@ namespace Udalost_Api.Repositories
         public async Task Delete(int id)
         {           
             var body = JsonConvert.SerializeObject(
-                   new EventUdalostRemove()
+                   new CommandUdalostRemove()
                    {
                        UdalostId = id
                    });
@@ -62,7 +62,7 @@ namespace Udalost_Api.Repositories
         public async Task Update(UdalostModel update)
         {           
             var body = JsonConvert.SerializeObject(
-                   new EventUdalostUpdate()
+                   new CommandUdalostUpdate()
                    {
                        UdalostId = update.Id,
                        UzivatelId = update.UzivatelId,

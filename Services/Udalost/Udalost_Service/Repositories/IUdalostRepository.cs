@@ -8,13 +8,13 @@ using Udalost_Service.Entities;
 
 namespace Udalost_Service.Repositories
 {
-    public interface IUdalostRepository
+    public interface IUdalostServiceRepository
     {
 
         Task AddCommand(string message);
-        Task Add(EventUdalostCreate message);
-        Task Remove(EventUdalostRemove udalostId);
-        Task Update(EventUdalostUpdate udalostId);
+        Task Add(CommandUdalostCreate message);
+        Task Remove(CommandUdalostRemove udalostId);
+        Task Update(CommandUdalostUpdate udalostId);
         //public IEnumerable<Udalost> GetList();
         //public Udalost Get(int bloId);
 

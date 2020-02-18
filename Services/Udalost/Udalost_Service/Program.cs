@@ -32,7 +32,7 @@ namespace Udalost_Service
                     var message = Encoding.UTF8.GetString(body);
                     //-------------Description: Vytvoření repositáře pro přístup k entitám služby.
                     //-------------Description: Název ConnectionString získán z konfiguračního souboru appsetting.json
-                    var repository = new UdalostRepository(config.GetValue<string>("Setting:ConnectionString"));
+                    var repository = new UdalostServiceRepository(config.GetValue<string>("Setting:ConnectionString"));
                     //-------------Description: Odeslání zprávy do repositáře
                    await repository.AddCommand(message);
                 };

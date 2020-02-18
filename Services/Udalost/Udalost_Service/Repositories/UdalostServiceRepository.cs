@@ -1,7 +1,9 @@
 ﻿
+using CommandHandler;
 using Dochazka_Service.Repositories;
 using EventLibrary;
 using Newtonsoft.Json;
+using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,14 +12,18 @@ using Udalost_Service.Entities;
 
 namespace Udalost_Service.Repositories
 {
-    public class UdalostRepository : IUdalostRepository
+    public class UdalostServiceRepository : IUdalostServiceRepository
     {
         private string _connectionString;
+        private ConnectionFactory factory;
+        private Publisher publisher;
 
 
-        public UdalostRepository(string connectionString)
+        public UdalostServiceRepository(string connectionString)
         {
             _connectionString = connectionString;
+            factory = new ConnectionFactory() { HostName = "rabbitmq" };
+            publisher = new Publisher(factory, config.GetValue<string>("Setting:Exchange"));
         }
         public async Task AddCommand(string message)
         {
@@ -49,7 +55,7 @@ namespace Udalost_Service.Repositories
       
             }
         }
-        public async Task Add(EventUdalostCreate msg)
+        public async Task Add(CommandUdalostCreate msg)
         {
             using (var db = new UdalostFactory(_connectionString).CreateDbContext())
             {
@@ -63,34 +69,73 @@ namespace Udalost_Service.Repositories
                     DatumZadal = msg.DatumZadal,
                 };                
                 db.Add(add);
-                await db.SaveChangesAsync();
+                var result = db.SaveChangesAsync().IsCompletedSuccessfully;
+                if (result) {
+                    var body = JsonConvert.SerializeObject(
+                     new EventUdalostCreated()
+                     {
+                         Id = add.Id,
+                         DatumOd = add.DatumOd,
+                         DatumDo = add.DatumDo,
+                         UdalostTypId = add.UdalostTypId,
+                         Popis = add.Popis,
+                         UzivatelId = add.UzivatelId,
+                         DatumZadal = msg.DatumZadal,
+                     }); ;
+                    await publisher.Push(body);
+                }
+
             }          
         }
-        public async Task Remove(EventUdalostRemove msg)
+        public async Task Remove(CommandUdalostRemove msg)
         {
             using (var db = new UdalostFactory(_connectionString).CreateDbContext())
             {
                 var remove = db.Udalosti.FirstOrDefault(b => b.Id == msg.UdalostId);
                 if (remove != null) {
                     db.Udalosti.Remove(remove);
-                    await db.SaveChangesAsync();                    
+                    var result = db.SaveChangesAsync().IsCompletedSuccessfully;
+                    if (result)
+                    {
+                        var body = JsonConvert.SerializeObject(
+                         new EventUdalostCreated()
+                         {
+                             Id = remove.Id,
+                         }); ;
+                        await publisher.Push(body);
+                    }
                 } 
             }
         }
-        public async Task Update(EventUdalostUpdate msg)
+        public async Task Update(CommandUdalostUpdate msg)
         {
             using (var db = new UdalostFactory(_connectionString).CreateDbContext())
             {
-                var forUpdate = db.Udalosti.FirstOrDefault(b => b.Id == msg.UdalostId);
-                forUpdate.DatumOd = msg.DatumOd;
-                forUpdate.DatumDo = msg.DatumDo;
-                forUpdate.UdalostTypId = msg.UdalostTypId;
-                forUpdate.Popis = msg.Popis;
-                forUpdate.UzivatelId = msg.UzivatelId;
-                forUpdate.DatumZadal = msg.DatumZadal;
-                db.Udalosti.Update(forUpdate);
-                await db.SaveChangesAsync();
-                
+                var update = db.Udalosti.FirstOrDefault(b => b.Id == msg.UdalostId);
+                update.DatumOd = msg.DatumOd;
+                update.DatumDo = msg.DatumDo;
+                update.UdalostTypId = msg.UdalostTypId;
+                update.Popis = msg.Popis;
+                update.UzivatelId = msg.UzivatelId;
+                update.DatumZadal = msg.DatumZadal;
+                db.Udalosti.Update(update);
+
+                var result = db.SaveChangesAsync().IsCompletedSuccessfully ;
+                if (result)
+                {
+                    var body = JsonConvert.SerializeObject(
+                     new EventUdalostCreated()
+                     {
+                         Id = update.Id,
+                         DatumOd = update.DatumOd,
+                         DatumDo = update.DatumDo,
+                         UdalostTypId = update.UdalostTypId,
+                         Popis = update.Popis,
+                         UzivatelId = update.UzivatelId,
+                         DatumZadal = update.DatumZadal,
+                     }); ;
+                    await publisher.Push(body);
+                }
             }
 
         }

@@ -12,15 +12,19 @@ using Udalost_Service;
 
 namespace Dochazka_Service.Repositories
 {
-    public class DochazkaRepository : IDochazkaRepository
+    public class DochazkaServiceRepository : IDochazkaServiceRepository
     {
 
         private string _connectionString;
-     
+        private ConnectionFactory factory;
+        private Publisher publisher;
 
-        public DochazkaRepository(string connectionString)
+
+        public DochazkaServiceRepository(string connectionString)
         {
             _connectionString = connectionString;
+            factory = new ConnectionFactory() { HostName = "rabbitmq" };
+            publisher = new Publisher(factory, "dochazka.ex");
         }
         //-------------Description: Zpracování zpráv získaných po přihlášení k RabbitMQ Exchange
         public void AddCommand(string message)
@@ -87,7 +91,16 @@ namespace Dochazka_Service.Repositories
                 var remove = db.Dochazka.FirstOrDefault(b => b.Id == msg.DochazkaId);
                 if (remove != null) {
                     db.Dochazka.Remove(remove);
-                    db.SaveChanges();
+                    var result = db.SaveChangesAsync().IsCompletedSuccessfully;
+                    if (result)
+                    {
+                        var body = JsonConvert.SerializeObject(
+                         new EventUdalostCreated()
+                         {
+                             Id = remove.Id,
+                         }); ;
+                        await publisher.Push(body);
+                    }
                 }
   
             }           

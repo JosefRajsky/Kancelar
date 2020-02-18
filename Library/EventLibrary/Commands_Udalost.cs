@@ -7,7 +7,7 @@ namespace EventLibrary
     {
         public CommandUdalostCreate()
         {
-            MessageType = EventLibrary.MessageType.DochazkaCreate;
+            MessageType = MessageType.UdalostCreate;
             Version = 1;
             CreatedDate = DateTime.Now;
         }
@@ -22,7 +22,7 @@ namespace EventLibrary
     {
         public CommandUdalostUpdate()
         {
-            MessageType = EventLibrary.MessageType.DochazkaUpdate;
+            MessageType =MessageType.UdalostUpdate;
             Version = 1;
             CreatedDate = DateTime.Now;
         }
@@ -38,7 +38,7 @@ namespace EventLibrary
     {
         public CommandUdalostRemove()
         {
-            MessageType = EventLibrary.MessageType.DochazkaRemove;
+            MessageType =MessageType.UdalostRemove;
             Version = 1;
             CreatedDate = DateTime.Now;
         }
