@@ -21,8 +21,8 @@ namespace Udalost_Api.Controllers
         {
             _udalostRepository = udalostService;
         }
-        [HttpGet]        
-        //[Route("Get")]
+        [HttpGet]
+        [Route("Get")]
         public ActionResult<Udalost> Get(int id)
         {
             var result = _udalostRepository.Get(id);
@@ -43,20 +43,20 @@ namespace Udalost_Api.Controllers
         }
 
         [HttpPut]
-        //[Route("Add")]
+        [Route("Add")]
         public async Task Add(UdalostModel model)
         {
             await _udalostRepository.Add(model);           
         }
 
         [HttpDelete]
-        //[Route("Delete")]
+        [Route("Delete")]
         public async Task Delete(int id)
         {
            await _udalostRepository.Delete(Convert.ToInt32(id));   
         }
         [HttpPost]
-        //[Route("Update")]
+        [Route("Update")]
         public async Task Update(UdalostModel model)
         {
             await _udalostRepository.Update(model);   

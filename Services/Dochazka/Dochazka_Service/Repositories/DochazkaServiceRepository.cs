@@ -16,15 +16,13 @@ namespace Dochazka_Service.Repositories
     {
 
         private string _connectionString;
-        private ConnectionFactory factory;
-        private Publisher publisher;
+      
 
 
         public DochazkaServiceRepository(string connectionString)
         {
             _connectionString = connectionString;
-            factory = new ConnectionFactory() { HostName = "rabbitmq" };
-            publisher = new Publisher(factory, "dochazka.ex");
+           
         }
         //-------------Description: Zpracování zpráv získaných po přihlášení k RabbitMQ Exchange
         public void AddCommand(string message)
@@ -91,16 +89,8 @@ namespace Dochazka_Service.Repositories
                 var remove = db.Dochazka.FirstOrDefault(b => b.Id == msg.DochazkaId);
                 if (remove != null) {
                     db.Dochazka.Remove(remove);
-                    var result = db.SaveChangesAsync().IsCompletedSuccessfully;
-                    if (result)
-                    {
-                        var body = JsonConvert.SerializeObject(
-                         new EventUdalostCreated()
-                         {
-                             Id = remove.Id,
-                         }); ;
-                        await publisher.Push(body);
-                    }
+                    db.SaveChanges();
+                   
                 }
   
             }           
@@ -126,22 +116,7 @@ namespace Dochazka_Service.Repositories
             }
             return false;
         }
-        //public Dochazka Get(int id)
-        //{
-        //    using (var db = new DochazkaDbContextFactory(_connectionString).CreateDbContext())
-        //    {
-        //        return db.Dochazka.FirstOrDefault(b => b.Id == id);
-        //    }
-
-        //}
-        //public IEnumerable<Dochazka> GetList()
-        //{
-        //    using (var db = new DochazkaDbContextFactory(_connectionString).CreateDbContext())
-        //    {
-        //        return db.Dochazka;
-        //    }
-
-        //}
+        
 
 
 

@@ -41,7 +41,7 @@ namespace KancelarWeb.Services
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(baseUri);
-                var response = client.GetAsync("" + id);
+                var response = client.GetAsync("Get" + id);
                 response.Wait();
                 var result = response.Result;
                 if (result.IsSuccessStatusCode)
@@ -58,7 +58,7 @@ namespace KancelarWeb.Services
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(baseUri);
-                var response = await client.PutAsJsonAsync("", model);
+                var response = await client.PutAsJsonAsync("Add", model);
               
             }
         }
@@ -67,7 +67,7 @@ namespace KancelarWeb.Services
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(baseUri);
-                var response = await client.PostAsJsonAsync("", model);
+                var response = await client.PostAsJsonAsync("Update", model);
               
             }
         }
@@ -76,7 +76,7 @@ namespace KancelarWeb.Services
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(baseUri);
-                var response = await client.DeleteAsync(string.Format("", id));
+                var response = await client.DeleteAsync(string.Format("Remove", id));
                
             }
 

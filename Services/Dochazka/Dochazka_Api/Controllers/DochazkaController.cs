@@ -20,8 +20,8 @@ namespace Dochazka_Api.Controllers
         {
             _dochazkaRepository = dochazkaService;
         }
-        [HttpGet]        
-        //[Route("Get")]
+        [HttpGet]
+        [Route("Get")]
         public ActionResult<Dochazka> Get(int id)
         {
             var result = _dochazkaRepository.Get(id);
@@ -57,20 +57,20 @@ namespace Dochazka_Api.Controllers
         }
 
         [HttpPut]
-        //[Route("Add")]
+        [Route("Add")]
         public async Task Add(DochazkaModel model)      
         {
         await _dochazkaRepository.Add(model);            
         }
 
         [HttpDelete]
-        //[Route("Delete")]
+        [Route("Remove")]
         public async Task Delete(int id)
         {
-           await _dochazkaRepository.Delete(Convert.ToInt32(id));   
+           await _dochazkaRepository.Remove(Convert.ToInt32(id));   
         }
         [HttpPost]
-        //[Route("Update")]
+        [Route("Update")]
         public async Task Update(DochazkaModel model)
         {
             await _dochazkaRepository.Update(model);        

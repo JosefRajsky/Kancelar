@@ -25,7 +25,7 @@ namespace Udalost_Service
                     .BuildServiceProvider()
                     .GetService<ISubscriber>()
                     .Start();
-                consumer.Received += async (model, ea) =>
+                consumer.Received += (model, ea) =>
                 {
                     //-------------Description: Formátování přijaté zprávy
                     var body = ea.Body;
@@ -34,7 +34,7 @@ namespace Udalost_Service
                     //-------------Description: Název ConnectionString získán z konfiguračního souboru appsetting.json
                     var repository = new UdalostServiceRepository(config.GetValue<string>("Setting:ConnectionString"));
                     //-------------Description: Odeslání zprávy do repositáře
-                   await repository.AddCommand(message);
+                  repository.AddCommand(message);
                 };
            
         }

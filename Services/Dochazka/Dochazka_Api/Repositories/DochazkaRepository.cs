@@ -45,7 +45,7 @@ namespace Dochazka_Api.Repositories
         {
             return db.Dochazka;
         }
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Remove(int id)
         {
           
             var body = JsonConvert.SerializeObject(
