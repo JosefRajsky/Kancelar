@@ -15,6 +15,7 @@ namespace CommandHandler
         string _exchange { get; set; }
         public EventingBasicConsumer Start()
         {
+            
             _channel.ExchangeDeclare(exchange: _exchange, type: ExchangeType.Fanout);
      
                 _channel.BasicPublish(

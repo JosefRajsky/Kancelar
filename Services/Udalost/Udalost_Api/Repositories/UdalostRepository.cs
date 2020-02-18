@@ -14,18 +14,16 @@ namespace Udalost_Api.Repositories
 {
     public class UdalostRepository : IUdalostRepository
     {
-        private readonly UdalostDbContext db;
-        private ConnectionFactory factory;
+        private readonly UdalostDbContext db;        
         private Publisher publisher;
        
-        public UdalostRepository(UdalostDbContext udalostDbContext) {
+        public UdalostRepository(UdalostDbContext udalostDbContext, Publisher _publisher) {
             db = udalostDbContext;
-            factory = new ConnectionFactory() { HostName = "rabbitmq" };
-            publisher = new Publisher(factory, "udalost.ex");
-        }
+            publisher = _publisher;
+    }
 
         public async Task Add(UdalostModel input)
-        {         
+        {
             var body = JsonConvert.SerializeObject(
                    new CommandUdalostCreate()
                    {

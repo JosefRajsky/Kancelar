@@ -16,22 +16,23 @@ namespace CommandHandler
         private IConnection _connection { get; set; }
         private IModel _channel { get; set; }
         private string _exchange { get; set; }
+        private string _queue { get; set; }
         public async Task<bool> Push(string message) {
             try
             {
                 await Task.Run(() =>
                 {
                     var body = Encoding.UTF8.GetBytes(message);
-                    _channel.ExchangeDeclare(_exchange, ExchangeType.Fanout);
+                    
                     _channel.BasicPublish(
                          exchange: _exchange,
                          routingKey: "",
                          basicProperties: null,
                          body: body);
-                    var queueName = _channel.QueueDeclare().QueueName;
-                    _channel.QueueBind(queue: queueName,
-                                  exchange: _exchange,
-                                  routingKey: "");
+                    //var queueName = _channel.QueueDeclare(_queue).QueueName;
+                    //_channel.QueueBind(queue: queueName,
+                    //              exchange: _exchange,
+                    //              routingKey: "");
                     return true;
                 });
             }
@@ -42,13 +43,14 @@ namespace CommandHandler
             return false;
            
         }
-        public Publisher(ConnectionFactory connectionFactory, string exchange)
+        public Publisher(ConnectionFactory connectionFactory, string exchange,string queue)
         {
             this._exchange = exchange;
+            this._queue = queue;
             this._factory = connectionFactory;
             this._connection = _factory.CreateConnection();
             this._channel = _connection.CreateModel();
-
+            _channel.ExchangeDeclare(_exchange, ExchangeType.Fanout);
 
         }
 

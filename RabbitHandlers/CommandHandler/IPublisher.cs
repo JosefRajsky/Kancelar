@@ -11,5 +11,7 @@ namespace CommandHandler
     public interface IPublisher
     {
         Task<bool> Push(string message);
+
+        EventingBasicConsumer Start();
     }
 }

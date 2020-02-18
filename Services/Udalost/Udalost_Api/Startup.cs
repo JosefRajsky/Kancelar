@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CommandHandler;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -9,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RabbitMQ.Client;
 using Udalost_Api.Repositories;
 
 namespace Udalost_Api
@@ -24,7 +26,9 @@ namespace Udalost_Api
         public IConfiguration Configuration { get; }
         public void ConfigureServices(IServiceCollection services)
         {
+            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
             services.AddTransient<IUdalostRepository, UdalostRepository>();
+            services.AddSingleton<Publisher>(s => new Publisher(factory, "udalost.ex","udalost.q"));
             services.AddDbContext<UdalostDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
             services.AddControllers();
 

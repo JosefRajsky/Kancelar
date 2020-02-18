@@ -16,12 +16,13 @@ namespace Dochazka_Api.Repositories
     public class DochazkaRepository : IDochazkaRepository
     {
         private readonly DochazkaDbContext db;
-        private ConnectionFactory factory;
-        private Publisher publisher;
-        public DochazkaRepository(DochazkaDbContext dochazkaDbContext) {
+        //private ConnectionFactory factory;
+        private Publisher _publisher;
+        public DochazkaRepository(DochazkaDbContext dochazkaDbContext, Publisher publisher) {
             db = dochazkaDbContext;
-            factory = new ConnectionFactory() { HostName = "rabbitmq" };
-           publisher = new Publisher(factory, "dochazka.ex");
+            _publisher = publisher;
+           // factory = new ConnectionFactory() { HostName = "rabbitmq" };
+           //publisher = new Publisher(factory, "dochazka.ex");
         }
         public async Task<bool> Add(DochazkaModel input)
         {
@@ -34,7 +35,8 @@ namespace Dochazka_Api.Repositories
                        CteckaId = input.CteckaId,
                        Datum = DateTime.Now,
                    });     
-            return await publisher.Push(body);
+
+            return await _publisher.Push(body);
         }
 
         public Dochazka Get(int id)
@@ -53,7 +55,7 @@ namespace Dochazka_Api.Repositories
                    {
                        DochazkaId = id
                    });
-            return await publisher.Push(body);
+            return await _publisher.Push(body);
         }
 
         public async Task Update(DochazkaModel update)
@@ -68,7 +70,7 @@ namespace Dochazka_Api.Repositories
                        CteckaId = update.CteckaId,
                        Datum = DateTime.Now,
                    }) ;            
-            await publisher.Push(body);
+            await _publisher.Push(body);
         }
 
  
