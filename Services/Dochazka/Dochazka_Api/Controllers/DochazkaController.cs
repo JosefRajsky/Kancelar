@@ -6,7 +6,7 @@ using Dochazka_Api.Entities;
 using Dochazka_Api.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using Newtonsoft.Json;
 
 namespace Dochazka_Api.Controllers
 {
@@ -33,10 +33,10 @@ namespace Dochazka_Api.Controllers
         }
         [HttpGet]
         [Route("GetList")]
-        public ActionResult<List<DochazkaModel>> List() {
+        public string List() {
             var result = _dochazkaRepository.GetList().ToList();
             if (result == null || !result.Any()){
-                return NotFound();
+                return string.Empty;
             }
 
             //TODO: WORKAROUND
@@ -53,7 +53,7 @@ namespace Dochazka_Api.Controllers
                 };
                 dochazkaList.Add(dochazka);
             }
-            return dochazkaList;
+            return JsonConvert.SerializeObject(dochazkaList);
         }
 
         [HttpPut]

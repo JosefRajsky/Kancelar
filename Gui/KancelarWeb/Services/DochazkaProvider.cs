@@ -1,5 +1,7 @@
 ﻿using KancelarWeb.Interfaces;
 using KancelarWeb.Models;
+using Microsoft.AspNetCore.Blazor;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -10,63 +12,46 @@ namespace KancelarWeb.Services
     public class DochazkaProvider : IDochazkaProvider
     {
         public string baseUri = "http://dochazkaapi/Dochazka/";
-        public async Task<IEnumerable<DochazkaModel>> GetList()
+        public async Task<List<DochazkaModel>> GetList()
         {
-           
-                IEnumerable<DochazkaModel> result = new List<DochazkaModel>();
+            IEnumerable<UdalostModel> res = new List<UdalostModel>();
 
-                using (var client = new HttpClient())
-            {
-                await Task.Run(() =>
-                {
-                    client.BaseAddress = new Uri(baseUri);
-                    var response = client.GetAsync("GetList").Result; 
-
-               
-                        var readtask = response.Content.ReadAsAsync<IList<DochazkaModel>>();
-                       
-
-                        result = readtask.Result;
-                   
-                });
-                    return result;
-               
-            }
-         
-        }
-        public DochazkaModel Get(int id)
-        {
-            DochazkaModel Dochazka = new DochazkaModel();
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(baseUri);
-                var response = client.GetAsync("Get" + id);
-                response.Wait();
-                var result = response.Result;
-                if (result.IsSuccessStatusCode)
+                var response = await client.GetAsync("GetList");
+            
+                if (response != null)
                 {
-                    var readtask = result.Content.ReadAsAsync<DochazkaModel>();
-                    readtask.Wait();
-                    Dochazka = readtask.Result;
+                    var jsonString =await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<List<DochazkaModel>>(jsonString);
                 }
             }
-            return Dochazka;
+            return null;
+        
         }
-        public async Task Add(DochazkaModel model)
+        public T Get<T>(int id)
+        {
+            var client = new HttpClient();
+            client.BaseAddress = new Uri(baseUri);
+            object result = client.GetJsonAsync<T>(string.Format("Get/{0}",id));
+            return (T)(object)result;
+        }
+        public async Task Add<T>(T model)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(baseUri);
-                 await client.PutAsJsonAsync("Add", model); 
+                await client.PutAsJsonAsync("Add", model);
             }
         }
-        public async Task Update(DochazkaModel model)
+        public async Task Update<T>(T model)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(baseUri);
-                var response = await client.PostAsJsonAsync("Update", model);
-              
+                await client.PostAsJsonAsync("Update", model);
+
             }
         }
         public async Task Remove(int id)
@@ -74,13 +59,12 @@ namespace KancelarWeb.Services
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(baseUri);
-                var response = await client.DeleteAsync(string.Format("Remove?id={0}", id));
-               
+                await client.DeleteAsync(string.Format("Remove/{0}", id));
+
             }
 
         }
 
 
-        
     }
 }

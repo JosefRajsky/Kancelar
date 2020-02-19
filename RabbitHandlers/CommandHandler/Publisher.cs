@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using EventLibrary;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Exceptions;
 
 namespace CommandHandler
 {
@@ -42,7 +44,17 @@ namespace CommandHandler
             this._exchange = exchange;
             this._queue = queue;
             this._factory = connectionFactory;
-            this._connection = _factory.CreateConnection();
+            this._factory.AutomaticRecoveryEnabled = true;
+            this._factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(5);
+            try
+            {
+                this._connection = _factory.CreateConnection();
+            }
+            catch (BrokerUnreachableException e)
+            {
+                Thread.Sleep(5000);
+                this._connection = _factory.CreateConnection();
+            }
             this._channel = _connection.CreateModel();
             _channel.ExchangeDeclare(_exchange, ExchangeType.Fanout);
 

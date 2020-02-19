@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using KancelarWeb.Interfaces;
 using KancelarWeb.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace KancelarWeb.Controllers
 {
@@ -19,10 +20,16 @@ namespace KancelarWeb.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var result = await provider.GetList();
-           
+            var response =await provider.GetList();
 
-            return View(result);
+            var model = new List<DochazkaModel>();
+            if (response == null)
+            {
+                return View(model);
+            }           
+            model.AddRange(response);
+
+            return View(model);
           
         }
                

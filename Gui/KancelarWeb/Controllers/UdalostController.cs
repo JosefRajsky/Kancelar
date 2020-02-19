@@ -50,6 +50,13 @@ namespace KancelarWeb.Controllers
             
             return RedirectToAction("Index");
         }
+        [HttpPost]
+        public IActionResult Update(UdalostModel model)
+        {
+            provider.Update(model);
+
+            return RedirectToAction("Index");
+        }
         public IActionResult Remove(string id)
         {
             provider.Remove(Convert.ToInt32(id));
