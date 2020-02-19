@@ -2,29 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Dochazka_Api.Entities;
-using Dochazka_Api.Repositories;
+using Web_Api.Entities;
+using Web_Api.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace Dochazka_Api.Controllers
+namespace Web_Api.Controllers
 {
     
     [ApiController]
     [Route("[controller]")]
-    public class DochazkaController : ControllerBase
+    public class ApiDochazkaController : ControllerBase
     {
-        private readonly IDochazkaRepository _dochazkaRepository;
-        public DochazkaController(IDochazkaRepository dochazkaService)
+        private readonly IApiDochazkaRepository repository;
+        public ApiDochazkaController(IApiDochazkaRepository dochazkaService)
         {
-            _dochazkaRepository = dochazkaService;
+            repository = dochazkaService;
         }
         [HttpGet]
         [Route("Get")]
         public ActionResult<Dochazka> Get(int id)
         {
-            var result = _dochazkaRepository.Get(id.ToString());
+            var result = repository.Get(id.ToString());
             if (result == null)
             {
                 return NotFound();
@@ -34,7 +34,10 @@ namespace Dochazka_Api.Controllers
         [HttpGet]
         [Route("GetList")]
         public string GetList() {
-            var result = _dochazkaRepository.GetList().ToList();         
+            var result = repository.GetList().ToList();
+            if (result == null || !result.Any()){
+                return string.Empty;
+            }
 
             //TODO: WORKAROUND
             var dochazkaList = new List<DochazkaModel>();
@@ -57,20 +60,20 @@ namespace Dochazka_Api.Controllers
         [Route("Add")]
         public async Task Add(DochazkaModel model)      
         {
-        await _dochazkaRepository.Add(model);            
+        await repository.Add(model);            
         }
 
         [HttpDelete]
         [Route("Remove")]
         public async Task Delete(string id)
         {
-           await _dochazkaRepository.Remove(id);   
+           await repository.Remove(id);   
         }
         [HttpPost]
         [Route("Update")]
         public async Task Update(DochazkaModel model)
         {
-            await _dochazkaRepository.Update(model);        
+            await repository.Update(model);        
         }
     }
 }

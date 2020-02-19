@@ -27,17 +27,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Library", "Library", "{C872
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dochazka_Service", "Services\Dochazka\Dochazka_Service\Dochazka_Service.csproj", "{4630862B-1FA6-4E36-9468-42102B3BD182}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventLibrary", "Library\EventLibrary\EventLibrary.csproj", "{87168ECD-E203-4A52-BE90-24AFA8929A4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventLibrary", "Library\EventLibrary\EventLibrary.csproj", "{87168ECD-E203-4A52-BE90-24AFA8929A4A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RabbitHandlers", "RabbitHandlers", "{17C6D484-1F80-4161-A899-259D2DAF4B9D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommandHandler", "RabbitHandlers\CommandHandler\CommandHandler.csproj", "{8C6EDD88-C53B-45B2-9BB0-D46C5C5A307E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Udalost_Service", "Services\Udalost\Udalost_Service\Udalost_Service.csproj", "{760842CF-16AA-437E-8D74-EA81F2CBC21D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Udalost_Service", "Services\Udalost\Udalost_Service\Udalost_Service.csproj", "{760842CF-16AA-437E-8D74-EA81F2CBC21D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UdalostLibrary", "Library\UdalostLibrary\UdalostLibrary.csproj", "{A7DD8D94-2AC2-4E5A-B4CE-00A9635F8FDF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UdalostLibrary", "Library\UdalostLibrary\UdalostLibrary.csproj", "{A7DD8D94-2AC2-4E5A-B4CE-00A9635F8FDF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventStore", "Services\EventStore\EventStore.csproj", "{F4C7CBBE-2720-429F-A937-38925BD05E87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventStore", "Services\EventStore\EventStore.csproj", "{F4C7CBBE-2720-429F-A937-38925BD05E87}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{63E4C573-2E0D-405C-924C-1B76529200B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web_Api", "Api\Web_Api\Web_Api.csproj", "{731F0BB8-E318-4755-B827-41BEBAB6AF79}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,6 +89,10 @@ Global
 		{F4C7CBBE-2720-429F-A937-38925BD05E87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4C7CBBE-2720-429F-A937-38925BD05E87}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4C7CBBE-2720-429F-A937-38925BD05E87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{731F0BB8-E318-4755-B827-41BEBAB6AF79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{731F0BB8-E318-4755-B827-41BEBAB6AF79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{731F0BB8-E318-4755-B827-41BEBAB6AF79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{731F0BB8-E318-4755-B827-41BEBAB6AF79}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -103,6 +111,7 @@ Global
 		{760842CF-16AA-437E-8D74-EA81F2CBC21D} = {3EF95272-BE38-412B-8666-08F416A7BECE}
 		{A7DD8D94-2AC2-4E5A-B4CE-00A9635F8FDF} = {C8722B0A-7A4C-4A3D-8177-5659C881AAF0}
 		{F4C7CBBE-2720-429F-A937-38925BD05E87} = {91054B8F-6B80-49D5-B3F1-415C43CAD059}
+		{731F0BB8-E318-4755-B827-41BEBAB6AF79} = {63E4C573-2E0D-405C-924C-1B76529200B0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FA02534C-DA03-44C8-9DAA-704670F31BEC}
