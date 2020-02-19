@@ -24,7 +24,7 @@ namespace Dochazka_Api.Controllers
         [Route("Get")]
         public ActionResult<Dochazka> Get(int id)
         {
-            var result = _dochazkaRepository.Get(id);
+            var result = _dochazkaRepository.Get(id.ToString());
             if (result == null)
             {
                 return NotFound();
@@ -65,9 +65,9 @@ namespace Dochazka_Api.Controllers
 
         [HttpDelete]
         [Route("Remove")]
-        public async Task Delete(int id)
+        public async Task Delete(string id)
         {
-           await _dochazkaRepository.Remove(Convert.ToInt32(id));   
+           await _dochazkaRepository.Remove(id);   
         }
         [HttpPost]
         [Route("Update")]

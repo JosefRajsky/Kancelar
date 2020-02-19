@@ -37,6 +37,7 @@ namespace KancelarWeb.Controllers
             model.UzivatelCeleJmeno = "Jmeno Prijmeni";
 
             await provider.Add(model);
+            
             return RedirectToAction("Index");
           
 

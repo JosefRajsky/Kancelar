@@ -1,14 +1,8 @@
-﻿using CommandHandler;
-using EventLibrary;
-using KancelarWeb.Interfaces;
+﻿using KancelarWeb.Interfaces;
 using KancelarWeb.Models;
-using Newtonsoft.Json;
-using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace KancelarWeb.Services
@@ -18,22 +12,27 @@ namespace KancelarWeb.Services
         public string baseUri = "http://dochazkaapi/Dochazka/";
         public async Task<IEnumerable<DochazkaModel>> GetList()
         {
-            IEnumerable<DochazkaModel> res = new List<DochazkaModel>();
+           
+                IEnumerable<DochazkaModel> result = new List<DochazkaModel>();
 
-            using (var client = new HttpClient())
+                using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(baseUri);
-                var response = await client.GetAsync("GetList");
-             
-                if (response.IsSuccessStatusCode)
+                await Task.Run(() =>
                 {
-                    var readtask = response.Content.ReadAsAsync<IList<DochazkaModel>>();
-                    readtask.Wait();
+                    client.BaseAddress = new Uri(baseUri);
+                    var response = client.GetAsync("GetList").Result; 
 
-                    res = readtask.Result;
-                }
+               
+                        var readtask = response.Content.ReadAsAsync<IList<DochazkaModel>>();
+                       
+
+                        result = readtask.Result;
+                   
+                });
+                    return result;
+               
             }
-            return res;
+         
         }
         public DochazkaModel Get(int id)
         {
@@ -58,8 +57,7 @@ namespace KancelarWeb.Services
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(baseUri);
-                var response = await client.PutAsJsonAsync("Add", model);
-              
+                 await client.PutAsJsonAsync("Add", model); 
             }
         }
         public async Task Update(DochazkaModel model)
@@ -76,7 +74,7 @@ namespace KancelarWeb.Services
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(baseUri);
-                var response = await client.DeleteAsync(string.Format("Remove", id));
+                var response = await client.DeleteAsync(string.Format("Remove?id={0}", id));
                
             }
 

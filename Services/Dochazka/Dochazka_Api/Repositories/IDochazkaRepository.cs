@@ -11,13 +11,13 @@ namespace Dochazka_Api.Repositories
     public interface IDochazkaRepository
     {
         public IEnumerable<Dochazka> GetList();
-        public Dochazka Get(int bloId);
+        public Dochazka Get(string id);
 
-        public Task<bool> Add(DochazkaModel model);
+        public Task Add(DochazkaModel model);
 
         public Task Update(DochazkaModel update);
 
-        public Task<bool> Remove(int Id);
+        public Task Remove(string id);
          
 
     }

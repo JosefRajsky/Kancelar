@@ -17,14 +17,13 @@ namespace CommandHandler
         private IModel _channel { get; set; }
         private string _exchange { get; set; }
         private string _queue { get; set; }
-        public async Task<bool> Push(string message) {
-            try
-            {
+        public async Task Push(string message) {
+           
                 await Task.Run(() =>
                 {
                     var body = Encoding.UTF8.GetBytes(message);
                     
-                    _channel.BasicPublish(
+                  _channel.BasicPublish(
                          exchange: _exchange,
                          routingKey: "",
                          basicProperties: null,
@@ -33,14 +32,9 @@ namespace CommandHandler
                     //_channel.QueueBind(queue: queueName,
                     //              exchange: _exchange,
                     //              routingKey: "");
-                    return true;
+                   
                 });
-            }
-            catch (Exception e)
-            {
-                throw e;          
-            }
-            return false;
+          
            
         }
         public Publisher(ConnectionFactory connectionFactory, string exchange,string queue)
