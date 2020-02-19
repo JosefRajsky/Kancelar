@@ -25,20 +25,14 @@ namespace Udalost_Api.Controllers
         [Route("Get")]
         public ActionResult<Udalost> Get(int id)
         {
-            var result = _udalostRepository.Get(id);
-            if (result == null)
-            {
-                return NotFound();
-            }
+            var result = _udalostRepository.Get(id);          
             return result;
         }
         [HttpGet]
         [Route("GetList")]
         public ActionResult<List<Udalost>> GetList() {
             var result = _udalostRepository.GetList().ToList();
-            if (result == null || !result.Any()){
-                return NotFound();
-            }
+            
             return result;
         }
 

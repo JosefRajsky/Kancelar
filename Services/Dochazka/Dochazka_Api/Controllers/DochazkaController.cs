@@ -33,7 +33,7 @@ namespace Dochazka_Api.Controllers
         }
         [HttpGet]
         [Route("GetList")]
-        public string List() {
+        public string GetList() {
             var result = _dochazkaRepository.GetList().ToList();
             if (result == null || !result.Any()){
                 return string.Empty;

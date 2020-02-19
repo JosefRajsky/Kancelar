@@ -11,26 +11,45 @@ using KancelarWeb.Models;
 using KancelarWeb.Services;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using UdalostLibrary;
+using Newtonsoft.Json.Linq;
 
 namespace KancelarWeb.Controllers
 {
     public class UdalostController : Controller
     {
-        IUdalostProvider provider;
-        public UdalostController(IUdalostProvider baseProvider)
+        IApiProvider provider;
+        string defaultBaseUri;
+
+        public UdalostController(IApiProvider apiProvider)
         {
-            provider = baseProvider;
+            provider = apiProvider;
+            defaultBaseUri = "http://udalostapi/udalost/";
         }
 
         public async Task<IActionResult> Index()
         {
-            var result = await provider.GetList();
-            if (!result.Any())
-            {
-                ViewBag.error = "Seznam je prázdný";
-            }
 
-            return View(result);
+            var response = await provider.List<string>(defaultBaseUri);
+            var model = new List<UdalostModel>();
+            if (response == null)
+            {
+                return View(model);
+            }
+            var result = JsonConvert.DeserializeObject<List<UdalostModel>>(response.ToString());
+            model.AddRange(result);
+            return View(model);
+        }
+        public async Task<IActionResult> Detail(int id)
+        {
+            var response = await provider.Get<string>(id, defaultBaseUri);
+            var model = new DochazkaModel();
+            if (response == null)
+            {
+                return View(model);
+            }
+            var result = JsonConvert.DeserializeObject<DochazkaModel>(response.ToString());
+            model = result;
+            return View(model);
         }
         public IActionResult Edit()
         {
@@ -46,20 +65,20 @@ namespace KancelarWeb.Controllers
         [HttpPost]
         public IActionResult Add(UdalostModel model)
         {
-            provider.Add(model);
-            
+            provider.Add(model, defaultBaseUri);
+
             return RedirectToAction("Index");
         }
         [HttpPost]
         public IActionResult Update(UdalostModel model)
         {
-            provider.Update(model);
+            provider.Update(model, defaultBaseUri);
 
             return RedirectToAction("Index");
         }
-        public IActionResult Remove(string id)
+        public async Task<IActionResult> Remove(string id)
         {
-            provider.Remove(Convert.ToInt32(id));
+            await provider.Remove(Convert.ToInt32(id), defaultBaseUri);
             return RedirectToAction("Index");
         }
     }
