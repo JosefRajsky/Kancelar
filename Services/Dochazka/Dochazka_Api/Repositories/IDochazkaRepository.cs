@@ -10,10 +10,10 @@ namespace Dochazka_Api.Repositories
 {
     public interface IDochazkaRepository
     {
-        public IEnumerable<Dochazka> GetList();
+        public List<Dochazka> GetList();
         public Dochazka Get(string id);
 
-        public Task Add(DochazkaModel model);
+        public Task Add(string model);
 
         public Task Update(DochazkaModel update);
 

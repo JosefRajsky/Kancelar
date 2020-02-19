@@ -1,5 +1,5 @@
 ﻿using KancelarWeb.Interfaces;
-using KancelarWeb.Models;
+using KancelarWeb.ViewModels;
 using Microsoft.AspNetCore.Blazor;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -11,7 +11,11 @@ using System.Threading.Tasks;
 namespace KancelarWeb.Services
 {
     public class ApiProvider : IApiProvider
-    {             
+    {
+        private string _apiUri;
+        public ApiProvider() {
+            _apiUri = "http://webapi/";
+        }
         public async Task<T> _convertResponse<T>(HttpResponseMessage response) {
             if (response != null)
             {
@@ -20,34 +24,42 @@ namespace KancelarWeb.Services
             }
             return (T)(object)string.Empty;
         }
-        public async Task<T> List<T>(string baseUri)
+        public async Task<T> List<T>(string controller)
         {           
-                var client = new HttpClient();           
-                client.BaseAddress = new Uri(baseUri);               
+                var client = new HttpClient();
+                var host = string.Format("{0}{1}/", _apiUri, controller);
+                client.BaseAddress = new Uri(host);
+           
+
                return await _convertResponse<T>(await client.GetAsync("GetList"));    
         }
-        public async Task<T> Get<T>(int id, string baseUri)
+        public async Task<T> Get<T>(int id, string controller)
         {
             var client = new HttpClient();
-            client.BaseAddress = new Uri(baseUri);
+            var host = string.Format("{0}{1}/", _apiUri, controller);
+            client.BaseAddress = new Uri(host);
             return await _convertResponse<T>(await client.GetAsync(string.Format("Get/{0}", id)));            
         }
-        public async Task Add<T>(T model, string baseUri)
+        public async Task Add<T>(T model, string controller)
         {
-                var client = new HttpClient();           
-                client.BaseAddress = new Uri(baseUri);
-                await client.PutAsJsonAsync("Add", model);          
+                var client = new HttpClient();
+            var host = string.Format("{0}{1}/", _apiUri, controller);
+            client.BaseAddress = new Uri(host);
+            //await client.PostAsJsonAsync("Add", model);          
+            await client.PostAsJsonAsync<T>("Add", model);          
         }
-        public async Task Update<T>(T model, string baseUri)
+        public async Task Update<T>(T model, string controller)
         {
             var client = new HttpClient();
-            client.BaseAddress = new Uri(baseUri);
-            await client.PostAsJsonAsync("Update", model);
+            var host = string.Format("{0}{1}/", _apiUri, controller);
+            client.BaseAddress = new Uri(host);
+            await client.PutAsJsonAsync("Update", model);
         }
-        public async Task Remove(int id, string baseUri)
+        public async Task Remove(int id, string controller)
         {
-            var client = new HttpClient();          
-            client.BaseAddress = new Uri(baseUri);
+            var client = new HttpClient();
+            var host = string.Format("{0}{1}/", _apiUri, controller);
+            client.BaseAddress = new Uri(host);
             await client.DeleteAsync(string.Format("Remove/{0}", id));
         }
 

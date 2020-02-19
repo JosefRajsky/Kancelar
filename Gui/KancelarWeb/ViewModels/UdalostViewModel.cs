@@ -9,9 +9,10 @@ using System.Threading.Tasks;
 
 using UdalostLibrary;
 
-namespace KancelarWeb.Models
+namespace KancelarWeb.ViewModels
+
 {
-    public class UdalostModel
+    public class UdalostViewModel
     {
         public int Id { get; set; }
         

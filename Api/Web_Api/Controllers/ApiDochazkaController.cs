@@ -1,79 +1,62 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
-using Web_Api.Entities;
-using Web_Api.Repositories;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-
 namespace Web_Api.Controllers
-{
-    
+{    
     [ApiController]
     [Route("[controller]")]
     public class ApiDochazkaController : ControllerBase
     {
-        private readonly IApiDochazkaRepository repository;
-        public ApiDochazkaController(IApiDochazkaRepository dochazkaService)
+        string _BaseUrl;
+        public ApiDochazkaController()
         {
-            repository = dochazkaService;
+            _BaseUrl = "http://dochazkaapi/dochazka/";
         }
         [HttpGet]
         [Route("Get")]
-        public ActionResult<Dochazka> Get(int id)
+        public T Get<T>(int id)
         {
-            var result = repository.Get(id.ToString());
-            if (result == null)
-            {
-                return NotFound();
-            }
-            return result;
+            var client = new HttpClient();           
+            client.BaseAddress = new Uri(_BaseUrl);
+            return (T)(object)client.GetAsync(string.Format("Get/{0}",id));
+
         }
         [HttpGet]
         [Route("GetList")]
-        public string GetList() {
-            var result = repository.GetList().ToList();
-            if (result == null || !result.Any()){
-                return string.Empty;
-            }
-
-            //TODO: WORKAROUND
-            var dochazkaList = new List<DochazkaModel>();
-            foreach (var item in result)
+        public async Task<string> GetListAsync() {
+            var client = new HttpClient
             {
-                var dochazka = new DochazkaModel()
-                {
-                    Id = item.Id,
-                    Prichod = item.Prichod,
-                    Datum = new DateTime(item.Tick),
-                    UzivatelId = item.UzivatelId,
-                    UzivatelCeleJmeno = "test"
-                };
-                dochazkaList.Add(dochazka);
-            }
-            return JsonConvert.SerializeObject(dochazkaList);
+                BaseAddress = new Uri(_BaseUrl)
+            };
+            var response = await client.GetStringAsync("GetList");
+            return response;
         }
-
-        [HttpPut]
+        [HttpPost]
         [Route("Add")]
-        public async Task Add(DochazkaModel model)      
+        public void Add(string msg)      
         {
-        await repository.Add(model);            
+            var client = new HttpClient();
+            client.BaseAddress = new Uri(_BaseUrl);
+            
+            client.PostAsJsonAsync("Add", msg);
         }
 
         [HttpDelete]
         [Route("Remove")]
-        public async Task Delete(string id)
+        public T Delete<T>(int id)
         {
-           await repository.Remove(id);   
+            var client = new HttpClient();
+            client.BaseAddress = new Uri(_BaseUrl);
+            return (T)(object)client.DeleteAsync(string.Format("Remove/{0}", id));
         }
         [HttpPost]
         [Route("Update")]
-        public async Task Update(DochazkaModel model)
+        public T Update<T>(T msg)
         {
-            await repository.Update(model);        
+            var client = new HttpClient();            
+            client.BaseAddress = new Uri(_BaseUrl);
+            return (T)(object)client.PostAsJsonAsync("Update", msg);
         }
     }
 }

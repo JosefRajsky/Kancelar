@@ -24,40 +24,33 @@ namespace Dochazka_Api.Controllers
         [Route("Get")]
         public ActionResult<Dochazka> Get(int id)
         {
-            var result = _dochazkaRepository.Get(id.ToString());
-            if (result == null)
-            {
-                return NotFound();
-            }
+            var result = _dochazkaRepository.Get(id.ToString());    
             return result;
         }
         [HttpGet]
         [Route("GetList")]
         public string GetList() {
-            var result = _dochazkaRepository.GetList().ToList();         
+            var result = _dochazkaRepository.GetList().ToList();
 
-            //TODO: WORKAROUND
-            var dochazkaList = new List<DochazkaModel>();
+            //TODO: Dočasný obšuk. Dodělat derivát z entity Model a vyčítat z něj.
+            var listDochazka = new List<DochazkaModel>();
             foreach (var item in result)
             {
-                var dochazka = new DochazkaModel()
-                {
-                    Id = item.Id,
-                    Prichod = item.Prichod,
-                    Datum = new DateTime(item.Tick),
-                    UzivatelId = item.UzivatelId,
-                    UzivatelCeleJmeno = "test"
-                };
-                dochazkaList.Add(dochazka);
+                var d = new DochazkaModel(item);
+                listDochazka.Add(d);
             }
-            return JsonConvert.SerializeObject(dochazkaList);
+           
+
+
+            return JsonConvert.SerializeObject(listDochazka);
         }
 
-        [HttpPut]
+        [HttpPost]
         [Route("Add")]
-        public async Task Add(DochazkaModel model)      
+        public void Add(string model)      
         {
-        await _dochazkaRepository.Add(model);            
+         
+         _dochazkaRepository.Add(model);            
         }
 
         [HttpDelete]

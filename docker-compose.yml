@@ -38,11 +38,23 @@ services:
       context: .
       dockerfile: Gui/KancelarWeb/Dockerfile
 
+  webapi:
+    image: ${DOCKER_REGISTRY-}web_api
+    hostname: "webapi"       
+    ports:
+      - "8080:80"
+    build:
+      context: .
+      dockerfile: Api/Web_Api/Dockerfile
+    depends_on:
+      - sqlserver
+      - rabbitmq
+
   dochazkaservice:
     image: ${DOCKER_REGISTRY-}dochazka_service
     hostname: "dochazkaservice"    
     ports:
-      - "8083:80"
+      - "8081:80"
     build:
       context: .
       dockerfile: Services/Dochazka/Dochazka_Service/Dockerfile
@@ -54,7 +66,7 @@ services:
     image: ${DOCKER_REGISTRY-}udalost_service
     hostname: "udalostservice"    
     ports:
-      - "8084:80"
+      - "8082:80"
     build:
       context: .
       dockerfile: Services/Udalost/Udalost_Service/Dockerfile
@@ -66,7 +78,7 @@ services:
     image: ${DOCKER_REGISTRY-}udalost_api
     hostname: "udalostapi"       
     ports:
-      - "8080:80"
+      - "8083:80"
     build:
       context: .
       dockerfile: Services/Udalost/Udalost_Api/Dockerfile
@@ -78,7 +90,7 @@ services:
     image: ${DOCKER_REGISTRY-}dochazka_api
     hostname: "dochazkaapi"       
     ports:
-      - "8081:80"
+      - "8084:80"
     build:
       context: .
       dockerfile: Services/Dochazka/Dochazka_Api/Dockerfile

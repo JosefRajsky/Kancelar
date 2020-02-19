@@ -24,9 +24,9 @@ namespace Dochazka_Api.Repositories
            // factory = new ConnectionFactory() { HostName = "rabbitmq" };
            //publisher = new Publisher(factory, "dochazka.ex");
         }
-        public async Task Add(DochazkaModel input)
+        public async Task Add(string v)
         {
-          
+            var input = JsonConvert.DeserializeObject<DochazkaModel>(v);
             var body = JsonConvert.SerializeObject(
                    new CommandDochazkaCreate()
                    {
@@ -43,9 +43,9 @@ namespace Dochazka_Api.Repositories
         {
            return db.Dochazka.FirstOrDefault(b => b.Id == Convert.ToInt32(id));
         }
-        public IEnumerable<Dochazka> GetList()
+        public List<Dochazka> GetList()
         {
-            return db.Dochazka;
+            return db.Dochazka.ToList();
         }
         public async Task Remove(string id)
         {

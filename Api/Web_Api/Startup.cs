@@ -32,9 +32,10 @@ namespace Web_Api
 
 
             services.AddTransient<IApiDochazkaRepository, ApiDochazkaRepository>();
+            services.AddTransient<IApiUdalostRepository, ApiUdalostRepository>();
             services.AddSingleton<Publisher>(s => new Publisher(factory, "dochazka.ex", "dochazka.q"));
-            services.AddDbContext<DochazkaDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
-            services.AddDbContext<DochazkaDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
+            services.AddDbContext<DochazkaDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbDochazka"]));
+            services.AddDbContext<DochazkaDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbUdalost"]));
             services.AddControllers();
         }
 

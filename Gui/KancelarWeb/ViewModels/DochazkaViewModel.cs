@@ -5,9 +5,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace KancelarWeb.Models
+namespace KancelarWeb.ViewModels
 {
-    public class DochazkaModel
+    public class DochazkaViewModel
     {   
         public int Id { get; set; }
         [DisplayName("Datum a čas")]

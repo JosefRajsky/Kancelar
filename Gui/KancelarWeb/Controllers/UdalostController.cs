@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using Newtonsoft.Json;
 using KancelarWeb.Interfaces;
-using KancelarWeb.Models;
+using KancelarWeb.ViewModels;
 using KancelarWeb.Services;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using UdalostLibrary;
@@ -23,37 +23,37 @@ namespace KancelarWeb.Controllers
         public UdalostController(IApiProvider apiProvider)
         {
             provider = apiProvider;
-            defaultBaseUri = "http://udalostapi/udalost/";
+            defaultBaseUri = "ApiUdalost";
         }
 
         public async Task<IActionResult> Index()
         {
 
             var response = await provider.List<string>(defaultBaseUri);
-            var model = new List<UdalostModel>();
+            var model = new List<UdalostViewModel>();
             if (response == null)
             {
                 return View(model);
             }
-            var result = JsonConvert.DeserializeObject<List<UdalostModel>>(response.ToString());
+            var result = JsonConvert.DeserializeObject<List<UdalostViewModel>>(response.ToString());
             model.AddRange(result);
             return View(model);
         }
         public async Task<IActionResult> Detail(int id)
         {
             var response = await provider.Get<string>(id, defaultBaseUri);
-            var model = new DochazkaModel();
+            var model = new DochazkaViewModel();
             if (response == null)
             {
                 return View(model);
             }
-            var result = JsonConvert.DeserializeObject<DochazkaModel>(response.ToString());
+            var result = JsonConvert.DeserializeObject<DochazkaViewModel>(response.ToString());
             model = result;
             return View(model);
         }
         public IActionResult Edit()
         {
-            var model = new UdalostModel();
+            var model = new UdalostViewModel();
             model.UdalostTypList = new List<SelectListItem>();
             foreach (var item in (UdalostTyp[])Enum.GetValues(typeof(UdalostTyp)))
             {
@@ -63,14 +63,14 @@ namespace KancelarWeb.Controllers
             return View(model);
         }
         [HttpPost]
-        public IActionResult Add(UdalostModel model)
+        public IActionResult Add(UdalostViewModel model)
         {
             provider.Add(model, defaultBaseUri);
 
             return RedirectToAction("Index");
         }
         [HttpPost]
-        public IActionResult Update(UdalostModel model)
+        public IActionResult Update(UdalostViewModel model)
         {
             provider.Update(model, defaultBaseUri);
 

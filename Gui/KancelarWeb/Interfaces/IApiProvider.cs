@@ -1,4 +1,4 @@
-﻿using KancelarWeb.Models;
+﻿using KancelarWeb.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;

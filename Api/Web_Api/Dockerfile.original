@@ -7,8 +7,6 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["Api/Web_Api/Web_Api.csproj", "Api/Web_Api/"]
-COPY ["Library/EventLibrary/EventLibrary.csproj", "Library/EventLibrary/"]
-COPY ["RabbitHandlers/CommandHandler/CommandHandler.csproj", "RabbitHandlers/CommandHandler/"]
 RUN dotnet restore "Api/Web_Api/Web_Api.csproj"
 COPY . .
 WORKDIR "/src/Api/Web_Api"
