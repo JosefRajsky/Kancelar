@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dochazka_Api.Entities;
 using Dochazka_Api.Repositories;
+using DochazkaLibrary.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -36,21 +37,25 @@ namespace Dochazka_Api.Controllers
             var listDochazka = new List<DochazkaModel>();
             foreach (var item in result)
             {
-                var d = new DochazkaModel(item);
+                var d = new DochazkaModel();
+                d.Id = item.Id;
+                d.Datum = new DateTime(item.Rok,item.Mesic,item.Den);
+                d.CteckaId = string.Empty;                
+                d.UzivatelId =item.UzivatelId;
+                d.UzivatelCeleJmeno =" - ";
+                d.Prichod =item.Prichod;
+        
+    
                 listDochazka.Add(d);
-            }
-           
-
-
+            }      
             return JsonConvert.SerializeObject(listDochazka);
         }
 
         [HttpPost]
         [Route("Add")]
-        public void Add(string model)      
-        {
-         
-         _dochazkaRepository.Add(model);            
+        public async Task Add(DochazkaModel model)      
+        {         
+         await _dochazkaRepository.Add(model);            
         }
 
         [HttpDelete]

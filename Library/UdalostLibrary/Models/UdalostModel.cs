@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Udalost_Api.Models
+namespace UdalostLibrary.Models
 {
     public class UdalostModel
     {

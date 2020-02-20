@@ -16,11 +16,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Entities\" />
+    <Folder Include="Interfaces\" />
     <Folder Include="Models\" />
+    <Folder Include="Repositories\" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Library\DochazkaLibrary\DochazkaLibrary.csproj" />
     <ProjectReference Include="..\..\Library\EventLibrary\EventLibrary.csproj" />
+    <ProjectReference Include="..\..\Library\UdalostLibrary\UdalostLibrary.csproj" />
     <ProjectReference Include="..\..\RabbitHandlers\CommandHandler\CommandHandler.csproj" />
   </ItemGroup>
 

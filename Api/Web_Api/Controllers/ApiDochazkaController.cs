@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using DochazkaLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
+
 namespace Web_Api.Controllers
 {    
     [ApiController]
@@ -20,7 +22,6 @@ namespace Web_Api.Controllers
             var client = new HttpClient();           
             client.BaseAddress = new Uri(_BaseUrl);
             return (T)(object)client.GetAsync(string.Format("Get/{0}",id));
-
         }
         [HttpGet]
         [Route("GetList")]
@@ -34,29 +35,28 @@ namespace Web_Api.Controllers
         }
         [HttpPost]
         [Route("Add")]
-        public void Add(string msg)      
+        public async Task Add(DochazkaModel msg)      
         {
             var client = new HttpClient();
             client.BaseAddress = new Uri(_BaseUrl);
-            
-            client.PostAsJsonAsync("Add", msg);
+            await client.PostAsJsonAsync("Add", msg);
         }
 
         [HttpDelete]
         [Route("Remove")]
-        public T Delete<T>(int id)
+        public async Task Delete(int id)
         {
             var client = new HttpClient();
             client.BaseAddress = new Uri(_BaseUrl);
-            return (T)(object)client.DeleteAsync(string.Format("Remove/{0}", id));
+            await client.DeleteAsync(string.Format("Remove/{0}", id));
         }
         [HttpPost]
         [Route("Update")]
-        public T Update<T>(T msg)
+        public async Task Update(DochazkaModel msg)
         {
             var client = new HttpClient();            
             client.BaseAddress = new Uri(_BaseUrl);
-            return (T)(object)client.PostAsJsonAsync("Update", msg);
+            await client.PostAsJsonAsync("Update", msg);
         }
     }
 }

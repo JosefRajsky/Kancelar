@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
-
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Web_Api.Entities;
-using Web_Api.Models;
-using Web_Api.Repositories;
+using UdalostLibrary.Models;
+
 
 namespace Web_Api.Controllers
 {
@@ -16,44 +15,54 @@ namespace Web_Api.Controllers
     [Route("[controller]")]
     public class ApiUdalostController : ControllerBase
     {
-        private readonly IApiUdalostRepository _repository;
-        public ApiUdalostController(IApiUdalostRepository udalostService)
+        string _BaseUrl;
+        public ApiUdalostController()
         {
-            _repository = udalostService;
+            _BaseUrl = "http://udalostapi/udalost/";
         }
         [HttpGet]
         [Route("Get")]
-        public ActionResult<Udalost> Get(int id)
+        public T Get<T>(int id)
         {
-            var result = _repository.Get(id);          
-            return result;
+            var client = new HttpClient();
+            client.BaseAddress = new Uri(_BaseUrl);
+            return (T)(object)client.GetAsync(string.Format("Get/{0}", id));
         }
         [HttpGet]
         [Route("GetList")]
-        public ActionResult<List<Udalost>> GetList() {
-            var result = _repository.GetList().ToList();
-            
-            return result;
-        }
-
-        [HttpPut]
-        [Route("Add")]
-        public async Task Add(UdalostModel model)
+        public async Task<string> GetListAsync()
         {
-            await _repository.Add(model);           
+            var client = new HttpClient
+            {
+                BaseAddress = new Uri(_BaseUrl)
+            };
+            var response = await client.GetStringAsync("GetList");
+            return response;
+        }
+        [HttpPost]
+        [Route("Add")]
+        public async Task Add(UdalostModel msg)
+        {
+            var client = new HttpClient();
+            client.BaseAddress = new Uri(_BaseUrl);
+            await client.PostAsJsonAsync("Add", msg);
         }
 
         [HttpDelete]
-        [Route("Delete")]
+        [Route("Remove")]
         public async Task Delete(int id)
         {
-           await _repository.Delete(Convert.ToInt32(id));   
+            var client = new HttpClient();
+            client.BaseAddress = new Uri(_BaseUrl);
+            await client.DeleteAsync(string.Format("Remove/{0}", id));
         }
         [HttpPost]
         [Route("Update")]
-        public async Task Update(UdalostModel model)
+        public async Task Update(UdalostModel msg)
         {
-            await _repository.Update(model);   
+            var client = new HttpClient();
+            client.BaseAddress = new Uri(_BaseUrl);
+            await client.PostAsJsonAsync("Update", msg);
         }
     }
 }

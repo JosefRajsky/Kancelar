@@ -1,5 +1,6 @@
 ﻿
 using Dochazka_Api.Entities;
+using DochazkaLibrary.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace Dochazka_Api.Repositories
         public List<Dochazka> GetList();
         public Dochazka Get(string id);
 
-        public Task Add(string model);
+        public Task Add(DochazkaModel model);
 
         public Task Update(DochazkaModel update);
 

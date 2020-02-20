@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Library\DochazkaLibrary\DochazkaLibrary.csproj" />
     <ProjectReference Include="..\..\..\RabbitHandlers\CommandHandler\CommandHandler.csproj" />
   </ItemGroup>
 

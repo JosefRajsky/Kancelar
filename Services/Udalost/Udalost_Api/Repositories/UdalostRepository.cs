@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Udalost_Api.Entities;
-using Udalost_Api.Models;
+using UdalostLibrary.Models;
 
 namespace Udalost_Api.Repositories
 {
@@ -47,13 +47,13 @@ namespace Udalost_Api.Repositories
             return db.Udalosti;
         }
 
-        public async Task Delete(int id)
-        {           
+        public async Task Remove(string id)
+        {
             var body = JsonConvert.SerializeObject(
                    new CommandUdalostRemove()
                    {
-                       UdalostId = id
-                   });
+                       UdalostId = Convert.ToInt32(id)
+                   }) ;
             await publisher.Push(body);
         }
 
@@ -72,5 +72,6 @@ namespace Udalost_Api.Repositories
                    }); ;
             await publisher.Push(body);
         }
+
     }
 }

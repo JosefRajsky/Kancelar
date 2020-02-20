@@ -42,11 +42,10 @@ namespace KancelarWeb.Services
         }
         public async Task Add<T>(T model, string controller)
         {
-                var client = new HttpClient();
+            var client = new HttpClient();
             var host = string.Format("{0}{1}/", _apiUri, controller);
-            client.BaseAddress = new Uri(host);
-            //await client.PostAsJsonAsync("Add", model);          
-            await client.PostAsJsonAsync<T>("Add", model);          
+            client.BaseAddress = new Uri(host);    
+            await client.PostAsJsonAsync("Add", model);          
         }
         public async Task Update<T>(T model, string controller)
         {

@@ -1,6 +1,7 @@
 ﻿
 using CommandHandler;
 using Dochazka_Api.Entities;
+using DochazkaLibrary.Models;
 using EventLibrary;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -24,9 +25,8 @@ namespace Dochazka_Api.Repositories
            // factory = new ConnectionFactory() { HostName = "rabbitmq" };
            //publisher = new Publisher(factory, "dochazka.ex");
         }
-        public async Task Add(string v)
-        {
-            var input = JsonConvert.DeserializeObject<DochazkaModel>(v);
+        public async Task Add(DochazkaModel input)
+        {           
             var body = JsonConvert.SerializeObject(
                    new CommandDochazkaCreate()
                    {
