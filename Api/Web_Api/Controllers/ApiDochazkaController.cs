@@ -6,8 +6,7 @@ using DochazkaLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web_Api.Controllers
-{
-    [Produces("application/json")]
+{    
     [ApiController]
     [Route("[controller]")]
     public class ApiDochazkaController : ControllerBase
@@ -18,7 +17,7 @@ namespace Web_Api.Controllers
             _BaseUrl = "http://dochazkaapi/dochazka/";
         }
         [HttpGet]
-        [Route("Get/{id?}")]
+        [Route("Get")]
         public async Task<ActionResult> Get(int id)
         {
             var client = new HttpClient();           
@@ -46,8 +45,8 @@ namespace Web_Api.Controllers
         }
 
         [HttpDelete]
-        [Route("Remove/{id?}")]
-        public async Task Remove(int id)
+        [Route("Remove")]
+        public async Task Delete(int id)
         {
             var client = new HttpClient();
             client.BaseAddress = new Uri(_BaseUrl);
