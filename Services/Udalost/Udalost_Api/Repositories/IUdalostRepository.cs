@@ -10,14 +10,14 @@ namespace Udalost_Api.Repositories
 {
     public interface IUdalostRepository
     {
-        public IEnumerable<Udalost> GetList();
-        public Udalost Get(int id);
+        Task<List<Udalost>> GetList();
+        Task<Udalost> Get(int id);
 
-        public Task Add(UdalostModel input);
+        Task Add(UdalostModel input);
 
-        public Task Update(UdalostModel update);
+        Task Update(UdalostModel update);
 
-        public Task Remove(string id);
+        Task Remove(string id);
          
 
     }

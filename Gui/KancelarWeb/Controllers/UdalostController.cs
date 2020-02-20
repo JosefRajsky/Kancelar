@@ -1,55 +1,85 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-
-using System.Text;
 using Newtonsoft.Json;
-using KancelarWeb.Interfaces;
 using KancelarWeb.ViewModels;
-using KancelarWeb.Services;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using UdalostLibrary;
-using Newtonsoft.Json.Linq;
+using System.Net.Http;
 
 namespace KancelarWeb.Controllers
 {
     public class UdalostController : Controller
     {
-        IApiProvider provider;
-        string defaultBaseUri;
+       
+        string apibase;
 
-        public UdalostController(IApiProvider apiProvider)
+        public UdalostController()
         {
-            provider = apiProvider;
-            defaultBaseUri = "ApiUdalost";
+           
+            apibase = "http://webapi/ApiUdalost/";
         }
 
         public async Task<IActionResult> Index()
         {
-
-            var response = await provider.List<string>(defaultBaseUri);
             var model = new List<UdalostViewModel>();
-            if (response == null)
+
+            var client = new HttpClient();
+            var host = string.Format("{0}", apibase);
+            client.BaseAddress = new Uri(host);
+            var response = await client.GetAsync("GetList");
+
+            //TODO: Jak zjistí jak vypadá Model, které api poskytuje? ... zatím se shoduje se ServiceModel
+            model = JsonConvert.DeserializeObject<List<UdalostViewModel>>(await response.Content.ReadAsStringAsync());
+            if (model == null)
             {
-                return View(model);
+                return NotFound();
             }
-            var result = JsonConvert.DeserializeObject<List<UdalostViewModel>>(response.ToString());
-            model.AddRange(result);
             return View(model);
         }
         public async Task<IActionResult> Detail(int id)
         {
-            var response = await provider.Get<string>(id, defaultBaseUri);
-            var model = new DochazkaViewModel();
+            var model = new UdalostViewModel();
+
+            var client = new HttpClient();
+            var host = string.Format("{0}", apibase);
+            client.BaseAddress = new Uri(host);
+            var response = await client.GetAsync("Get");
+            model = JsonConvert.DeserializeObject<UdalostViewModel>(await response.Content.ReadAsStringAsync());
+
             if (response == null)
             {
                 return View(model);
-            }
-            var result = JsonConvert.DeserializeObject<DochazkaViewModel>(response.ToString());
-            model = result;
+            }           
             return View(model);
+        }
+
+        public async Task<IActionResult> Add(UdalostViewModel model)
+        {
+            var client = new HttpClient();
+            var host = string.Format("{0}", apibase);
+            client.BaseAddress = new Uri(host);
+            await client.PostAsJsonAsync("Add", model);
+
+            return RedirectToAction("Index");
+        }
+        public async Task<IActionResult> Update(UdalostViewModel model)
+        {
+            var client = new HttpClient();
+            var host = string.Format("{0}", apibase);
+            client.BaseAddress = new Uri(host);
+            await client.PutAsJsonAsync("Update", model);
+
+            return RedirectToAction("Index");
+        }
+        public async Task<IActionResult> Remove(string id)
+        {
+            var client = new HttpClient();
+            var host = string.Format("{0}", apibase);
+            client.BaseAddress = new Uri(host);
+            await client.DeleteAsync(string.Format("Remove/{0}", id));
+            return RedirectToAction("Index");
         }
         public IActionResult Edit()
         {
@@ -57,29 +87,12 @@ namespace KancelarWeb.Controllers
             model.UdalostTypList = new List<SelectListItem>();
             foreach (var item in (UdalostTyp[])Enum.GetValues(typeof(UdalostTyp)))
             {
-             
+
                 model.UdalostTypList.Add(new SelectListItem() { Text = EmumExtension.GetDescription(item), Value = item.ToString() });
             }
             return View(model);
         }
-        [HttpPost]
-        public IActionResult Add(UdalostViewModel model)
-        {
-            provider.Add(model, defaultBaseUri);
 
-            return RedirectToAction("Index");
-        }
-        [HttpPost]
-        public IActionResult Update(UdalostViewModel model)
-        {
-            provider.Update(model, defaultBaseUri);
-
-            return RedirectToAction("Index");
-        }
-        public async Task<IActionResult> Remove(string id)
-        {
-            await provider.Remove(Convert.ToInt32(id), defaultBaseUri);
-            return RedirectToAction("Index");
-        }
+   
     }
 }

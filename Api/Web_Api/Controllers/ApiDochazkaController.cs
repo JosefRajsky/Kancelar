@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+
 using DochazkaLibrary.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,21 +18,22 @@ namespace Web_Api.Controllers
         }
         [HttpGet]
         [Route("Get")]
-        public T Get<T>(int id)
+        public async Task<ActionResult> Get(int id)
         {
             var client = new HttpClient();           
             client.BaseAddress = new Uri(_BaseUrl);
-            return (T)(object)client.GetAsync(string.Format("Get/{0}",id));
+            var response = await client.GetAsync(string.Format("Get/{0}",id));
+            return Ok(await response.Content.ReadAsStringAsync());
         }
         [HttpGet]
         [Route("GetList")]
-        public async Task<string> GetListAsync() {
+        public async Task<ActionResult> GetListAsync() {
             var client = new HttpClient
             {
                 BaseAddress = new Uri(_BaseUrl)
             };
-            var response = await client.GetStringAsync("GetList");
-            return response;
+            var response = await client.GetAsync("GetList"); 
+                return Ok(await response.Content.ReadAsStringAsync());
         }
         [HttpPost]
         [Route("Add")]

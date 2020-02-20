@@ -24,19 +24,15 @@ namespace Udalost_Api.Controllers
         }
         [HttpGet]
         [Route("Get")]
-        public ActionResult<Udalost> Get(int id)
-        {
-            var result = _udalostRepository.Get(id);
-            return result;
-        }
+        public async Task<ActionResult<UdalostModel>> Get(int id) => Ok(await _udalostRepository.Get(id));
         [HttpGet]
         [Route("GetList")]
-        public string GetList() {
-            var result = _udalostRepository.GetList().ToList();
+        public async Task<ActionResult<UdalostModel>> GetList() {
+            var model =await _udalostRepository.GetList();
 
             //TODO: Dočasný obšuk. Dodělat derivát z entity Model a vyčítat z něj.
-            var listDochazka = new List<UdalostModel>();
-            foreach (var item in result)
+            var response = new List<UdalostModel>();
+            foreach (var item in model)
             {
                 var u = new UdalostModel();
                 u.Id = item.Id ;
@@ -47,9 +43,9 @@ namespace Udalost_Api.Controllers
                 u.UzivatelId = item.UzivatelId ;
                 u.UzivatelCeleJmeno = " --- " ;
 
-                listDochazka.Add(u);
+                response.Add(u);
             }
-            return JsonConvert.SerializeObject(listDochazka);
+            return Ok(response);
         }
         [HttpPost]
         [Route("Add")]

@@ -2,8 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using KancelarWeb.Interfaces;
-using KancelarWeb.Services;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -22,7 +21,7 @@ namespace KancelarWeb
             services.AddMvcCore();
             services.AddRazorPages();
             //services.AddScoped<IUdalostProvider, UdalostProvider>();            
-            services.AddScoped<IApiProvider,ApiProvider>();            
+            //services.AddScoped<IApiProvider,ApiProvider>();            
             //services.AddScoped<IDochazkaProvider, DochazkaProvider>();            
             services.AddControllers();
         }

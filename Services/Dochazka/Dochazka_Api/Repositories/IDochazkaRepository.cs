@@ -11,14 +11,14 @@ namespace Dochazka_Api.Repositories
 {
     public interface IDochazkaRepository
     {
-        public List<Dochazka> GetList();
-        public Dochazka Get(string id);
+        Task<List<Dochazka>> GetList();
+        Task<Dochazka> Get(string id);
 
-        public Task Add(DochazkaModel model);
+        Task Add(DochazkaModel model);
 
-        public Task Update(DochazkaModel update);
+        Task Update(DochazkaModel update);
 
-        public Task Remove(string id);
+        Task Remove(string id);
          
 
     }

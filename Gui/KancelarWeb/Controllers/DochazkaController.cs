@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
-using KancelarWeb.Interfaces;
+
 using KancelarWeb.ViewModels;
+using Microsoft.AspNetCore.Blazor;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -12,29 +14,41 @@ namespace KancelarWeb.Controllers
 {
     public class DochazkaController : Controller
     {
-        IApiProvider provider;
+      
         string apibase;
         
-        public DochazkaController(IApiProvider apiProvider)
+        public DochazkaController()
         {
-            provider = apiProvider;
-            apibase = "ApiDochazka";
+            apibase = "http://webapi/ApiDochazka/";
         }
+
         public async Task<IActionResult> Index()
         {
-            var response = await provider.List<string>(apibase);
             var model = new List<DochazkaViewModel>();
-            if (response == null){
-                return View(model);
-            }            
-            var result = JsonConvert.DeserializeObject<List<DochazkaViewModel>>(response);
-            model.AddRange(result);
-            return View(model);          
+
+            var client = new HttpClient();
+            var host = string.Format("{0}", apibase);
+            client.BaseAddress = new Uri(host);
+            var response = await client.GetAsync("GetList");
+        
+            //TODO: Jak zjistí jak vypadá Model, které api poskytuje? ... zatím se shoduje se ServiceModel
+            model = JsonConvert.DeserializeObject<List<DochazkaViewModel>>(await response.Content.ReadAsStringAsync()); 
+            if (model == null)
+            {
+                return NotFound();
+            }
+            return View(model);
         }
         public async Task<IActionResult> Detail(int id)
         {
-            var response = await provider.Get<string>(id,apibase);
             var model = new DochazkaViewModel();
+
+            var client = new HttpClient();
+            var host = string.Format("{0}", apibase);
+            client.BaseAddress = new Uri(host);
+            var response = await client.GetAsync("Get");
+            model = JsonConvert.DeserializeObject<DochazkaViewModel>(await response.Content.ReadAsStringAsync());
+           
             if (response == null)
             {
                 return View(model);
@@ -52,13 +66,23 @@ namespace KancelarWeb.Controllers
             model.Datum = (Convert.ToBoolean(prichod)) ? DateTime.Now.AddHours(-rnd.Next(1, 5)) : DateTime.Now.AddHours(rnd.Next(1, 4));
             model.Prichod = Convert.ToBoolean(prichod);
             model.UzivatelCeleJmeno = "Jmeno Prijmeni";
-            await provider.Add(model, apibase);            
+          
+            var client = new HttpClient();
+            var host = string.Format("{0}", apibase);
+            client.BaseAddress = new Uri(host);
+            await client.PostAsJsonAsync("Add", model);
+              
             return RedirectToAction("Index"); 
         }
         public async Task<IActionResult> Remove(string id)
         {
-            await provider.Remove(Convert.ToInt32(id), apibase);
-                return RedirectToAction("Index");
+          
+            var client = new HttpClient();
+            var host = string.Format("{0}", apibase);
+            client.BaseAddress = new Uri(host);
+            await client.DeleteAsync(string.Format("Remove/{0}", id));
+
+            return RedirectToAction("Index");
         }
     }
 }

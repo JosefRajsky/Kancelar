@@ -1,6 +1,7 @@
 ﻿
 using CommandHandler;
 using EventLibrary;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System;
@@ -37,15 +38,9 @@ namespace Udalost_Api.Repositories
             await publisher.Push(body);
         }
 
-        public Udalost Get(int id)
-        {
-           return db.Udalosti.FirstOrDefault(b => b.Id == id);
-        }
+        public async Task<Udalost> Get(int id) => await Task.Run(() => db.Udalosti.FirstOrDefault(b => b.Id == id));
 
-        public IEnumerable<Udalost> GetList()
-        {
-            return db.Udalosti;
-        }
+        public async Task<List<Udalost>> GetList() => await db.Udalosti.ToListAsync();
 
         public async Task Remove(string id)
         {

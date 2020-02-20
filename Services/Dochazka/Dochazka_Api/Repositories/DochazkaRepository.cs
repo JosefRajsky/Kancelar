@@ -4,6 +4,7 @@ using Dochazka_Api.Entities;
 using DochazkaLibrary.Models;
 using EventLibrary;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System;
@@ -39,14 +40,8 @@ namespace Dochazka_Api.Repositories
            await _publisher.Push(body);
         }
 
-        public Dochazka Get(string id)
-        {
-           return db.Dochazka.FirstOrDefault(b => b.Id == Convert.ToInt32(id));
-        }
-        public List<Dochazka> GetList()
-        {
-            return db.Dochazka.ToList();
-        }
+        public async Task<Dochazka> Get(string id) => await Task.Run(() => db.Dochazka.FirstOrDefault(b => b.Id == Convert.ToInt32(id)));
+        public async Task<List<Dochazka>> GetList() => await db.Dochazka.ToListAsync();
         public async Task Remove(string id)
         {
 

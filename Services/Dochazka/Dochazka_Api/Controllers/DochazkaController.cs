@@ -8,6 +8,7 @@ using DochazkaLibrary.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dochazka_Api.Controllers
 {
@@ -23,32 +24,42 @@ namespace Dochazka_Api.Controllers
         }
         [HttpGet]
         [Route("Get")]
-        public ActionResult<Dochazka> Get(int id)
+        public async Task<ActionResult<DochazkaModel>> Get(int id)
         {
-            var result = _dochazkaRepository.Get(id.ToString());    
-            return result;
+            var item = await _dochazkaRepository.Get(id.ToString());
+            var response = new DochazkaModel() {
+                Id = item.Id,
+                Datum = new DateTime(item.Rok, item.Mesic, item.Den),
+                CteckaId = string.Empty,
+                UzivatelId = item.UzivatelId,
+                UzivatelCeleJmeno = " - ",
+                Prichod = item.Prichod,
+            };
+             
+      
+            return Ok(response);
         }
+
         [HttpGet]
         [Route("GetList")]
-        public string GetList() {
-            var result = _dochazkaRepository.GetList().ToList();
+        public async Task<ActionResult<DochazkaModel>> GetList() {
 
-            //TODO: Dočasný obšuk. Dodělat derivát z entity Model a vyčítat z něj.
-            var listDochazka = new List<DochazkaModel>();
-            foreach (var item in result)
+            var model =await _dochazkaRepository.GetList();
+
+        //TODO: Dočasný obšuk. Dodělat derivát z entity Model a vyčítat z něj.
+                var response = new List<DochazkaModel>();
+            foreach (var item in model)
             {
                 var d = new DochazkaModel();
                 d.Id = item.Id;
-                d.Datum = new DateTime(item.Rok,item.Mesic,item.Den);
-                d.CteckaId = string.Empty;                
-                d.UzivatelId =item.UzivatelId;
-                d.UzivatelCeleJmeno =" - ";
-                d.Prichod =item.Prichod;
-        
-    
-                listDochazka.Add(d);
-            }      
-            return JsonConvert.SerializeObject(listDochazka);
+                d.Datum = new DateTime(item.Rok, item.Mesic, item.Den);
+                d.CteckaId = string.Empty;
+                d.UzivatelId = item.UzivatelId;
+                d.UzivatelCeleJmeno = " - ";
+                d.Prichod = item.Prichod;
+                response.Add(d);
+            }    
+            return Ok(response);
         }
 
         [HttpPost]
