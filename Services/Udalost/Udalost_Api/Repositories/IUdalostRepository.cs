@@ -17,7 +17,7 @@ namespace Udalost_Api.Repositories
 
         Task Update(UdalostModel update);
 
-        Task Remove(string id);
+        Task Remove(int id);
          
 
     }

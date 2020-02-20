@@ -29,10 +29,12 @@ namespace Web_Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+          
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "KancelarApi", Version = "v1" });
             });
+            services.AddSwaggerDocument();
             services.AddControllers();
         }
 
@@ -41,7 +43,8 @@ namespace Web_Api
         {
             app.UseStaticFiles();
             //Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseSwagger();
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
             //Enable middleware to serve swagger - ui(HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>

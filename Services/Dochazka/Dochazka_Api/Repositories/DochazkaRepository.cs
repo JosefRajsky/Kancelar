@@ -42,7 +42,7 @@ namespace Dochazka_Api.Repositories
 
         public async Task<Dochazka> Get(string id) => await Task.Run(() => db.Dochazka.FirstOrDefault(b => b.Id == Convert.ToInt32(id)));
         public async Task<List<Dochazka>> GetList() => await db.Dochazka.ToListAsync();
-        public async Task Remove(string id)
+        public async Task Remove(int id)
         {
 
             var body = JsonConvert.SerializeObject(

@@ -42,7 +42,7 @@ namespace Udalost_Api.Repositories
 
         public async Task<List<Udalost>> GetList() => await db.Udalosti.ToListAsync();
 
-        public async Task Remove(string id)
+        public async Task Remove(int id)
         {
             var body = JsonConvert.SerializeObject(
                    new CommandUdalostRemove()

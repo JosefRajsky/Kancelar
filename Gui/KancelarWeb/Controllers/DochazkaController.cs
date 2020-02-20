@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-
+using KancelarWeb.Services;
 using KancelarWeb.ViewModels;
 using Microsoft.AspNetCore.Blazor;
 using Microsoft.AspNetCore.Mvc;
@@ -24,15 +24,15 @@ namespace KancelarWeb.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var model = new List<DochazkaViewModel>();
 
+            var model = new List<DochazkaViewModel>();
             var client = new HttpClient();
             var host = string.Format("{0}", apibase);
             client.BaseAddress = new Uri(host);
             var response = await client.GetAsync("GetList");
-        
+
             //TODO: Jak zjistí jak vypadá Model, které api poskytuje? ... zatím se shoduje se ServiceModel
-            model = JsonConvert.DeserializeObject<List<DochazkaViewModel>>(await response.Content.ReadAsStringAsync()); 
+            model = JsonConvert.DeserializeObject<List<DochazkaViewModel>>(await response.Content.ReadAsStringAsync());
             if (model == null)
             {
                 return NotFound();

@@ -18,7 +18,7 @@ namespace Web_Api.Controllers
             _BaseUrl = "http://dochazkaapi/dochazka/";
         }
         [HttpGet]
-        [Route("Get")]
+        [Route("Get/{id?}")]
         public async Task<ActionResult> Get(int id)
         {
             var client = new HttpClient();           
@@ -46,7 +46,7 @@ namespace Web_Api.Controllers
         }
 
         [HttpDelete]
-        [Route("Remove")]
+        [Route("Remove/{id?}")]
         public async Task Delete(int id)
         {
             var client = new HttpClient();
