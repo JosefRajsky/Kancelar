@@ -43,10 +43,10 @@ namespace KancelarWeb
             app.UseStatusCodePages();
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllers(); // Map attribute-routed API controllers
+                endpoints.MapDefaultControllerRoute(); // Map conventional MVC controllers using the default route
                 endpoints.MapRazorPages();
-                endpoints.MapControllerRoute(
-                                  name: "default",
-                                  pattern: "{controller=Home}/{action=Index}/{id?}");
+                
             });
         }
     }

@@ -57,7 +57,8 @@ namespace KancelarWeb.Controllers
             model = result;
             return View(model);
         }
-
+        
+      
         public async Task<IActionResult> AddPrichod(string prichod)
         {            
             Random rnd = new Random();
@@ -74,7 +75,8 @@ namespace KancelarWeb.Controllers
               
             return RedirectToAction("Index"); 
         }
-        public async Task<IActionResult> Remove(string id)
+       
+        public async Task<IActionResult> Remove(int id)
         {
           
             var client = new HttpClient();

@@ -10,7 +10,7 @@ using UdalostLibrary.Models;
 
 namespace Web_Api.Controllers
 {
-    
+    [Produces("application/json")]
     [ApiController]
     [Route("[controller]")]
     public class ApiUdalostController : ControllerBase
@@ -21,7 +21,7 @@ namespace Web_Api.Controllers
             _BaseUrl = "http://udalostapi/udalost/";
         }
         [HttpGet]
-        [Route("Get")]
+        [Route("Get/{id?}")]
         public T Get<T>(int id)
         {
             var client = new HttpClient();
@@ -49,7 +49,7 @@ namespace Web_Api.Controllers
         }
 
         [HttpDelete]
-        [Route("Remove")]
+        [Route("Remove/{id?}")]
         public async Task Delete(int id)
         {
             var client = new HttpClient();

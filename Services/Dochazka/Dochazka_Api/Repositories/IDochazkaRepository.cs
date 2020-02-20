@@ -18,7 +18,7 @@ namespace Dochazka_Api.Repositories
 
         Task Update(DochazkaModel update);
 
-        Task Remove(string id);
+        Task Remove(int id);
          
 
     }

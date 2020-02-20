@@ -23,7 +23,7 @@ namespace Udalost_Api.Controllers
             _udalostRepository = udalostService;
         }
         [HttpGet]
-        [Route("Get")]
+        [Route("Get/{id?}")]
         public async Task<ActionResult<UdalostModel>> Get(int id) => Ok(await _udalostRepository.Get(id));
         [HttpGet]
         [Route("GetList")]
@@ -55,7 +55,7 @@ namespace Udalost_Api.Controllers
         }
 
         [HttpDelete]
-        [Route("Remove")]
+        [Route("Remove/{id?}")]
         public async Task Remove(string id)
         {
             await _udalostRepository.Remove(id);
