@@ -1,6 +1,7 @@
 version: '3.4'
 
-services: 
+services:
+
   sqlserver:
     image: ${DOCKER_REGISTRY-}mcr.microsoft.com/mssql/server:2017-latest-ubuntu 
     hostname: 'sqlserver'  
@@ -49,6 +50,17 @@ services:
     depends_on:
       - sqlserver
       - rabbitmq
+
+  webapiocelot:
+    image: ${DOCKER_REGISTRY-}webapi
+    hostname: "webapiocelot"       
+    ports:
+      - "8090:80"
+    build:
+      context: .
+      dockerfile: Api/WebApi/Dockerfile
+    depends_on:
+      - sqlserver
 
   dochazkaservice:
     image: ${DOCKER_REGISTRY-}dochazka_service

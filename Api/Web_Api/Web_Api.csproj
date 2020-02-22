@@ -36,6 +36,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.10" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="NSwag.AspNetCore" Version="13.2.3" />
+    <PackageReference Include="Polly" Version="7.2.0" />
     <PackageReference Include="RabbitMQ.Client" Version="5.1.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0" />
     <PackageReference Include="System.Net.Http.Formatting.Extension" Version="5.2.3" />
@@ -43,9 +44,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Library\DochazkaLibrary\DochazkaLibrary.csproj" />
-    <ProjectReference Include="..\..\Library\EventLibrary\EventLibrary.csproj" />
-    <ProjectReference Include="..\..\Library\UdalostLibrary\UdalostLibrary.csproj" />
-    <ProjectReference Include="..\..\RabbitHandlers\CommandHandler\CommandHandler.csproj" />
   </ItemGroup>
 
 

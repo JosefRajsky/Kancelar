@@ -2,28 +2,30 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CommandHandler;
-using Dochazka_Api.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Ocelot.DependencyInjection;
+using Ocelot.Middleware;
 using Microsoft.OpenApi.Models;
-using RabbitMQ.Client;
-using Udalost_Api;
 
-namespace Dochazka_Api
+namespace WebApi
 {
     public class Startup
     {
+        private readonly IConfiguration _config;
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            _config = new ConfigurationBuilder()                
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile("appsettings.json", false, true)
+                .AddJsonFile("ocelot.json", false, true)           
+                .Build();
         }
 
         public IConfiguration Configuration { get; }
@@ -31,17 +33,16 @@ namespace Dochazka_Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Dochazka Api", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "KancelarApi", Version = "v1" });
             });
             services.AddSwaggerDocument();
-
-            services.AddTransient<IDochazkaRepository, DochazkaRepository>();
-            services.AddSingleton<Publisher>(s => new Publisher(factory, "dochazka.ex","dochazka.q"));
-            services.AddDbContext<DochazkaDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));    
             services.AddControllers();
+
+            services.AddOcelot(_config);
+         
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -59,22 +60,13 @@ namespace Dochazka_Api
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Dochazka Api v1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Web Api v1");
             });
 
-            app.UseHttpsRedirection();
+            app.UseOcelot().Wait();
 
             app.UseRouting();
-
             app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-                endpoints.MapControllerRoute(
-     name: "default",
-     pattern: "{controller}/{action}/{id?}");
-            });
         }
     }
 }

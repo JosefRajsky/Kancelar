@@ -18,7 +18,7 @@ namespace KancelarWeb.Controllers
         public UdalostController()
         {
            
-            apibase = "http://webapi/ApiUdalost/";
+            apibase = "http://webapiocelot/Api/Udalost/";
         }
 
         public async Task<IActionResult> Index()

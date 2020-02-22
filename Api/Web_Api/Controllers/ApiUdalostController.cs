@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using UdalostLibrary.Models;
 
 
 namespace Web_Api.Controllers
@@ -41,7 +40,7 @@ namespace Web_Api.Controllers
         }
         [HttpPost]
         [Route("Add")]
-        public async Task Add(UdalostModel msg)
+        public async Task Add(string msg)
         {
             var client = new HttpClient();
             client.BaseAddress = new Uri(_BaseUrl);
@@ -58,7 +57,7 @@ namespace Web_Api.Controllers
         }
         [HttpPost]
         [Route("Update")]
-        public async Task Update(UdalostModel msg)
+        public async Task Update(string msg)
         {
             var client = new HttpClient();
             client.BaseAddress = new Uri(_BaseUrl);

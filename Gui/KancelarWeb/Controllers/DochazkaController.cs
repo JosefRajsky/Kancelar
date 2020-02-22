@@ -19,7 +19,7 @@ namespace KancelarWeb.Controllers
         
         public DochazkaController()
         {
-            apibase = "http://webapi/ApiDochazka/";
+            apibase = "http://webapiocelot/Api/Dochazka/";
         }
 
         public async Task<IActionResult> Index()
@@ -35,7 +35,7 @@ namespace KancelarWeb.Controllers
             model = JsonConvert.DeserializeObject<List<DochazkaViewModel>>(await response.Content.ReadAsStringAsync());
             if (model == null)
             {
-                return NotFound();
+                return View(new List<DochazkaViewModel>());
             }
             return View(model);
         }

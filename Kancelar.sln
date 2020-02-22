@@ -43,7 +43,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{63E4C573-2E0
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web_Api", "Api\Web_Api\Web_Api.csproj", "{731F0BB8-E318-4755-B827-41BEBAB6AF79}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DochazkaLibrary", "Library\DochazkaLibrary\DochazkaLibrary.csproj", "{B7CC0D18-2236-4487-B982-20B74AF69AF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DochazkaLibrary", "Library\DochazkaLibrary\DochazkaLibrary.csproj", "{B7CC0D18-2236-4487-B982-20B74AF69AF7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "Api\WebApi\WebApi.csproj", "{6DBEC2E1-5AFC-4B0B-BA78-C133D50A71F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +101,10 @@ Global
 		{B7CC0D18-2236-4487-B982-20B74AF69AF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7CC0D18-2236-4487-B982-20B74AF69AF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7CC0D18-2236-4487-B982-20B74AF69AF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DBEC2E1-5AFC-4B0B-BA78-C133D50A71F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DBEC2E1-5AFC-4B0B-BA78-C133D50A71F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DBEC2E1-5AFC-4B0B-BA78-C133D50A71F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DBEC2E1-5AFC-4B0B-BA78-C133D50A71F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -119,6 +125,7 @@ Global
 		{F4C7CBBE-2720-429F-A937-38925BD05E87} = {91054B8F-6B80-49D5-B3F1-415C43CAD059}
 		{731F0BB8-E318-4755-B827-41BEBAB6AF79} = {63E4C573-2E0D-405C-924C-1B76529200B0}
 		{B7CC0D18-2236-4487-B982-20B74AF69AF7} = {C8722B0A-7A4C-4A3D-8177-5659C881AAF0}
+		{6DBEC2E1-5AFC-4B0B-BA78-C133D50A71F0} = {63E4C573-2E0D-405C-924C-1B76529200B0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FA02534C-DA03-44C8-9DAA-704670F31BEC}

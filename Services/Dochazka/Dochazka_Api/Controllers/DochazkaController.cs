@@ -42,7 +42,7 @@ namespace Dochazka_Api.Controllers
 
         [HttpGet]
         [Route("GetList")]
-        public async Task<ActionResult<DochazkaModel>> GetList() {
+        public async Task<List<DochazkaModel>> GetList() {
 
             var model =await _dochazkaRepository.GetList();
 
@@ -59,7 +59,7 @@ namespace Dochazka_Api.Controllers
                 d.Prichod = item.Prichod;
                 response.Add(d);
             }    
-            return Ok(response);
+            return response;
         }
 
         [HttpPost]
