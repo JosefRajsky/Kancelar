@@ -30,7 +30,7 @@ namespace Udalost_Api.Controllers
         public async Task<ActionResult<UdalostModel>> GetList() {
             var model =await _udalostRepository.GetList();
 
-            //TODO: Dočasný obšuk. Dodělat derivát z entity Model a vyčítat z něj.
+            //TODO: Dodělat derivát z entity Model a vyčítat z něj.
             var response = new List<UdalostModel>();
             foreach (var item in model)
             {

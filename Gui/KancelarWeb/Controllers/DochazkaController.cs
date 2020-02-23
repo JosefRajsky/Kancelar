@@ -14,50 +14,20 @@ namespace KancelarWeb.Controllers
 {
     public class DochazkaController : Controller
     {
-      
-        string apibase;
-        
-        public DochazkaController()
+        DochazkaClient client;
+        public DochazkaController() 
         {
-            //Description: Api GateWay Ocelot
-            apibase = "http://webapiocelot/Api/Dochazka/";
-            //Description: Vlastní Gateway se swashbuckle
-            //apibase = "http://webapi/ApiDochazka/";
+            client = new DochazkaClient();
         }
 
         public async Task<IActionResult> Index()
-        {
-
-            var model = new List<DochazkaViewModel>();
-            var client = new HttpClient();
-            var host = string.Format("{0}", apibase);
-            client.BaseAddress = new Uri(host);
-            var response = await client.GetAsync("GetList");
-
-            //TODO: Jak zjistí jak vypadá Model, které api poskytuje? ... zatím se shoduje se ServiceModel
-            model = JsonConvert.DeserializeObject<List<DochazkaViewModel>>(await response.Content.ReadAsStringAsync());
-            if (model == null)
-            {
-                return View(new List<DochazkaViewModel>());
-            }
+        {          
+            var model = await client.GetListAsync();
             return View(model);
         }
         public async Task<IActionResult> Detail(int id)
         {
-            var model = new DochazkaViewModel();
-
-            var client = new HttpClient();
-            var host = string.Format("{0}", apibase);
-            client.BaseAddress = new Uri(host);
-            var response = await client.GetAsync("Get");
-            model = JsonConvert.DeserializeObject<DochazkaViewModel>(await response.Content.ReadAsStringAsync());
-           
-            if (response == null)
-            {
-                return View(model);
-            }
-            var result = JsonConvert.DeserializeObject<DochazkaViewModel>(response.ToString());
-            model = result;
+            var model = await client.GetAsync(id);
             return View(model);
         }
         
@@ -65,28 +35,19 @@ namespace KancelarWeb.Controllers
         public async Task<IActionResult> AddPrichod(string prichod)
         {            
             Random rnd = new Random();
-            var model = new DochazkaViewModel();
+            var model = new DochazkaModel();
             model.UzivatelId = rnd.Next(100, 1000);
             model.Datum = (Convert.ToBoolean(prichod)) ? DateTime.Now.AddHours(-rnd.Next(1, 5)) : DateTime.Now.AddHours(rnd.Next(1, 4));
             model.Prichod = Convert.ToBoolean(prichod);
             model.UzivatelCeleJmeno = "Jmeno Prijmeni";
-          
-            var client = new HttpClient();
-            var host = string.Format("{0}", apibase);
-            client.BaseAddress = new Uri(host);
-            await client.PostAsJsonAsync("Add", model);
+            await client.AddAsync(model);
               
             return RedirectToAction("Index"); 
         }
        
         public async Task<IActionResult> Remove(int id)
         {
-          
-            var client = new HttpClient();
-            var host = string.Format("{0}", apibase);
-            client.BaseAddress = new Uri(host);
-            await client.DeleteAsync(string.Format("Remove/{0}", id));
-
+            await client.DeleteAsync(id);
             return RedirectToAction("Index");
         }
     }

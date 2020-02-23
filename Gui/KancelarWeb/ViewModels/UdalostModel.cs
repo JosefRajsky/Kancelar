@@ -12,7 +12,7 @@ using UdalostLibrary;
 namespace KancelarWeb.ViewModels
 
 {
-    public class UdalostViewModel
+    public class UdalostModel
     {
         public int Id { get; set; }
         
@@ -37,7 +37,7 @@ namespace KancelarWeb.ViewModels
                 return EmumExtension.GetDescription((UdalostTyp)UdalostTypId);
             } }
 
-        public virtual List<SelectListItem> UdalostTypList { get; set; }
+        public virtual SelectList UdalostTypList { get; set; }
 
     }
 }

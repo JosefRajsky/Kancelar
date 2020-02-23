@@ -39,17 +39,17 @@ services:
       context: .
       dockerfile: Gui/KancelarWeb/Dockerfile
 
-  webapi:
-    image: ${DOCKER_REGISTRY-}web_api
-    hostname: "webapi"       
-    ports:
-      - "8080:80"
-    build:
-      context: .
-      dockerfile: Api/Web_Api/Dockerfile
-    depends_on:
-      - sqlserver
-      - rabbitmq
+#  webapi:
+#    image: ${DOCKER_REGISTRY-}web_api
+#    hostname: "webapi"       
+#    ports:
+#      - "8080:80"
+#    build:
+#      context: .
+#      dockerfile: Api/Web_Api/Dockerfile
+#    depends_on:
+#      - sqlserver
+#      - rabbitmq
 
   webapiocelot:
     image: ${DOCKER_REGISTRY-}webapi

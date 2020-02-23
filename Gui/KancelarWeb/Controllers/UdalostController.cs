@@ -7,89 +7,58 @@ using KancelarWeb.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using UdalostLibrary;
 using System.Net.Http;
+using KancelarWeb.Services;
 
 namespace KancelarWeb.Controllers
 {
     public class UdalostController : Controller
     {
-       
-        string apibase;
 
+        UdalostClient client;
         public UdalostController()
         {
-           
-            apibase = "http://webapiocelot/Api/Udalost/";
+            client = new UdalostClient();
         }
 
         public async Task<IActionResult> Index()
         {
-            var model = new List<UdalostViewModel>();
-
-            var client = new HttpClient();
-            var host = string.Format("{0}", apibase);
-            client.BaseAddress = new Uri(host);
-            var response = await client.GetAsync("GetList");
-
-            //TODO: Jak zjistí jak vypadá Model, které api poskytuje? ... zatím se shoduje se ServiceModel
-            model = JsonConvert.DeserializeObject<List<UdalostViewModel>>(await response.Content.ReadAsStringAsync());
-            if (model == null)
-            {
-                return NotFound();
-            }
+            var model = await client.GetListAsync();
             return View(model);
         }
         public async Task<IActionResult> Detail(int id)
         {
-            var model = new UdalostViewModel();
-
-            var client = new HttpClient();
-            var host = string.Format("{0}", apibase);
-            client.BaseAddress = new Uri(host);
-            var response = await client.GetAsync("Get");
-            model = JsonConvert.DeserializeObject<UdalostViewModel>(await response.Content.ReadAsStringAsync());
-
-            if (response == null)
-            {
-                return View(model);
-            }           
+            var model = await client.GetAsync(id);
             return View(model);
         }
-
-        public async Task<IActionResult> Add(UdalostViewModel model)
+        [HttpPost]
+        public async Task<IActionResult> Add( UdalostModel model)
         {
-            var client = new HttpClient();
-            var host = string.Format("{0}", apibase);
-            client.BaseAddress = new Uri(host);
-            await client.PostAsJsonAsync("Add", model);
+            await client.AddAsync(model);
 
             return RedirectToAction("Index");
         }
-        public async Task<IActionResult> Update(UdalostViewModel model)
+        public async Task<IActionResult> Update(UdalostModel model)
         {
-            var client = new HttpClient();
-            var host = string.Format("{0}", apibase);
-            client.BaseAddress = new Uri(host);
-            await client.PutAsJsonAsync("Update", model);
+            await client.UpdateAsync(model);
 
             return RedirectToAction("Index");
         }
-        public async Task<IActionResult> Remove(string id)
+        public async Task<IActionResult> Remove(int id)
         {
-            var client = new HttpClient();
-            var host = string.Format("{0}", apibase);
-            client.BaseAddress = new Uri(host);
-            await client.DeleteAsync(string.Format("Remove/{0}", id));
+            await client.DeleteAsync(id);
             return RedirectToAction("Index");
         }
         public IActionResult Edit()
         {
-            var model = new UdalostViewModel();
-            model.UdalostTypList = new List<SelectListItem>();
-            foreach (var item in (UdalostTyp[])Enum.GetValues(typeof(UdalostTyp)))
-            {
-
-                model.UdalostTypList.Add(new SelectListItem() { Text = EmumExtension.GetDescription(item), Value = item.ToString() });
-            }
+            var model = new UdalostModel();
+            model.DatumDo = DateTime.Today;
+            model.DatumOd = DateTime.Today;
+            model.UdalostTypList = new SelectList(Enum.GetValues(typeof(UdalostTyp)));
+            //model.UdalostTypList = new List<SelectListItem>();
+            //foreach (var item in (UdalostTyp[])Enum.GetValues(typeof(UdalostTyp)))
+            //{
+            //    model.UdalostTypList.Add(new SelectListItem() { Text = EmumExtension.GetDescription(item), Value = (int)item });
+            //}
             return View(model);
         }
 
