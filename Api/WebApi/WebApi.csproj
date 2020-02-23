@@ -8,10 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.10" />
+    <PackageReference Include="MMLib.SwaggerForOcelot" Version="1.10.5" />
     <PackageReference Include="NSwag.AspNetCore" Version="13.2.3" />
     <PackageReference Include="Ocelot" Version="14.0.11" />
+    <PackageReference Include="Ocelot.Administration" Version="14.0.11" />
     <PackageReference Include="Ocelot.Cache.CacheManager" Version="14.0.11" />
-    <PackageReference Include="Ocelot.Provider.Eureka" Version="14.0.11" />
+    <PackageReference Include="Ocelot.Provider.Kubernetes" Version="14.0.11" />
+    <PackageReference Include="OcelotSwagger" Version="0.0.5" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0" />
   </ItemGroup>
 

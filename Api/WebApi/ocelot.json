@@ -5,27 +5,50 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "dochazkaapi",
-          "Port": 80
+          "Host": "dochazkaapi/"
         }
       ],
       "UpstreamPathTemplate": "/api/dochazka/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "SwaggerKey": "dochazka"
     },
     {
       "DownstreamPathTemplate": "/udalost/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "udalostapi",
-          "Port": 80
+          "Host": "udalostapi/"
         }
       ],
       "UpstreamPathTemplate": "/api/udalost/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "SwaggerKey": "udalost"
+    }
+  ],
+  "SwaggerEndPoints": [
+    {
+      "Key": "dochazka",
+      "Config": [
+        {
+          "Name": "Dochazka API",
+          "Version": "v1",
+          "Url": "http://dochazkaapi/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "udalost",
+      "Config": [
+        {
+          "Name": "Udalost API",
+          "Version": "v1",
+          "Url": "http://udalostapi/swagger/v1/swagger.json"
+        }
+      ]
     }
   ],
   "GlobalConfiguration": {
     "AdministrationPath": "/administration"
+
   }
 }

@@ -18,7 +18,7 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
-
+ 
   rabbitmq:
     image: "rabbitmq:3-management"
     hostname: "rabbit"

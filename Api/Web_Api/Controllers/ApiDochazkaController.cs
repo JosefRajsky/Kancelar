@@ -35,15 +35,7 @@ namespace Web_Api.Controllers
             {
                 BaseAddress = new Uri(_BaseUrl)
             };
-
-            var response = await Policy
-          .HandleResult<HttpResponseMessage>(message => !message.IsSuccessStatusCode)
-          .WaitAndRetryAsync(3, i => TimeSpan.FromSeconds(2), (result, timeSpan, retryCount, context) =>
-          {
-
-          })
-          .ExecuteAsync(() => client.GetAsync("GetList"));
-
+            var response = await client.GetAsync("GetList");  
             return Ok(await response.Content.ReadAsStringAsync());
         }
         [HttpPost]
@@ -61,13 +53,7 @@ namespace Web_Api.Controllers
         {
             var client = new HttpClient();
             client.BaseAddress = new Uri(_BaseUrl);          
-          var response = await Policy
-         .HandleResult<HttpResponseMessage>(message => !message.IsSuccessStatusCode)
-         .WaitAndRetryAsync(3, i => TimeSpan.FromSeconds(2), (result, timeSpan, retryCount, context) =>
-         {
-
-         })
-         .ExecuteAsync(() => client.DeleteAsync(string.Format("Remove/{0}", id)));
+          var response =await client.DeleteAsync(string.Format("Remove/{0}", id));
         }
         [HttpPost]
         [Route("Update")]

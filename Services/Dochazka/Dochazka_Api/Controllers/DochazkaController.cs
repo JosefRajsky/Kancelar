@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore;
+using Polly;
 
 namespace Dochazka_Api.Controllers
 {
@@ -44,10 +45,10 @@ namespace Dochazka_Api.Controllers
         [Route("GetList")]
         public async Task<List<DochazkaModel>> GetList() {
 
-            var model =await _dochazkaRepository.GetList();
+            var model = await _dochazkaRepository.GetList();
 
-        //TODO: Dočasný obšuk. Dodělat derivát z entity Model a vyčítat z něj.
-                var response = new List<DochazkaModel>();
+            //TODO: Vytvořit Wiew (derivát) a nečíst přímo z entity.
+            var response = new List<DochazkaModel>();
             foreach (var item in model)
             {
                 var d = new DochazkaModel();

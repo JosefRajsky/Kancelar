@@ -11,6 +11,15 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using Ocelot.Provider.Kubernetes;
+using OcelotSwagger.Extensions;
+using OcelotSwagger.Configuration;
+using Ocelot.Administration;
+using IdentityServer4.AccessTokenValidation;
 using Microsoft.OpenApi.Models;
 
 namespace WebApi
@@ -18,30 +27,22 @@ namespace WebApi
     public class Startup
     {
         private readonly IConfiguration _config;
-        public Startup(IConfiguration configuration)
+        public Startup()
         {
-            Configuration = configuration;
+
             _config = new ConfigurationBuilder()                
                 .SetBasePath(AppContext.BaseDirectory)
                 .AddJsonFile("appsettings.json", false, true)
                 .AddJsonFile("ocelot.json", false, true)           
                 .Build();
         }
-
-        public IConfiguration Configuration { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "KancelarApi", Version = "v1" });
-            });
-            services.AddSwaggerDocument();
-            services.AddControllers();
-
+        {           
+            services.AddControllers();    
+            //Pøidání gateway engine: Ocelot
             services.AddOcelot(_config);
-         
+            services.AddSwaggerForOcelot(_config);
 
         }
 
@@ -53,20 +54,22 @@ namespace WebApi
                 app.UseDeveloperExceptionPage();
             }
             app.UseStaticFiles();
-            //Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseOpenApi();
-            app.UseSwaggerUi3();
-            //Enable middleware to serve swagger - ui(HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Web Api v1");
-            });
 
-            app.UseOcelot().Wait();
+
+            
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerForOcelotUI(_config, opt =>
+            {
+                opt.DownstreamSwaggerHeaders = new[]
+                {
+                        new KeyValuePair<string, string>("Key", "Value"),
+                        new KeyValuePair<string, string>("Key2", "Value2"),
+                    };
+            }).UseOcelot().Wait();
 
             app.UseRouting();
             app.UseAuthorization();
         }
+        
     }
 }

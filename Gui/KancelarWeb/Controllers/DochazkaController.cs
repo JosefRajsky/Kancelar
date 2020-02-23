@@ -19,7 +19,10 @@ namespace KancelarWeb.Controllers
         
         public DochazkaController()
         {
+            //Description: Api GateWay Ocelot
             apibase = "http://webapiocelot/Api/Dochazka/";
+            //Description: Vlastní Gateway se swashbuckle
+            //apibase = "http://webapi/ApiDochazka/";
         }
 
         public async Task<IActionResult> Index()

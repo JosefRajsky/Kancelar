@@ -36,7 +36,7 @@ namespace Dochazka_Api.Repositories
                        CteckaId = input.CteckaId,
                        Datum = DateTime.Now,
                    });     
-
+           
            await _publisher.Push(body);
         }
 

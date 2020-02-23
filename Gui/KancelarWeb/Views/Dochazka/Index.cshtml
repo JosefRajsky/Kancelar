@@ -26,7 +26,7 @@
             <td>@item.UzivatelId - @item.UzivatelCeleJmeno</td>
             <td>@item.Datum.ToShortDateString()</td>
             <td >@item.Datum.ToShortTimeString()</td>
-            <td><span class="class=@(item.Prichod ? "btn btn-sm bt-disabled btn-success" : "btn btn-sm bt-disabled btn-warning")">@(item.Prichod ? "Příchod" : "Odchod")</span> </td>
+            <td><span class="class=@(item.Prichod ? "btn btn-sm bt-disabled btn-success disabled" : "btn btn-sm bt-disabled btn-warning disabled")">@(item.Prichod ? "Příchod" : "Odchod")</span> </td>
             <td><a class="btn btn-xs btn-danger" href='@Url.Action("Remove", "Dochazka", new {@id = item.Id })'> odebrat </a></td>
         </tr>
 
