@@ -36,7 +36,7 @@ namespace Udalost_Api.Controllers
             {
                 var u = new UdalostModel();
                 u.Id = item.Id ;
-                u.UdalostTypId = item.UdalostTypid ;
+                u.UdalostTypId = item.UdalostTypId ;
                 u.Popis = item.Popis ;
                 u.DatumOd = item.DatumOd ;
                 u.DatumDo = item.DatumDo ;

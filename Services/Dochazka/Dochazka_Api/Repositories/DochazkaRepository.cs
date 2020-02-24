@@ -11,61 +11,103 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Udalost_Api;
+
 
 namespace Dochazka_Api.Repositories
 {
     public class DochazkaRepository : IDochazkaRepository
     {
         private readonly DochazkaDbContext db;
-        //private ConnectionFactory factory;
         private Publisher _publisher;
         public DochazkaRepository(DochazkaDbContext dochazkaDbContext, Publisher publisher) {
             db = dochazkaDbContext;
-            _publisher = publisher;
-           // factory = new ConnectionFactory() { HostName = "rabbitmq" };
-           //publisher = new Publisher(factory, "dochazka.ex");
+            _publisher = publisher;          
         }
-        public async Task Add(DochazkaModel input)
+        public async Task Add(DochazkaModel model)
         {           
-            var body = JsonConvert.SerializeObject(
+            var cmd = JsonConvert.SerializeObject(
                    new CommandDochazkaCreate()
                    {
-                       Prichod = input.Prichod,
-                       UzivatelId = input.UzivatelId,
-                       CteckaId = input.CteckaId,
+                       Prichod = model.Prichod,
+                       UzivatelId = model.UzivatelId,
+                       CteckaId = model.CteckaId,
                        Datum = DateTime.Now,
-                   });     
-           
-           await _publisher.Push(body);
+                   });
+            //TODO: ulozit create do EventStore;
+            var add = new Dochazka()
+            {
+                Den = model.Datum.Day,
+                DenTydne = (int)model.Datum.DayOfWeek,
+                Mesic = model.Datum.Month,
+                Rok = model.Datum.Year,
+                Prichod = model.Prichod,
+                Tick = model.Datum.Ticks,
+                UzivatelId = model.UzivatelId,
+            };
+            db.Dochazka.Add(add);
+            await db.SaveChangesAsync();
+            db.Dispose();
+
+            //Description: Uložit a publikovat event DochazkaCreated
+            var response = JsonConvert.SerializeObject(new EventDochazkaCreated()
+            {
+                Prichod = model.Prichod,
+                UzivatelId = model.UzivatelId,
+                CteckaId = model.CteckaId,
+                Datum = model.Datum,
+            });
+            //TODO: Uložení Event do EventStore;
+            await _publisher.Push(response);
         }
 
         public async Task<Dochazka> Get(string id) => await Task.Run(() => db.Dochazka.FirstOrDefault(b => b.Id == Convert.ToInt32(id)));
         public async Task<List<Dochazka>> GetList() => await db.Dochazka.ToListAsync();
         public async Task Remove(int id)
         {
+            var cmd = JsonConvert.SerializeObject(
+                 new CommandDochazkaRemove()
+                 {
+                    DochazkaId = id,
+                 });
 
-            var body = JsonConvert.SerializeObject(
-                   new CommandDochazkaRemove()
-                   {
-                       DochazkaId = Convert.ToInt32(id)
-                   }); ;
-            await _publisher.Push(body);
+            var remove = db.Dochazka.Find(id);
+            db.Dochazka.Remove(remove);
+            await db.SaveChangesAsync();
+
+            var response = JsonConvert.SerializeObject(new EventDochazkaDeleted()
+            {
+                DochazkaId = id,
+            });
+
+            await _publisher.Push(response);
         }
 
-        public async Task Update(DochazkaModel update)
+        public async Task Update(DochazkaModel model)
         {
-           
-            var body = JsonConvert.SerializeObject(
-                   new CommandDochazkaUpdate()
-                   {
-                       DochazkaId = update.Id,
-                       Prichod = update.Prichod,
-                       UzivatelId = update.UzivatelId,
-                       CteckaId = update.CteckaId,
-                       Datum = DateTime.Now,
-                   }) ;            
-            await _publisher.Push(body);
+            var cmd = JsonConvert.SerializeObject(
+                 new CommandDochazkaUpdate()
+                 {
+                     DochazkaId = model.Id,
+                     Prichod = model.Prichod,
+                     UzivatelId = model.UzivatelId,
+                     CteckaId = model.CteckaId,
+                     Datum = DateTime.Now,
+                 }) ;
+
+            var update= db.Dochazka.Find(model.Id);
+            db.Dochazka.Remove(update);
+            await db.SaveChangesAsync();
+
+            var response = JsonConvert.SerializeObject(
+                new EventDochazkaUpdated()
+            {
+                DochazkaId = model.Id,
+                Prichod = model.Prichod,
+                UzivatelId = model.UzivatelId,
+                CteckaId = model.CteckaId,
+                Datum = DateTime.Now,
+            }) ;
+            await _publisher.Push(response);
         }
 
  

@@ -34,10 +34,13 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.10" />
     <PackageReference Include="RabbitMQ.Client" Version="5.1.2" />
+    <PackageReference Include="System.Net.Http.Formatting.Extension" Version="5.2.3" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Library\DochazkaLibrary\DochazkaLibrary.csproj" />
     <ProjectReference Include="..\..\..\Library\EventLibrary\EventLibrary.csproj" />
+    <ProjectReference Include="..\..\..\Library\UdalostLibrary\UdalostLibrary.csproj" />
     <ProjectReference Include="..\..\..\RabbitHandlers\CommandHandler\CommandHandler.csproj" />
   </ItemGroup>
 

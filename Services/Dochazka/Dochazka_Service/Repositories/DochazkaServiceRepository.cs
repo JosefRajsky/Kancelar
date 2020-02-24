@@ -1,14 +1,14 @@
 ﻿
-using Dochazka_Service.Entities;
+using DochazkaLibrary.Models;
 using EventLibrary;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
-using Udalost_Service;
 
 namespace Dochazka_Service.Repositories
 {
@@ -16,13 +16,15 @@ namespace Dochazka_Service.Repositories
     {
 
         private string _connectionString;
-      
+        string _BaseUrl;
+
 
 
         public DochazkaServiceRepository(string connectionString)
         {
             _connectionString = connectionString;
-           
+            _BaseUrl = "http://dochazkaapi/dochazka/";
+
         }
         //-------------Description: Zpracování zpráv získaných po přihlášení k RabbitMQ Exchange
         public void AddCommand(string message)
@@ -39,7 +41,7 @@ namespace Dochazka_Service.Repositories
                     if (envelope.Version == 1)
                     {
                         //-------------Description: Deserializace zprávy do správného typu a odeslání k uložení do DB; 
-                        this.Add(JsonConvert.DeserializeObject<CommandDochazkaCreate>(message));
+                        this.AddAsync(JsonConvert.DeserializeObject<CommandDochazkaCreate>(message));
                     }
                     break;
                 case MessageType.DochazkaRemove:
@@ -60,61 +62,88 @@ namespace Dochazka_Service.Repositories
             }
         }
 
-        public void Add(CommandDochazkaCreate msg)
+        public void AddAsync(CommandDochazkaCreate msg)
         {
             //-------------Description: Vytvoření entity podle obdržené zprávy
-            var add = new Dochazka()
+            var model = new DochazkaModel()
             {
-                Den = msg.Datum.Day,
-                DenTydne = (int)msg.Datum.DayOfWeek,
-                Mesic = msg.Datum.Month,
-                Rok = msg.Datum.Year,
+                Datum = msg.Datum,
                 Prichod = msg.Prichod,
-                Tick = msg.Datum.Ticks,
+                CteckaId = msg.CteckaId,
                 UzivatelId = msg.UzivatelId,
             };
-            //-------------Description: Založení připojení k databázi
-            using (var db = new DochazkaDbContextFactory(_connectionString).CreateDbContext())
-            {
-                //-------------Description: Přidání a uložení do DB; Ukončení spojení
-                db.Dochazka.Add(add);
-                db.SaveChanges();
-                db.Dispose();
-            }   
+            
+            var client = new HttpClient();
+            client.BaseAddress = new Uri(_BaseUrl);
+            client.PostAsJsonAsync("Add", model);
+
+            //var add = new Dochazka()
+            //{
+            //    Den = msg.Datum.Day,
+            //    DenTydne = (int)msg.Datum.DayOfWeek,
+            //    Mesic = msg.Datum.Month,
+            //    Rok = msg.Datum.Year,
+            //    Prichod = msg.Prichod,
+            //    Tick = msg.Datum.Ticks,
+            //    UzivatelId = msg.UzivatelId,
+            //};
+            ////-------------Description: Založení připojení k databázi
+            //using (var db = new DochazkaDbContextFactory(_connectionString).CreateDbContext())
+            //{
+            //    //-------------Description: Přidání a uložení do DB; Ukončení spojení
+            //    db.Dochazka.Add(add);
+            //    db.SaveChanges();
+            //    db.Dispose();
+            //}   
         }
         public void Remove(CommandDochazkaRemove msg)
         {
-            using (var db = new DochazkaDbContextFactory(_connectionString).CreateDbContext())
-            {
-                var remove = db.Dochazka.FirstOrDefault(b => b.Id == msg.DochazkaId);
-                if (remove != null) {
-                    db.Dochazka.Remove(remove);
-                    db.SaveChanges();
-                   
-                }
-  
-            }           
+            //using (var db = new DochazkaDbContextFactory(_connectionString).CreateDbContext())
+            //{
+            //    var remove = db.Dochazka.FirstOrDefault(b => b.Id == msg.DochazkaId);
+            //    if (remove != null) {
+            //        db.Dochazka.Remove(remove);
+            //        db.SaveChanges();
+
+            //    }
+
+            //} 
+            var client = new HttpClient();
+            client.BaseAddress = new Uri(_BaseUrl);
+            client.DeleteAsync(string.Format("Remove/{0}", msg.Id));
         }
-        public bool Update(CommandDochazkaUpdate msg)
+        public void Update(CommandDochazkaUpdate msg)
         {
-            using (var db = new DochazkaDbContextFactory(_connectionString).CreateDbContext())
+            var model = new DochazkaModel()
             {
-                var forUpdate = db.Dochazka.FirstOrDefault(b => b.Id == msg.DochazkaId);
-                if (forUpdate != null) {
-                    forUpdate.Den = msg.Datum.Day;
-                    forUpdate.DenTydne = (int)msg.Datum.DayOfWeek;
-                    forUpdate.Mesic = msg.Datum.Month;
-                    forUpdate.Rok = msg.Datum.Year;
-                    forUpdate.Prichod = msg.Prichod;
-                    forUpdate.Tick = msg.Datum.Ticks;
-                    forUpdate.UzivatelId = msg.UzivatelId;
-                    db.Dochazka.Update(forUpdate);
-                    db.SaveChanges();
-                    return true;
-                }
-             
-            }
-            return false;
+                Id = msg.Id,
+                Datum = msg.Datum,
+                Prichod = msg.Prichod,
+                CteckaId = msg.CteckaId,
+                UzivatelId = msg.UzivatelId,
+            };
+
+            var client = new HttpClient();
+            client.BaseAddress = new Uri(_BaseUrl);
+            client.PutAsJsonAsync("Update", model);
+            //using (var db = new DochazkaDbContextFactory(_connectionString).CreateDbContext())
+            //{
+            //    var forUpdate = db.Dochazka.FirstOrDefault(b => b.Id == msg.DochazkaId);
+            //    if (forUpdate != null) {
+            //        forUpdate.Den = msg.Datum.Day;
+            //        forUpdate.DenTydne = (int)msg.Datum.DayOfWeek;
+            //        forUpdate.Mesic = msg.Datum.Month;
+            //        forUpdate.Rok = msg.Datum.Year;
+            //        forUpdate.Prichod = msg.Prichod;
+            //        forUpdate.Tick = msg.Datum.Ticks;
+            //        forUpdate.UzivatelId = msg.UzivatelId;
+            //        db.Dochazka.Update(forUpdate);
+            //        db.SaveChanges();
+            //        return true;
+            //    }
+
+            //}
+            //return false;
         }
         
 

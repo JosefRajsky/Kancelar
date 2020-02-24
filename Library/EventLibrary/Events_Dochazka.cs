@@ -7,7 +7,7 @@ namespace EventLibrary
     {
         public EventDochazkaCreated()
         {
-            MessageType = EventLibrary.MessageType.DochazkaCreate;
+            MessageType = EventLibrary.MessageType.DochazkaCreated;
             Version = 1;
             CreatedDate = DateTime.Now;
         }
@@ -22,7 +22,7 @@ namespace EventLibrary
     {
         public EventDochazkaUpdated()
         {
-            MessageType = EventLibrary.MessageType.DochazkaUpdate;
+            MessageType = EventLibrary.MessageType.DochazkaUpdated;
             Version = 1;
             CreatedDate = DateTime.Now;
         }
@@ -38,7 +38,7 @@ namespace EventLibrary
     {
         public EventDochazkaDeleted()
         {
-            MessageType = MessageType.DochazkaRemove;
+            MessageType = MessageType.DochazkaRemoved;
             Version = 1;
             CreatedDate = DateTime.Now;
         }

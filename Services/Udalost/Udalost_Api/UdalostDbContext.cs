@@ -9,6 +9,7 @@ using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using Udalost_Api.Entities;
+using UdalostLibrary.Models;
 
 namespace Udalost_Api
 {

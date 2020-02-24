@@ -7,9 +7,10 @@ using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using Dochazka_Api.Entities;
+using DochazkaLibrary.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Udalost_Api
+namespace Dochazka_Api
 {
     public class DochazkaDbContext : DbContext
     {

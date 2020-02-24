@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Udalost_Service.Entities;
+using UdalostLibrary.Models;
 
 namespace Udalost_Service.Repositories
 {
