@@ -15,24 +15,17 @@ namespace Dochazka_Service.Repositories
     public class DochazkaServiceRepository : IDochazkaServiceRepository
     {
 
-        private string _connectionString;
+     
         string _BaseUrl;
-
-
-
-        public DochazkaServiceRepository(string connectionString)
-        {
-            _connectionString = connectionString;
+        public DochazkaServiceRepository()
+        {            
             _BaseUrl = "http://dochazkaapi/dochazka/";
-
         }
         //-------------Description: Zpracování zpráv získaných po přihlášení k RabbitMQ Exchange
         public void AddCommand(string message)
         {
             //-------------Description: Deserializace Json objektu na základní typ zprávy
             var envelope = JsonConvert.DeserializeObject<Base>(message);
-
-
             //-------------Description: Rozhodnutí o typu získazné zprávy
             switch (envelope.MessageType)
             {
@@ -56,6 +49,7 @@ namespace Dochazka_Service.Repositories
                         this.Update(JsonConvert.DeserializeObject<CommandDochazkaUpdate>(message));
                     }
                     break;
+              
                 default:
                     
                     break;
@@ -78,6 +72,7 @@ namespace Dochazka_Service.Repositories
             client.PostAsJsonAsync("Add", model);
         
         }
+      
         public void Remove(CommandDochazkaRemove msg)
         {           
             var client = new HttpClient();

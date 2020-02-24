@@ -14,11 +14,11 @@ namespace CommandHandler
         ConnectionFactory _factory { get; set; }
         IConnection _connection { get; set; }
         IModel _channel { get; set; }
-        string _exchange { get; set; }
+        List<string> _exchange { get; set; }
         public EventingBasicConsumer Start()
         {
             
-            _channel.ExchangeDeclare(exchange: _exchange, type: ExchangeType.Fanout);
+            //_channel.ExchangeDeclare(exchange: _exchange, type: ExchangeType.Fanout);
      
                 //_channel.BasicPublish(
                 // exchange: _exchange,
@@ -27,9 +27,13 @@ namespace CommandHandler
                 // body: null);
            
             var queueName = _channel.QueueDeclare().QueueName;
-            _channel.QueueBind(queue: queueName,
-                              exchange: _exchange,
+            foreach (var ex in _exchange)
+            {
+                _channel.QueueBind(queue: queueName,
+                              exchange: ex,
                               routingKey: "");
+            }
+            
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += (model, ea) =>
             {
@@ -46,7 +50,7 @@ namespace CommandHandler
             this._connection.Close();
         }
 
-        public Subscriber(ConnectionFactory connectionFactory, string exchange)
+        public Subscriber(ConnectionFactory connectionFactory, List<string>exchange)
         {
             this._exchange = exchange;
             this._factory = connectionFactory;

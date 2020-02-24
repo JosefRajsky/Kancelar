@@ -47,6 +47,12 @@ namespace Udalost_Service.Repositories
                         this.Update(JsonConvert.DeserializeObject<CommandUdalostUpdate>(message));
                     }
                     break;
+                case MessageType.DochazkaCreated:
+                    if (envelope.Version == 1)
+                    {
+                        this.AddByDochazka(JsonConvert.DeserializeObject<EventDochazkaCreated>(message));
+                    }
+                    break;
 
             }
         }
@@ -59,6 +65,20 @@ namespace Udalost_Service.Repositories
                 Popis = cmd.Popis,
                 UdalostTypId = cmd.UdalostTypId,
                 UzivatelId = cmd.UzivatelId,
+            };
+            var client = new HttpClient();
+            client.BaseAddress = new Uri(_BaseUrl);
+            client.PostAsJsonAsync("Add", model);
+        }
+        public void AddByDochazka(EventDochazkaCreated evt)
+        {
+            var model = new UdalostModel()
+            {
+                DatumOd = evt.Datum,
+                DatumDo = evt.Datum.AddHours(8),
+                Popis = string.Empty,
+                UdalostTypId = 0,
+                UzivatelId = evt.UzivatelId,
             };
             var client = new HttpClient();
             client.BaseAddress = new Uri(_BaseUrl);

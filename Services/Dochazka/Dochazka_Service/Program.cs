@@ -6,6 +6,7 @@ using System.IO;
 using RabbitMQ.Client;
 using System.Text;
 using CommandHandler;
+using System.Collections.Generic;
 
 namespace Dochazka_Service
 {
@@ -21,8 +22,10 @@ namespace Dochazka_Service
                     .Build();
                 //-------------Description: Zápis o konzumaci RabbitMq Exchange pro konzumaci publikovaných zpráv
                 //-------------Description: Název Exchange získán z konfiguračního souboru appsetting.json
+                var exchanges =new List<string>();
+                exchanges.Add(config.GetValue<string>("Setting:Exchange"));
                 var consumer = new ServiceCollection()
-                    .AddSingleton<ISubscriber>(s => new Subscriber(new ConnectionFactory() { HostName = "rabbitmq" }, config.GetValue<string>("Setting:Exchange")))
+                    .AddSingleton<ISubscriber>(s => new Subscriber(new ConnectionFactory() { HostName = "rabbitmq" }, exchanges))
                     .BuildServiceProvider()
                     .GetService<ISubscriber>()
                     .Start();
@@ -33,7 +36,7 @@ namespace Dochazka_Service
                     var message = Encoding.UTF8.GetString(body);
                     //-------------Description: Vytvoření repositáře pro přístup k entitám služby.
                     //-------------Description: Název ConnectionString získán z konfiguračního souboru appsetting.json
-                    var repository = new DochazkaServiceRepository(config.GetValue<string>("Setting:ConnectionString"));
+                    var repository = new DochazkaServiceRepository();
                     //-------------Description: Odeslání zprávy do repositáře
                     repository.AddCommand(message);
                 };

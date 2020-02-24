@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Udalost_Service.Repositories;
@@ -18,10 +19,15 @@ namespace Udalost_Service
                 IConfiguration config = new ConfigurationBuilder()
                     .AddJsonFile("appsettings.json", true, true)
                     .Build();
-                //-------------Description: Zápis o konzumaci RabbitMq Exchange pro konzumaci publikovaných zpráv
-                //-------------Description: Název Exchange získán z konfiguračního souboru appsetting.json
+            //-------------Description: Zápis o konzumaci RabbitMq Exchange pro konzumaci publikovaných zpráv
+            //-------------Description: Název Exchange získán z konfiguračního souboru appsetting.json
+
+            var exchanges = new List<string>();
+            exchanges.Add(config.GetValue<string>("Setting:Exchange"));
+            exchanges.Add("dochazka.ex");
+
                 var consumer = new ServiceCollection()
-                    .AddSingleton<ISubscriber>(s => new Subscriber(new ConnectionFactory() { HostName = "rabbitmq" }, config.GetValue<string>("Setting:Exchange")))
+                    .AddSingleton<ISubscriber>(s => new Subscriber(new ConnectionFactory() { HostName = "rabbitmq" }, exchanges))
                     .BuildServiceProvider()
                     .GetService<ISubscriber>()
                     .Start();
