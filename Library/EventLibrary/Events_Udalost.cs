@@ -26,9 +26,9 @@ namespace EventLibrary
             Version = 1;
             CreatedDate = DateTime.Now;
         }
+        public int UdalostId { get; set; }
         public int UdalostTypId { get; set; }
-        public string Popis { get; set; }
-        public int UdalostId { get; set; }       
+        public string Popis { get; set; }            
         public int UzivatelId { get; set; }
         public DateTime DatumZadal { get; set; }
         public DateTime DatumOd { get; set; }

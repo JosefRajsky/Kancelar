@@ -15,27 +15,53 @@ namespace Udalost_Api.Repositories
 {
     public class UdalostRepository : IUdalostRepository
     {
-        private readonly UdalostDbContext db;        
-        private Publisher publisher;
-       
-        public UdalostRepository(UdalostDbContext udalostDbContext, Publisher _publisher) {
-            db = udalostDbContext;
-            publisher = _publisher;
-    }
+        private readonly UdalostDbContext db;
+        private Publisher _publisher;
 
-        public async Task Add(UdalostModel input)
+        public UdalostRepository(UdalostDbContext udalostDbContext, Publisher _publisher)
         {
-            var body = JsonConvert.SerializeObject(
+            db = udalostDbContext;
+            this._publisher = _publisher;
+        }
+
+        public async Task Add(UdalostModel model)
+        {
+            var cmd = JsonConvert.SerializeObject(
                    new CommandUdalostCreate()
                    {
-                       UdalostTypId = input.UdalostTypId,
-                       UzivatelId = input.UzivatelId,
-                       DatumOd = input.DatumOd,
-                       DatumDo = input.DatumDo,
+                       UdalostTypId = model.UdalostTypId,
+                       UzivatelId = model.UzivatelId,
+                       DatumOd = model.DatumOd,
+                       DatumDo = model.DatumDo,
                        DatumZadal = DateTime.Now,
-                       Popis = input.Popis,
+                       Popis = model.Popis,
                    });
-            await publisher.Push(body);
+
+            var udalost = new Udalost()
+            {
+                DatumOd = model.DatumOd,
+                DatumDo = model.DatumDo,
+                DatumZadal = DateTime.Now,
+                Popis = model.Popis,
+                UdalostTypId = model.UdalostTypId,
+                UzivatelId = model.UzivatelId,
+            };
+            db.Udalosti.Add(udalost);
+            await db.SaveChangesAsync();
+
+            var response = JsonConvert.SerializeObject(
+                new EventUdalostCreated()
+                {
+                    DatumOd = model.DatumOd,
+                    DatumDo = model.DatumDo,
+                    DatumZadal = DateTime.Now,
+                    Popis = model.Popis,
+                    UdalostTypId = model.UdalostTypId,
+                    UzivatelId = model.UzivatelId,
+                }
+                );
+
+            await _publisher.Push(response);
         }
 
         public async Task<Udalost> Get(int id) => await Task.Run(() => db.Udalosti.FirstOrDefault(b => b.Id == id));
@@ -44,28 +70,65 @@ namespace Udalost_Api.Repositories
 
         public async Task Remove(int id)
         {
-            var body = JsonConvert.SerializeObject(
-                   new CommandUdalostRemove()
-                   {
-                       UdalostId = Convert.ToInt32(id)
-                   }) ;
-            await publisher.Push(body);
+            var cmd = JsonConvert.SerializeObject(
+                 new CommandUdalostRemove()
+                 {
+                    UdalostId = id,
+                 });
+
+            var remove = db.Udalosti.Find(id);
+            db.Udalosti.Remove(remove);
+            await db.SaveChangesAsync();
+
+            var response = JsonConvert.SerializeObject(new EventUdalostRemoved()
+            {
+                UdalostId = id,
+            });
+
+            await _publisher.Push(response);
         }
 
-        public async Task Update(UdalostModel update)
-        {           
-            var body = JsonConvert.SerializeObject(
-                   new CommandUdalostUpdate()
-                   {
-                       UdalostId = update.Id,
-                       UzivatelId = update.UzivatelId,
-                       DatumOd = update.DatumOd,
-                       DatumDo = update.DatumDo,
-                       DatumZadal = DateTime.Now,
-                       UdalostTypId = update.UdalostTypId,
-                       Popis = update.Popis
-                   }); ;
-            await publisher.Push(body);
+        public async Task Update(UdalostModel model)
+        {
+            var cmd = JsonConvert.SerializeObject(
+                    new CommandUdalostUpdate()
+                    {
+                        UdalostId = model.Id,
+                        UdalostTypId = model.UdalostTypId,
+                        UzivatelId = model.UzivatelId,
+                        DatumOd = model.DatumOd,
+                        DatumDo = model.DatumDo,
+                        DatumZadal = DateTime.Now,
+                        Popis = model.Popis,
+                    }); 
+
+            var udalost = new Udalost()
+            {
+                Id = model.Id,
+                DatumOd = model.DatumOd,
+                DatumDo = model.DatumDo,
+                DatumZadal = DateTime.Now,
+                Popis = model.Popis,
+                UdalostTypId = model.UdalostTypId,
+                UzivatelId = model.UzivatelId,
+            };
+            var update = db.Udalosti.Find(model.Id);
+            update = udalost;
+            await db.SaveChangesAsync();
+
+            var response = JsonConvert.SerializeObject(
+                new EventUdalostUpdated()
+                {
+                    UdalostId = model.Id,
+                    DatumOd = model.DatumOd,
+                    DatumDo = model.DatumDo,
+                    DatumZadal = DateTime.Now,
+                    Popis = model.Popis,
+                    UdalostTypId = model.UdalostTypId,
+                    UzivatelId = model.UzivatelId,
+                }
+                );
+            await _publisher.Push(response);
         }
 
     }

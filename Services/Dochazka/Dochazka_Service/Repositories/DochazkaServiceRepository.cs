@@ -62,52 +62,24 @@ namespace Dochazka_Service.Repositories
             }
         }
 
-        public void AddAsync(CommandDochazkaCreate msg)
+        public void AddAsync(CommandDochazkaCreate cmd)
         {
             //-------------Description: Vytvoření entity podle obdržené zprávy
             var model = new DochazkaModel()
             {
-                Datum = msg.Datum,
-                Prichod = msg.Prichod,
-                CteckaId = msg.CteckaId,
-                UzivatelId = msg.UzivatelId,
+                Datum = cmd.Datum,
+                Prichod = cmd.Prichod,
+                CteckaId = cmd.CteckaId,
+                UzivatelId = cmd.UzivatelId,
             };
             
             var client = new HttpClient();
             client.BaseAddress = new Uri(_BaseUrl);
             client.PostAsJsonAsync("Add", model);
-
-            //var add = new Dochazka()
-            //{
-            //    Den = msg.Datum.Day,
-            //    DenTydne = (int)msg.Datum.DayOfWeek,
-            //    Mesic = msg.Datum.Month,
-            //    Rok = msg.Datum.Year,
-            //    Prichod = msg.Prichod,
-            //    Tick = msg.Datum.Ticks,
-            //    UzivatelId = msg.UzivatelId,
-            //};
-            ////-------------Description: Založení připojení k databázi
-            //using (var db = new DochazkaDbContextFactory(_connectionString).CreateDbContext())
-            //{
-            //    //-------------Description: Přidání a uložení do DB; Ukončení spojení
-            //    db.Dochazka.Add(add);
-            //    db.SaveChanges();
-            //    db.Dispose();
-            //}   
+        
         }
         public void Remove(CommandDochazkaRemove msg)
-        {
-            //using (var db = new DochazkaDbContextFactory(_connectionString).CreateDbContext())
-            //{
-            //    var remove = db.Dochazka.FirstOrDefault(b => b.Id == msg.DochazkaId);
-            //    if (remove != null) {
-            //        db.Dochazka.Remove(remove);
-            //        db.SaveChanges();
-
-            //    }
-
-            //} 
+        {           
             var client = new HttpClient();
             client.BaseAddress = new Uri(_BaseUrl);
             client.DeleteAsync(string.Format("Remove/{0}", msg.Id));
@@ -122,28 +94,9 @@ namespace Dochazka_Service.Repositories
                 CteckaId = msg.CteckaId,
                 UzivatelId = msg.UzivatelId,
             };
-
             var client = new HttpClient();
             client.BaseAddress = new Uri(_BaseUrl);
-            client.PutAsJsonAsync("Update", model);
-            //using (var db = new DochazkaDbContextFactory(_connectionString).CreateDbContext())
-            //{
-            //    var forUpdate = db.Dochazka.FirstOrDefault(b => b.Id == msg.DochazkaId);
-            //    if (forUpdate != null) {
-            //        forUpdate.Den = msg.Datum.Day;
-            //        forUpdate.DenTydne = (int)msg.Datum.DayOfWeek;
-            //        forUpdate.Mesic = msg.Datum.Month;
-            //        forUpdate.Rok = msg.Datum.Year;
-            //        forUpdate.Prichod = msg.Prichod;
-            //        forUpdate.Tick = msg.Datum.Ticks;
-            //        forUpdate.UzivatelId = msg.UzivatelId;
-            //        db.Dochazka.Update(forUpdate);
-            //        db.SaveChanges();
-            //        return true;
-            //    }
-
-            //}
-            //return false;
+            client.PutAsJsonAsync("Update", model);           
         }
         
 
