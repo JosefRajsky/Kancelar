@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Dochazka_Api
+namespace Uzivatel_Api
 {
     public class Program
     {
@@ -22,6 +22,5 @@ namespace Dochazka_Api
                 {
                     webBuilder.UseStartup<Startup>();
                 });
-
     }
 }

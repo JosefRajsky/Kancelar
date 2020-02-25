@@ -98,6 +98,18 @@ services:
       - sqlserver
       - rabbitmq
 
+  uzivatelapi:
+    image: ${DOCKER_REGISTRY-}uzivatel_api
+    hostname: "uzivatelapi"       
+    ports:
+      - "8085:80"
+    build:
+      context: .
+      dockerfile: Services/Uzivatel/Uzivatel_Api/Dockerfile
+    depends_on:
+      - sqlserver
+      - rabbitmq
+
   dochazkaapi:
     image: ${DOCKER_REGISTRY-}dochazka_api
     hostname: "dochazkaapi"       

@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Dochazka_Api.Entities;
 using Dochazka_Api.Repositories;
 using DochazkaLibrary.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Microsoft.EntityFrameworkCore;
-using Polly;
 
 namespace Dochazka_Api.Controllers
 {

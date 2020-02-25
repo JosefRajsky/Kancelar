@@ -18,7 +18,7 @@ namespace CommandHandler
         public EventingBasicConsumer Start()
         {
             
-            //_channel.ExchangeDeclare(exchange: _exchange, type: ExchangeType.Fanout);
+            _channel.ExchangeDeclare(exchange: _exchange[0], type: ExchangeType.Fanout);
      
                 //_channel.BasicPublish(
                 // exchange: _exchange,

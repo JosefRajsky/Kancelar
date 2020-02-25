@@ -1,9 +1,6 @@
 ﻿
-using Dochazka_Api.Entities;
 using DochazkaLibrary.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Dochazka_Api.Repositories

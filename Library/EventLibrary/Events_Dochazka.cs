@@ -10,6 +10,7 @@ namespace EventLibrary
             MessageType = EventLibrary.MessageType.DochazkaCreated;
             Version = 1;
             CreatedDate = DateTime.Now;
+            
         }
         public int UzivatelId { get; set; }
         public bool Prichod { get; set; }

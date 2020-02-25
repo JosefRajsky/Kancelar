@@ -1,6 +1,5 @@
 ﻿
 using CommandHandler;
-using Dochazka_Api.Entities;
 using DochazkaLibrary.Models;
 using EventLibrary;
 using Microsoft.AspNetCore.Mvc;

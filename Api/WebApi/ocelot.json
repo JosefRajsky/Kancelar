@@ -23,6 +23,18 @@
       "UpstreamPathTemplate": "/api/udalost/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "SwaggerKey": "udalost"
+    },
+    {
+      "DownstreamPathTemplate": "/uzivatel/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "uzivatelapi/"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/uzivatel/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "SwaggerKey": "uzivatel"
     }
   ],
   "SwaggerEndPoints": [
@@ -43,6 +55,16 @@
           "Name": "Udalost API",
           "Version": "v1",
           "Url": "http://udalostapi/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "uzivatel",
+      "Config": [
+        {
+          "Name": "Uzivatel API",
+          "Version": "v1",
+          "Url": "http://uzivatelapi/swagger/v1/swagger.json"
         }
       ]
     }

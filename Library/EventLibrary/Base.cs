@@ -11,5 +11,6 @@ namespace EventLibrary
         public MessageType MessageType { get; set; }
         public DateTime CreatedDate { get; set; }
         public int Version { get; set; }     
+        public int ParentId { get; set; }
     }
 }

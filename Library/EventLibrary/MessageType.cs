@@ -46,7 +46,25 @@ namespace EventLibrary
         [Description("Command: Update události")]
         UdalostUpdated = 11,
         #endregion
+        #region Uzivatel
+        [Description("Command: Vytvoření nové docházky")]
+        UzivatelCreate = 12,
 
+        [Description("Command: Odstranění docházky")]
+        UzivatelRemove = 13,
+
+        [Description("Command: Update docházky")]
+        UzivatelUpdate = 14,
+
+        [Description("Command: Vytvoření nové docházky")]
+        UzivatelCreated = 15,
+
+        [Description("Command: Odstranění docházky")]
+        UzivatelRemoved = 16,
+
+        [Description("Command: Update docházky")]
+        UzivatelUpdated = 17,
+        #endregion
 
 
     }
