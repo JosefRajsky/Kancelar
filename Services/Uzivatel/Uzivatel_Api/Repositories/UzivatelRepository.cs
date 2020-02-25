@@ -17,49 +17,40 @@ namespace Uzivatel_Api.Repositories
     {
         private readonly UzivatelDbContext db;
         private Publisher _publisher;
-        public UzivatelRepository(UzivatelDbContext UzivatelDbContext, Publisher publisher) {
-            db = UzivatelDbContext;
-            _publisher = publisher;          
+        private MessageHandler _handler;
+        public UzivatelRepository(UzivatelDbContext dbContext, Publisher publisher)
+        {
+            db = dbContext;
+            _publisher = publisher;
+            _handler = new MessageHandler(publisher);
         }
-        public async Task Add(UzivatelModel model)
-        {           
-            //var cmd = JsonConvert.SerializeObject(
-            //       new CommandUzivatelCreate()
-            //       {
-            //           ParentId = 0,
-            //           UzivatelId = model.Id,
-            //           TitulPred = model.TitulPred,
-            //           Jmeno = model.Jmeno,
-            //           Prijmeni = model.Prijmeni,
-            //           TitulZa = model.TitulZa,
-            //           Pohlavi = model.Pohlavi,
-            //           DatumNarozeni = model.DatumNarozeni,
-            //           Email = model.Email,
-            //           Telefon = model.Telefon,
-            //           Foto = model.Foto,
-            //       });
+            public async Task Add(CommandUzivatelCreate cmd)
+        {
+            var version = 1;
+            var cmdGuid = await _handler.MakeCommand(cmd, MessageType.UzivatelCreate, null, version, false);
+
             //TODO: ulozit create do EventStore;
-            var add = new Uzivatel()
+            var model = new Uzivatel()
             {
-                Id = model.Id,
-            TitulPred = model.TitulPred,
-            Jmeno = model.Jmeno,
-            Prijmeni = model.Prijmeni,
-            TitulZa = model.TitulZa,
-            Pohlavi = model.Pohlavi,
-            DatumNarozeni = model.DatumNarozeni,
-            Email = model.Email,
-            Telefon = model.Telefon,
-            Foto = model.Foto,
+                Id = cmd.UzivatelId,
+            TitulPred = cmd.TitulPred,
+            Jmeno = cmd.Jmeno,
+            Prijmeni = cmd.Prijmeni,
+            TitulZa = cmd.TitulZa,
+            Pohlavi = cmd.Pohlavi,
+            DatumNarozeni = cmd.DatumNarozeni,
+            Email = cmd.Email,
+            Telefon = cmd.Telefon,
+            Foto = cmd.Foto,
         };
-            db.Uzivatele.Add(add);
+            db.Uzivatele.Add(model);
             await db.SaveChangesAsync();
             db.Dispose();
 
             //Description: Uložit a publikovat event UzivatelCreated
-            var response = JsonConvert.SerializeObject(new EventUzivatelCreated()
+            var ev= JsonConvert.SerializeObject(new EventUzivatelCreated()
             {
-                ParentId = 0,
+               
                 UzivatelId = model.Id,
                 TitulPred = model.TitulPred,
                 Jmeno = model.Jmeno,
@@ -72,57 +63,41 @@ namespace Uzivatel_Api.Repositories
                 Foto = model.Foto,
             });
             //TODO: Uložení Event do EventStore;
-            await _publisher.Push(response);
+            var responseGuid = await _handler.PublishEvent(ev, MessageType.UzivatelCreated, cmdGuid, version, true);
         }
 
         public async Task<Uzivatel> Get(string id) => await Task.Run(() => db.Uzivatele.FirstOrDefault(b => b.Id == Convert.ToInt32(id)));
         public async Task<List<Uzivatel>> GetList() => await db.Uzivatele.ToListAsync();
-        public async Task Remove(int id)
+        public async Task Remove(CommandUzivatelRemove cmd)
         {
-            //var cmd = JsonConvert.SerializeObject(
-            //     new CommandUzivatelRemove()
-            //     {
-            //        UzivatelId = id,
-            //     });
 
-            var remove = db.Uzivatele.Find(id);
+            var version = 1;
+            var cmdGuid = await _handler.MakeCommand(cmd, MessageType.UzivatelRemove, null, version, false);
+            var remove = db.Uzivatele.Find(cmd.UzivatelId);
             db.Uzivatele.Remove(remove);
             await db.SaveChangesAsync();
 
-            var response = JsonConvert.SerializeObject(new EventUzivatelDeleted()
+            var ev = JsonConvert.SerializeObject(new EventUzivatelDeleted()
             {
-                UzivatelId = id,
+                UzivatelId = cmd.UzivatelId,
             });
 
-            await _publisher.Push(response);
+            var responseGuid = await _handler.PublishEvent(ev, MessageType.UzivatelRemoved, cmdGuid, version, true);
         }
 
-        public async Task Update(UzivatelModel model)
+        public async Task Update(CommandUzivatelUpdate cmd)
         {
-            //var cmd = JsonConvert.SerializeObject(
-            //     new CommandUzivatelUpdate()
-            //     {
-            //         ParentId = 0,
-            //         UzivatelId = model.Id,
-            //         TitulPred = model.TitulPred,
-            //         Jmeno = model.Jmeno,
-            //         Prijmeni = model.Prijmeni,
-            //         TitulZa = model.TitulZa,
-            //         Pohlavi = model.Pohlavi,
-            //         DatumNarozeni = model.DatumNarozeni,
-            //         Email = model.Email,
-            //         Telefon = model.Telefon,
-            //         Foto = model.Foto,
-            //     }) ;
+            var version = 1;
+            var cmdGuid = await _handler.MakeCommand(cmd, MessageType.UzivatelUpdate, null, version, false);
 
-            var update= db.Uzivatele.Find(model.Id);
-            db.Uzivatele.Remove(update);
+            var model= db.Uzivatele.Find(cmd.UzivatelId);
+            db.Uzivatele.Remove(model);
             await db.SaveChangesAsync();
 
-            var response = JsonConvert.SerializeObject(
+            var ev = JsonConvert.SerializeObject(
                 new EventUzivatelUpdated()
                 {
-                    ParentId = model.Id,
+                   
                     UzivatelId = model.Id,
                     TitulPred = model.TitulPred,
                     Jmeno = model.Jmeno,
@@ -134,7 +109,7 @@ namespace Uzivatel_Api.Repositories
                     Telefon = model.Telefon,
                     Foto = model.Foto,
                 }) ;
-            await _publisher.Push(response);
+            var responseGuid = await _handler.PublishEvent(ev, MessageType.DochazkaUpdated, cmdGuid, version, true);
         }
 
  

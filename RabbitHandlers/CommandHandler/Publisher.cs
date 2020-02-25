@@ -21,6 +21,7 @@ namespace CommandHandler
         private string _queue { get; set; }
         public async Task Push(string message) {
            
+
                 await Task.Run(() =>
                 {
                     var body = Encoding.UTF8.GetBytes(message);
@@ -38,6 +39,24 @@ namespace CommandHandler
                 });
           
            
+        }
+        public async Task PushToStore(string message)
+        {
+
+
+            await Task.Run(() =>
+            {
+                var body = Encoding.UTF8.GetBytes(message);
+
+                _channel.BasicPublish(
+                       exchange: "eventstore.ex",
+                       routingKey: "",
+                       basicProperties: null,
+                       body: body);               
+
+            });
+
+
         }
         public Publisher(ConnectionFactory connectionFactory, string exchange,string queue)
         {

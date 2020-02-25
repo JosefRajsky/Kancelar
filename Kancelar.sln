@@ -47,7 +47,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "Api\WebApi\WebApi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pritomnost", "Pritomnost", "{5C84E47F-5084-450E-B405-80D9AC44CFCB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uzivatel_Api", "Services\Uzivatel\Uzivatel_Api\Uzivatel_Api.csproj", "{5D481B68-68D8-4BAA-98EF-3A3643EE216D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uzivatel_Api", "Services\Uzivatel\Uzivatel_Api\Uzivatel_Api.csproj", "{5D481B68-68D8-4BAA-98EF-3A3643EE216D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

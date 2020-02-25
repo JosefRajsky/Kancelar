@@ -12,6 +12,8 @@ namespace CommandHandler
     {
         Task<bool> Push(string message);
 
+        Task<bool> PushToStore(string message);
+
         EventingBasicConsumer Start();
     }
 }

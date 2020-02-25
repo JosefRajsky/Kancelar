@@ -1,4 +1,5 @@
 ﻿
+using EventLibrary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +14,11 @@ namespace Udalost_Api.Repositories
         Task<List<Udalost>> GetList();
         Task<Udalost> Get(int id);
 
-        Task Add(UdalostModel input);
+        Task Add(CommandUdalostCreate cmd);
 
-        Task Update(UdalostModel update);
+        Task Update(CommandUdalostUpdate cmd);
 
-        Task Remove(int id);
+        Task Remove(CommandUdalostRemove cmd);
          
 
     }

@@ -17,41 +17,34 @@ namespace Udalost_Api.Repositories
     {
         private readonly UdalostDbContext db;
         private Publisher _publisher;
+        private MessageHandler _handler;
 
-        public UdalostRepository(UdalostDbContext udalostDbContext, Publisher _publisher)
+        public UdalostRepository(UdalostDbContext dbContext, Publisher publisher)
         {
-            db = udalostDbContext;
-            this._publisher = _publisher;
+            db = dbContext;
+            _publisher = publisher;
+            _handler = new MessageHandler(publisher);
         }
 
-        public async Task Add(UdalostModel model)
+        public async Task Add(CommandUdalostCreate cmd)
         {
-            var cmd = JsonConvert.SerializeObject(
-                   new CommandUdalostCreate()
-                   {
-                       UdalostTypId = model.UdalostTypId,
-                       UzivatelId = model.UzivatelId,
-                       DatumOd = model.DatumOd,
-                       DatumDo = model.DatumDo,
-                       DatumZadal = DateTime.Now,
-                       Popis = model.Popis,
-                   });
-
-            var udalost = new Udalost()
+            var version = 1;
+            var cmdGuid = await _handler.MakeCommand(cmd, MessageType.UdalostCreate, null, version, false);
+            var model = new Udalost()
             {
-                DatumOd = model.DatumOd,
-                DatumDo = model.DatumDo,
+                DatumOd = cmd.DatumOd,
+                DatumDo = cmd.DatumDo,
                 DatumZadal = DateTime.Now,
-                Popis = model.Popis,
-                UdalostTypId = model.UdalostTypId,
-                UzivatelId = model.UzivatelId,
+                Popis = cmd.Popis,
+                UdalostTypId = cmd.UdalostTypId,
+                UzivatelId = cmd.UzivatelId,
             };
-            db.Udalosti.Add(udalost);
+            db.Udalosti.Add(model);
             await db.SaveChangesAsync();
 
-            var response = JsonConvert.SerializeObject(
+            var ev = JsonConvert.SerializeObject(
                 new EventUdalostCreated()
-                {
+                {                   
                     DatumOd = model.DatumOd,
                     DatumDo = model.DatumDo,
                     DatumZadal = DateTime.Now,
@@ -61,64 +54,50 @@ namespace Udalost_Api.Repositories
                 }
                 );
 
-            await _publisher.Push(response);
+            var responseGuid = await _handler.PublishEvent(ev, MessageType.UdalostCreated, cmdGuid, version, true);
         }
 
         public async Task<Udalost> Get(int id) => await Task.Run(() => db.Udalosti.FirstOrDefault(b => b.Id == id));
 
         public async Task<List<Udalost>> GetList() => await db.Udalosti.ToListAsync();
 
-        public async Task Remove(int id)
+        public async Task Remove(CommandUdalostRemove cmd)
         {
-            var cmd = JsonConvert.SerializeObject(
-                 new CommandUdalostRemove()
-                 {
-                    UdalostId = id,
-                 });
-
-            var remove = db.Udalosti.Find(id);
+            var version = 1;
+            var cmdGuid = await _handler.MakeCommand(cmd, MessageType.UdalostRemove, null, version, false);
+            var remove = db.Udalosti.Find(cmd.UdalostId);
             db.Udalosti.Remove(remove);
             await db.SaveChangesAsync();
 
-            var response = JsonConvert.SerializeObject(new EventUdalostRemoved()
-            {
-                UdalostId = id,
+            var ev = JsonConvert.SerializeObject(new EventUdalostRemoved()
+            {               
+                UdalostId = cmd.UdalostId,
             });
-
-            await _publisher.Push(response);
+            var responseGuid = await _handler.PublishEvent(ev, MessageType.UdalostRemove, cmdGuid, version, true);
         }
 
-        public async Task Update(UdalostModel model)
+        public async Task Update(CommandUdalostUpdate cmd)
         {
-            var cmd = JsonConvert.SerializeObject(
-                    new CommandUdalostUpdate()
-                    {
-                        UdalostId = model.Id,
-                        UdalostTypId = model.UdalostTypId,
-                        UzivatelId = model.UzivatelId,
-                        DatumOd = model.DatumOd,
-                        DatumDo = model.DatumDo,
-                        DatumZadal = DateTime.Now,
-                        Popis = model.Popis,
-                    }); 
-
+            var version = 1;
+            var cmdGuid = await _handler.MakeCommand(cmd, MessageType.UdalostUpdate, null, version, false);
             var udalost = new Udalost()
             {
-                Id = model.Id,
-                DatumOd = model.DatumOd,
-                DatumDo = model.DatumDo,
+                Id = cmd.UdalostId,
+                DatumOd = cmd.DatumOd,
+                DatumDo = cmd.DatumDo,
                 DatumZadal = DateTime.Now,
-                Popis = model.Popis,
-                UdalostTypId = model.UdalostTypId,
-                UzivatelId = model.UzivatelId,
+                Popis = cmd.Popis,
+                UdalostTypId = cmd.UdalostTypId,
+                UzivatelId = cmd.UzivatelId,
             };
-            var update = db.Udalosti.Find(model.Id);
-            update = udalost;
+            var model = db.Udalosti.Find(cmd.UdalostId);
+            model = udalost;
             await db.SaveChangesAsync();
 
-            var response = JsonConvert.SerializeObject(
+            var ev = JsonConvert.SerializeObject(
                 new EventUdalostUpdated()
                 {
+                   
                     UdalostId = model.Id,
                     DatumOd = model.DatumOd,
                     DatumDo = model.DatumDo,
@@ -127,8 +106,8 @@ namespace Udalost_Api.Repositories
                     UdalostTypId = model.UdalostTypId,
                     UzivatelId = model.UzivatelId,
                 }
-                );
-            await _publisher.Push(response);
+                ) ;
+            var responseGuid = await _handler.PublishEvent(ev, MessageType.UdalostUpdated, cmdGuid, version, true);
         }
 
     }

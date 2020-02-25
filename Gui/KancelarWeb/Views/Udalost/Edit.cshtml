@@ -1,45 +1,64 @@
 ﻿@model KancelarWeb.ViewModels.UdalostModel
+
 @{
-ViewData["Title"] = "Edit";
+    ViewData["Title"] = "View";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
 <h4>Nová událost</h4>
-
-@using (Html.BeginForm("Add", "Udalost", FormMethod.Post))
-{
-    <div class="row">
-        <div class="col-md-4">
-            <form asp-action="View">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    @Html.LabelFor(Model => Model.Nazev)
-                    <label asp-for="Url" class="control-label"></label>
-                    @Html.DropDownListFor(Model => Model.UdalostTypId, Model.UdalostTypList,"Typ dovolené", new { @class = "form-control" })
-                   
-                    <span asp-validation-for="Nazev" class="text-danger"></span>
-
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(Model => Model.DatumOd)
-                    @Html.TextBoxFor(Model => Model.DatumOd, new { @class = "form-control datepicker", @Type="date"})
-
-                    <span asp-validation-for="DatumOd" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(Model => Model.DatumDo)
-                    @Html.TextBoxFor(Model => Model.DatumDo, new { @class = "form-control datepicker", @Type="date" })
-                    <span asp-validation-for="DatumDo" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Create" class="btn btn-primary" />
-                </div>
-            </form>
-        </div>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="View">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Id" class="control-label"></label>
+                <input asp-for="Id" class="form-control" />
+                <span asp-validation-for="Id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UdalostTypId" class="control-label"></label>
+                <input asp-for="UdalostTypId" class="form-control" />
+                <span asp-validation-for="UdalostTypId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Popis" class="control-label"></label>
+                <input asp-for="Popis" class="form-control" />
+                <span asp-validation-for="Popis" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DatumOd" class="control-label"></label>
+                <input asp-for="DatumOd" class="form-control" />
+                <span asp-validation-for="DatumOd" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DatumDo" class="control-label"></label>
+                <input asp-for="DatumDo" class="form-control" />
+                <span asp-validation-for="DatumDo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UzivatelId" class="control-label"></label>
+                <input asp-for="UzivatelId" class="form-control" />
+                <span asp-validation-for="UzivatelId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UzivatelCeleJmeno" class="control-label"></label>
+                <input asp-for="UzivatelCeleJmeno" class="form-control" />
+                <span asp-validation-for="UzivatelCeleJmeno" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Nazev" class="control-label"></label>
+                <input asp-for="Nazev" class="form-control" />
+                <span asp-validation-for="Nazev" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
     </div>
-  
-}
+</div>
 
-
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
 

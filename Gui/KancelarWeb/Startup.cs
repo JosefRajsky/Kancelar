@@ -37,7 +37,7 @@ namespace KancelarWeb
             {
                 app.UseExceptionHandler("/Error");
             }
-     
+            
             app.UseStaticFiles();  
             app.UseRouting();
             app.UseStatusCodePages();

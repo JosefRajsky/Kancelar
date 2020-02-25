@@ -33,19 +33,38 @@ namespace KancelarWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> Add( UdalostModel model)
         {
-            await client.AddAsync(model);
+            var command = new CommandUdalostCreate() {
+                UzivatelId = model.UzivatelId,
+                DatumDo = model.DatumDo,
+                DatumOd = model.DatumDo,
+                DatumZadal = DateTime.Today,
+                Popis = model.Popis,
+                UdalostTypId = model.Id
+            };
+            await client.AddAsync(command);
 
             return RedirectToAction("Index");
         }
         public async Task<IActionResult> Update(UdalostModel model)
         {
-            await client.UpdateAsync(model);
+            var command = new CommandUdalostUpdate()
+            {
+                UdalostId = model.Id,
+                UzivatelId = model.UzivatelId,
+                DatumDo = model.DatumDo,
+                DatumOd = model.DatumDo,
+                DatumZadal = DateTime.Today,
+                Popis = model.Popis,
+                UdalostTypId = model.Id
+            };
+            await client.UpdateAsync(command);
 
             return RedirectToAction("Index");
         }
         public async Task<IActionResult> Remove(int id)
         {
-            await client.DeleteAsync(id);
+            var command = new CommandUdalostRemove() { UdalostId = id };
+            await client.RemoveAsync(command);
             return RedirectToAction("Index");
         }
         public IActionResult Edit()

@@ -17,8 +17,7 @@ namespace DochazkaLibrary.Models
         public int DenTydne { get; set; }
         public long Tick { get; set; }
         public bool Prichod { get; set; }
-
-
-  
+        public string CteckaId { get; set; }
+        public DateTime Datum { get; set; }
     }
 }

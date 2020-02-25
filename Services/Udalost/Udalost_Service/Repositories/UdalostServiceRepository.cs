@@ -23,7 +23,7 @@ namespace Udalost_Service.Repositories
         public void AddCommand(string message)
         {
             //-------------Description: Deserializace Json objektu na základní typ zprávy
-            var envelope = JsonConvert.DeserializeObject<Base>(message);
+            var envelope = JsonConvert.DeserializeObject<Command>(message);
             //-------------Description: Rozhodnutí o typu získazné zprávy. Typ vázaný na Enum z knihovny
             switch (envelope.MessageType)
             {
@@ -58,21 +58,14 @@ namespace Udalost_Service.Repositories
         }
         public void Add(CommandUdalostCreate cmd)
         {
-            var model = new UdalostModel()
-            {
-                DatumOd = cmd.DatumOd,
-                DatumDo = cmd.DatumDo,
-                Popis = cmd.Popis,
-                UdalostTypId = cmd.UdalostTypId,
-                UzivatelId = cmd.UzivatelId,
-            };
+
             var client = new HttpClient();
             client.BaseAddress = new Uri(_BaseUrl);
-            client.PostAsJsonAsync("Add", model);
+            client.PutAsJsonAsync("Add", cmd);
         }
         public void AddByDochazka(EventDochazkaCreated evt)
         {
-            var model = new UdalostModel()
+            var cmd = new CommandUdalostCreate()
             {
                 DatumOd = evt.Datum,
                 DatumDo = evt.Datum.AddHours(8),
@@ -82,13 +75,13 @@ namespace Udalost_Service.Repositories
             };
             var client = new HttpClient();
             client.BaseAddress = new Uri(_BaseUrl);
-            client.PostAsJsonAsync("Add", model);
+            client.PutAsJsonAsync("Add", cmd);
         }
         public void Remove(CommandUdalostRemove cmd)
         {
             var client = new HttpClient();
             client.BaseAddress = new Uri(_BaseUrl);
-            client.DeleteAsync(string.Format("Remove/{0}", cmd.Id));
+            client.PostAsJsonAsync("Remove", cmd);
         }
         public void Update(CommandUdalostUpdate cmd)
         {

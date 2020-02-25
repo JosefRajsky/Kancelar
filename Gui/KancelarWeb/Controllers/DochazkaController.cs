@@ -35,11 +35,14 @@ namespace KancelarWeb.Controllers
         public async Task<IActionResult> AddPrichod(string prichod)
         {            
             Random rnd = new Random();
-            var model = new DochazkaModel();
-            model.UzivatelId = rnd.Next(100, 1000);
-            model.Datum = (Convert.ToBoolean(prichod)) ? DateTime.Now.AddHours(-rnd.Next(1, 5)) : DateTime.Now.AddHours(rnd.Next(1, 4));
-            model.Prichod = Convert.ToBoolean(prichod);
-            model.UzivatelCeleJmeno = "Jmeno Prijmeni";
+            var model = new CommandDochazkaCreate()
+            { 
+            CteckaId = "",
+            Datum = (Convert.ToBoolean(prichod)) ? DateTime.Now.AddHours(-rnd.Next(1, 5)) : DateTime.Now.AddHours(rnd.Next(1, 4)),
+            Prichod = Convert.ToBoolean(prichod),
+            UzivatelId = rnd.Next(100, 1000)
+            };
+           
             await client.AddAsync(model);
               
             return RedirectToAction("Index"); 
@@ -47,7 +50,13 @@ namespace KancelarWeb.Controllers
        
         public async Task<IActionResult> Remove(int id)
         {
-            await client.DeleteAsync(id);
+            var model = new CommandDochazkaRemove()
+            {
+                DochazkaId = id
+            };
+           
+            await client.DeleteAsync(model);
+
             return RedirectToAction("Index");
         }
     }

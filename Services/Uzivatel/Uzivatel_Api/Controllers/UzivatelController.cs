@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 
 using System.Threading.Tasks;
-
+using CommandHandler;
+using EventLibrary;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Uzivatel_Api.Repositories;
@@ -15,9 +16,11 @@ namespace Uzivatel_Api.Controllers
     public class UzivatelController : ControllerBase
     {
         private readonly IUzivatelRepository _repository;
+       
         public UzivatelController(IUzivatelRepository repository)
         {
             _repository = repository;
+          
         }
         [HttpGet]
         [Route("Get/{id?}")]
@@ -47,22 +50,22 @@ namespace Uzivatel_Api.Controllers
 
         [HttpPost]
         [Route("Add")]
-        public async Task Add(UzivatelModel model)      
-        {         
-         await _repository.Add(model);            
+        public async Task Add(CommandUzivatelCreate cmd)      
+        { 
+         await _repository.Add(cmd);            
         }
 
         [HttpDelete]
-        [Route("Remove/{id?}")]
-        public async Task Delete(int id)
+        [Route("Remove")]
+        public async Task Delete(CommandUzivatelRemove cmd)
         {
-           await _repository.Remove(id);   
+           await _repository.Remove(cmd);   
         }
         [HttpPost]
         [Route("Update")]
-        public async Task Update(UzivatelModel model)
+        public async Task Update(CommandUzivatelUpdate cmd)
         {
-            await _repository.Update(model);        
+            await _repository.Update(cmd);        
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using EventLibrary;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -25,9 +25,10 @@ namespace Udalost_Api.Controllers
         [HttpGet]
         [Route("Get/{id?}")]
         public async Task<ActionResult<UdalostModel>> Get(int id) => Ok(await _udalostRepository.Get(id));
+
         [HttpGet]
         [Route("GetList")]
-        public async Task<ActionResult<UdalostModel>> GetList() {
+        public async Task<List<UdalostModel>> GetList() {
             var model =await _udalostRepository.GetList();
 
             //TODO: Dodělat derivát z entity Model a vyčítat z něj.
@@ -45,26 +46,27 @@ namespace Udalost_Api.Controllers
 
                 response.Add(u);
             }
-            return Ok(response);
-        }
-        [HttpPost]
-        [Route("Add")]
-        public async Task Add(UdalostModel model)
-        {
-            await _udalostRepository.Add(model);
+            return response;
         }
 
-        [HttpDelete]
-        [Route("Remove/{id?}")]
-        public async Task Remove(int id)
+        [HttpPut]
+        [Route("Add")]
+        public async Task Add(CommandUdalostCreate cmd)
         {
-            await _udalostRepository.Remove(id);
+            await _udalostRepository.Add(cmd);
+        }
+
+        [HttpPost]
+        [Route("Remove")]
+        public async Task Remove(CommandUdalostRemove cmd)
+        {
+            await _udalostRepository.Remove(cmd);
         }
         [HttpPost]
         [Route("Update")]
-        public async Task Update(UdalostModel model)
+        public async Task Update(CommandUdalostUpdate cmd)
         {
-            await _udalostRepository.Update(model);
+            await _udalostRepository.Update(cmd);
         }
     }
 }

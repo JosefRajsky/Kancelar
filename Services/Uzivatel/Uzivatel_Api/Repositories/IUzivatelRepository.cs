@@ -1,4 +1,5 @@
 ﻿
+using EventLibrary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +12,11 @@ namespace Uzivatel_Api.Repositories
         Task<List<Uzivatel>> GetList();
         Task<Uzivatel> Get(string id);
 
-        Task Add(UzivatelModel model);
+        Task Add(CommandUzivatelCreate cmd);
 
-        Task Update(UzivatelModel update);
+        Task Update(CommandUzivatelUpdate cmd);
 
-        Task Remove(int id);
+        Task Remove(CommandUzivatelRemove cmd);
          
 
     }

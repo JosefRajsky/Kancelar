@@ -1,5 +1,6 @@
 ﻿
 using DochazkaLibrary.Models;
+using EventLibrary;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -10,11 +11,11 @@ namespace Dochazka_Api.Repositories
         Task<List<Dochazka>> GetList();
         Task<Dochazka> Get(string id);
 
-        Task Add(DochazkaModel model);
+        Task Add(CommandDochazkaCreate cmd);
 
-        Task Update(DochazkaModel update);
+        Task Update(CommandDochazkaUpdate cmd);
 
-        Task Remove(int id);
+        Task Remove(CommandDochazkaRemove cmd);
          
 
     }

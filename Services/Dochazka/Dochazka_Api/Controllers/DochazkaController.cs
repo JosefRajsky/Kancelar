@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dochazka_Api.Repositories;
 using DochazkaLibrary.Models;
+using EventLibrary;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dochazka_Api.Controllers
@@ -37,11 +38,12 @@ namespace Dochazka_Api.Controllers
 
         [HttpGet]
         [Route("GetList")]
-        public async Task<List<DochazkaModel>> GetList() {
+        public async Task<List<DochazkaModel>> GetList()
+        {
 
             var model = await _dochazkaRepository.GetList();
 
-            //TODO: Vytvořit Wiew (derivát) a nečíst přímo z entity.
+            //TODO: Vytvořit Wiew a nečíst přímo z entity.
             var response = new List<DochazkaModel>();
             foreach (var item in model)
             {
@@ -53,28 +55,28 @@ namespace Dochazka_Api.Controllers
                 d.UzivatelCeleJmeno = " - ";
                 d.Prichod = item.Prichod;
                 response.Add(d);
-            }    
+            }
             return response;
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("Add")]
-        public async Task Add(DochazkaModel model)      
+        public async Task Add(CommandDochazkaCreate cmd)      
         {         
-         await _dochazkaRepository.Add(model);            
+         await _dochazkaRepository.Add(cmd);            
         }
 
-        [HttpDelete]
-        [Route("Remove/{id?}")]
-        public async Task Delete(int id)
+        [HttpPost]
+        [Route("Remove")]
+        public async Task Delete(CommandDochazkaRemove cmd)
         {
-           await _dochazkaRepository.Remove(id);   
+           await _dochazkaRepository.Remove(cmd);   
         }
         [HttpPost]
         [Route("Update")]
-        public async Task Update(DochazkaModel model)
+        public async Task Update(CommandDochazkaUpdate cmd)
         {
-            await _dochazkaRepository.Update(model);        
+            await _dochazkaRepository.Update(cmd);        
         }
     }
 }

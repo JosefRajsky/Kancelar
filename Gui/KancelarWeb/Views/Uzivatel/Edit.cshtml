@@ -1,0 +1,76 @@
+﻿@model KancelarWeb.ViewModels.UzivatelModel
+
+@{
+    ViewData["Title"] = "View";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h4>Nový účet</h4>
+<hr />
+
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-controller="Uzivatel" asp-action="Add" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Id" class="control-label"></label>
+                    <input asp-for="Id" class="form-control" />
+                    <span asp-validation-for="Id" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="TitulPred" class="control-label"></label>
+                    <input asp-for="TitulPred" class="form-control" />
+                    <span asp-validation-for="TitulPred" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Jmeno" class="control-label"></label>
+                    <input asp-for="Jmeno" class="form-control" />
+                    <span asp-validation-for="Jmeno" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Prijmeni" class="control-label"></label>
+                    <input asp-for="Prijmeni" class="form-control" />
+                    <span asp-validation-for="Prijmeni" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="TitulZa" class="control-label"></label>
+                    <input asp-for="TitulZa" class="form-control" />
+                    <span asp-validation-for="TitulZa" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Pohlavi" class="control-label"></label>
+                    <input asp-for="Pohlavi" class="form-control" />
+                    <span asp-validation-for="Pohlavi" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DatumNarozeni" class="control-label"></label>
+                    <input asp-for="DatumNarozeni" class="form-control" />
+                    <span asp-validation-for="DatumNarozeni" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Telefon" class="control-label"></label>
+                    <input asp-for="Telefon" class="form-control" />
+                    <span asp-validation-for="Telefon" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Foto" class="control-label"></label>
+                    <input asp-for="Foto" class="form-control" />
+                    <span asp-validation-for="Foto" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" url class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Index" class="btn btn-default">Back to List</a>
+    </div>
+
