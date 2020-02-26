@@ -30,6 +30,20 @@ services:
       NAME: "rabbitmq"
     volumes:
       - ./rabbitmq-isolated.conf:/etc/rabbitmq/rabbitmq.config
+    depends_on:
+      - sqlserver
+
+  eventstoreservice:
+    image: ${DOCKER_REGISTRY-}eventstore_service
+    hostname: "eventstoreservice"    
+    ports:
+      - "8070:80"
+    build:
+      context: .
+      dockerfile: Services/EventStore/EventStore_Service/Dockerfile
+    depends_on:
+      - sqlserver
+      - rabbitmq
 
   kancelarweb:
     image: ${DOCKER_REGISTRY-}kancelarweb
@@ -38,7 +52,10 @@ services:
     build:
       context: .
       dockerfile: Gui/KancelarWeb/Dockerfile
-
+    depends_on:
+      - sqlserver
+      - rabbitmq
+      - eventstoreservice
 #  webapi:
 #    image: ${DOCKER_REGISTRY-}web_api
 #    hostname: "webapi"       
@@ -61,6 +78,8 @@ services:
       dockerfile: Api/WebApi/Dockerfile
     depends_on:
       - sqlserver
+      - rabbitmq
+      - eventstoreservice
 
   dochazkaservice:
     image: ${DOCKER_REGISTRY-}dochazka_service
@@ -73,6 +92,7 @@ services:
     depends_on:
       - sqlserver
       - rabbitmq
+      - eventstoreservice
 
   udalostservice:
     image: ${DOCKER_REGISTRY-}udalost_service
@@ -85,6 +105,7 @@ services:
     depends_on:
       - sqlserver
       - rabbitmq
+      - eventstoreservice
 
   udalostapi:
     image: ${DOCKER_REGISTRY-}udalost_api
@@ -97,6 +118,7 @@ services:
     depends_on:
       - sqlserver
       - rabbitmq
+      - eventstoreservice
 
   uzivatelapi:
     image: ${DOCKER_REGISTRY-}uzivatel_api
@@ -109,6 +131,7 @@ services:
     depends_on:
       - sqlserver
       - rabbitmq
+      - eventstoreservice
 
   dochazkaapi:
     image: ${DOCKER_REGISTRY-}dochazka_api
@@ -121,6 +144,7 @@ services:
     depends_on:
       - sqlserver
       - rabbitmq
+      - eventstoreservice
 
 
 

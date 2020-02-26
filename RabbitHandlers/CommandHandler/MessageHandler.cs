@@ -19,7 +19,7 @@ namespace CommandHandler
                 Guid = Guid.NewGuid(),
                 MessageType =typ,
                 Version = version,
-                Vytvoren = DateTime.Now,
+                Created = DateTime.Now,
                 ParentGuid = parentGuid,
                 Message = await Task.Run(() => JsonConvert.SerializeObject(message))
             };
@@ -34,7 +34,7 @@ namespace CommandHandler
                 Guid = Guid.NewGuid(),
                 MessageType = typ,
                 Version = version,
-                Vytvoren = DateTime.Now,
+                Created = DateTime.Now,
                 ParentGuid = parentGuid,
                 Message = await Task.Run(() => JsonConvert.SerializeObject(message))
         };

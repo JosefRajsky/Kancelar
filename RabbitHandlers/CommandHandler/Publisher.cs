@@ -20,44 +20,55 @@ namespace CommandHandler
         private string _exchange { get; set; }
         private string _queue { get; set; }
         public async Task Push(string message) {
-           
 
-                await Task.Run(() =>
+          
+
+            await Task.Run(() =>
                 {
                     var body = Encoding.UTF8.GetBytes(message);
-                    
-                  _channel.BasicPublish(
-                         exchange: _exchange,
+                    _channel.TxSelect();
+
+                    _channel.BasicPublish(
+                      exchange: "eventstore.ex",
+                      routingKey: "",
+                      basicProperties: null,
+                      body: body);                  
+                   
+                    _channel.BasicPublish(
+                         exchange: _exchange,                        
                          routingKey: "",
                          basicProperties: null,
                          body: body);
+
+                    _channel.TxCommit();
+
                     //var queueName = _channel.QueueDeclare(_queue).QueueName;
                     //_channel.QueueBind(queue: queueName,
                     //              exchange: _exchange,
                     //              routingKey: "");
-                   
+
                 });
           
            
         }
-        public async Task PushToStore(string message)
-        {
+        //public async Task<bool> PushToStore(string message)
+        //{
 
 
-            await Task.Run(() =>
-            {
-                var body = Encoding.UTF8.GetBytes(message);
+        //    await Task.Run(() =>
+        //    {
+        //        var body = Encoding.UTF8.GetBytes(message);
 
-                _channel.BasicPublish(
-                       exchange: "eventstore.ex",
-                       routingKey: "",
-                       basicProperties: null,
-                       body: body);               
+        //               _channel.BasicPublish(
+        //               exchange: "eventstore.ex",
+        //               routingKey: "",
+        //               basicProperties: null,
+        //               body: body);               
 
-            });
+        //    });
 
 
-        }
+        //}
         public Publisher(ConnectionFactory connectionFactory, string exchange,string queue)
         {
             this._exchange = exchange;

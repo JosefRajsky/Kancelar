@@ -49,6 +49,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pritomnost", "Pritomnost", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uzivatel_Api", "Services\Uzivatel\Uzivatel_Api\Uzivatel_Api.csproj", "{5D481B68-68D8-4BAA-98EF-3A3643EE216D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EventStore", "EventStore", "{FDF8CCB4-ED95-4EA9-9B70-4DAF530D7A2E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventStore_Service", "Services\EventStore\EventStore_Service\EventStore_Service.csproj", "{A5A05ECC-FDCB-4FEA-8B38-98BD1DE529CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -107,6 +111,10 @@ Global
 		{5D481B68-68D8-4BAA-98EF-3A3643EE216D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D481B68-68D8-4BAA-98EF-3A3643EE216D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D481B68-68D8-4BAA-98EF-3A3643EE216D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5A05ECC-FDCB-4FEA-8B38-98BD1DE529CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5A05ECC-FDCB-4FEA-8B38-98BD1DE529CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5A05ECC-FDCB-4FEA-8B38-98BD1DE529CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5A05ECC-FDCB-4FEA-8B38-98BD1DE529CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -129,6 +137,8 @@ Global
 		{6DBEC2E1-5AFC-4B0B-BA78-C133D50A71F0} = {63E4C573-2E0D-405C-924C-1B76529200B0}
 		{5C84E47F-5084-450E-B405-80D9AC44CFCB} = {91054B8F-6B80-49D5-B3F1-415C43CAD059}
 		{5D481B68-68D8-4BAA-98EF-3A3643EE216D} = {C5C4FBA8-906D-4E27-9059-E1B30E181E2F}
+		{FDF8CCB4-ED95-4EA9-9B70-4DAF530D7A2E} = {91054B8F-6B80-49D5-B3F1-415C43CAD059}
+		{A5A05ECC-FDCB-4FEA-8B38-98BD1DE529CF} = {FDF8CCB4-ED95-4EA9-9B70-4DAF530D7A2E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FA02534C-DA03-44C8-9DAA-704670F31BEC}
