@@ -7,32 +7,34 @@ using System.Threading.Tasks;
 
 namespace KancelarWeb
 {
-    public class AppEnums
-    {
-        public enum UdalostTyp
+
+    public enum EUdalostTyp
         {
-            [Display(Name = "Přítomen")]
+            [Display(Description = "Přítomen")]
             Pritomen = 0,
-            [Display(Name = "Dovolená")]
+            [Display(Description = "Dovolená")]
             Dovolena = 1,
-            [Display(Name = "Pracovní cesta")]
+            [Display(Description = "Pracovní cesta")]
             PracovniCesta = 2,
-            [Display(Name = "Pracovní volno")]
+            [Display(Description = "Pracovní volno")]
             PracovniVolno = 3,
-            [Display(Name = "Kurz")]
+            [Display(Description = "Kurz")]
             Kurz = 4,
-            [Display(Name = "Pracovní neschopnost")]
+            [Display(Description = "Pracovní neschopnost")]
             PracovniNeschopnost = 5,
-            [Display(Name = "Home office")]
+            [Display(Description = "Home office")]
             HomeOffice = 6,
         }
-        public enum Pohlavi {
-            [Display(Name = "Neurčeno")]
+        public enum EPohlavi {
+            [Display(Description = "Neurčeno")]
             Neurceno = 0,
-            [Display(Name = "Muž")]
+            [Display(Description = "Muž")]
             Muz = 1,
-            [Display(Name = "Žena")]
+            [Display(Description = "Žena")]
             Zena = 2,
         }
-    }
+
+
+
+
 }

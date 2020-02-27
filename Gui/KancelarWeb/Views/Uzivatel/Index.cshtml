@@ -5,10 +5,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Uživatel - Přehled</h2>
+<h5>Uživatel - Přehled</h5>
 
 <p>
-    <a asp-action="Edit" asp-controller="Uzivatel" class="btn btn-outline-primary">Přidat uživatele</a>
+    <a asp-action="Edit" asp-controller="Uzivatel" class="btn btn-success">Přidat uživatele</a>
 </p>
 <table class="table">
     <thead>
@@ -80,9 +80,9 @@
                 @Html.DisplayFor(modelItem => item.Foto)
             </td>
             <td>
-                <a asp-action="Edit" asp-controller="Uzivatel" asp-route-id="@item.Id" class="btn btn-xs btn-primary">Upravit</a>
-                <a asp-action="Detail" asp-controller="Uzivatel" asp-route-id="@item.Id" class="btn btn-xs btn-info">Detail</a>
-                <a asp-action="Remove" asp-controller="Uzivatel" asp-route-id="@item.Id" class="btn btn-xs btn-danger">Odstranit</a>
+                <a asp-action="Edit" asp-controller="Uzivatel" asp-route-id="@item.Id" class="btn btn-xs btn-outline-primary" title="Upravit"><span class="oi oi-pencil"></span></a>
+                <a asp-action="Detail" asp-controller="Uzivatel" asp-route-id="@item.Id" class="btn btn-xs btn-outline-info" title="Detail"><span class="oi oi-magnifying-glass"></span></a>
+                <a asp-action="Remove" asp-controller="Uzivatel" asp-route-id="@item.Id" class="btn btn-xs btn-outline-danger" title="Odstranit"><span class="oi oi-x"></span></a>
           
             </td>
         </tr>

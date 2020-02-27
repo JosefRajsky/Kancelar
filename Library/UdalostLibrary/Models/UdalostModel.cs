@@ -24,8 +24,13 @@ namespace UdalostLibrary.Models
         public DateTime DatumDo { get; set; }
             
         public int UzivatelId { get; set; }
+
         [DisplayName("Jméno a Příjmení")]
         public string UzivatelCeleJmeno { get; set; }
-   
+
+        [DisplayName("Název")]
+        public string Nazev { get; set; }
+       
+
     }
 }

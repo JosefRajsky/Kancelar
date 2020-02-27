@@ -8,15 +8,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-using UdalostLibrary;
-
 namespace KancelarWeb.ViewModels
 
 {
     public class UdalostModel
     {
         public int Id { get; set; }
-        
+        [Display(Name = "Typ události")]
         public int UdalostTypId { get; set; }
         [Display(Name = "Popis")]
         public string Popis { get; set; }
@@ -27,18 +25,17 @@ namespace KancelarWeb.ViewModels
 
         [Display(Name = "Do")]
         [DataType(DataType.DateTime)]
+
         public DateTime DatumDo { get; set; }
-            
+
+        [Display(Name = "Uživatel")]
         public int UzivatelId { get; set; }
+
         [Display(Name = "Jméno a Příjmení")]
         public string UzivatelCeleJmeno { get; set; }
 
         [Display(Name = "Název")]
-        public virtual string Nazev { get {
-                return EmumExtension.GetDescription((UdalostTyp)UdalostTypId);
-            } }
-
-        public virtual AppEnums.UdalostTyp UdalostTypList { get; set; }
+        public virtual string Nazev { get; set; }
 
     }
 }

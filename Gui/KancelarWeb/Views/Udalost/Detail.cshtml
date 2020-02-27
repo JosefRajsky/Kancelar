@@ -1,0 +1,70 @@
+﻿@model KancelarWeb.ViewModels.UdalostModel
+
+@{
+    ViewData["Title"] = "Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    <h3>Udalost - detail</h3>
+
+<div>
+    
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.UdalostTypId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.UdalostTypId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Nazev)
+        </dt>
+        <dd class="col-sm-10">
+            <span class="btn btn-dark">  @Html.DisplayFor(model => model.Nazev)</span> 
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DatumOd)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DatumOd)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DatumDo)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DatumDo)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.UzivatelId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.UzivatelId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.UzivatelCeleJmeno)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.UzivatelCeleJmeno)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Popis)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Popis)
+        </dd>
+
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-controller="Udalost" asp-route-id="Model.Id" class="btn btn-outline-primary">Upravit</a>
+    <a asp-action="Index">Back to List</a>
+</div>

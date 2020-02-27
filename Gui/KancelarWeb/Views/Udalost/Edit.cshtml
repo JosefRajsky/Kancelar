@@ -12,14 +12,23 @@
         <form asp-action="Add" asp-controller="Udalost">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="UdalostTypId" class="control-label"></label>  
-                <select asp-for="UdalostTypId" class="form-control" asp-items="@Html.GetEnumSelectList<AppEnums.UdalostTyp>()"></select>
-                <span asp-validation-for="UdalostTypId" class="text-danger"></span>
+                <div class="form-group">
+                    <label asp-for="UzivatelId" class="control-label"></label>
+                    <select asp-for="UzivatelId" asp-items="@ViewBag.UzivatelList" class="form-control" onchange="onIndexChange(this,'UzivatelCeleJmeno')">
+                        <option value="">Vyberte Uživatele</option>
+                    </select>
+                    <input asp-for="UzivatelCeleJmeno" type="hidden"/>
+                    <span asp-validation-for="UzivatelId" class="text-danger"></span>
+                </div>
             </div>
             <div class="form-group">
-                <label asp-for="Popis" class="control-label"></label>
-                <input asp-for="Popis" class="form-control" />
-                <span asp-validation-for="Popis" class="text-danger"></span>
+                <label asp-for="UdalostTypId" class="control-label"></label>
+                <select asp-for="UdalostTypId" class="form-control" asp-items="@ViewBag.UdalostTypList" onchange="onIndexChange(this,'Nazev')">
+                    <option value="">Vyberte typ události</option>
+                </select>
+                <input asp-for="Nazev" type="hidden" />
+                <span asp-validation-for="UdalostTypId" class="text-danger"></span>
+
             </div>
             <div class="form-group">
                 <label asp-for="DatumOd" class="control-label"></label>
@@ -32,19 +41,9 @@
                 <span asp-validation-for="DatumDo" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="UzivatelId" class="control-label"></label>
-                <input asp-for="UzivatelId" class="form-control" />
-                <span asp-validation-for="UzivatelId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UzivatelCeleJmeno" class="control-label"></label>
-                <input asp-for="UzivatelCeleJmeno" class="form-control" />
-                <span asp-validation-for="UzivatelCeleJmeno" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Nazev" class="control-label"></label>
-                <input asp-for="Nazev" class="form-control" />
-                <span asp-validation-for="Nazev" class="text-danger"></span>
+                <label asp-for="Popis" class="control-label"></label>
+                <input asp-for="Popis" class="form-control" />
+                <span asp-validation-for="Popis" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Uložit" class="btn btn-primary" />
@@ -56,4 +55,14 @@
 <div>
     <a asp-action="Index">Zpět na přehled</a>
 </div>
+<script type="text/javascript">
+    $( document ).ready(function() {
+    console.log( "ready!" );
+});
+    function onIndexChange(sender, targetId) {
+        console.log(sender.options[sender.selectedIndex].text);
+        console.log(sender.options[sender.selectedIndex]);
+    document.getElementById(targetId).value = sender.options[sender.selectedIndex].text;
+    }  
+</script>
 

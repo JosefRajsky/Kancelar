@@ -7,6 +7,7 @@ using KancelarWeb.ViewModels;
 
 namespace KancelarWeb.Data
 {
+    //Description: Dummy Context pro generovani views.
     public class KancelarWebContext : DbContext
     {
         public KancelarWebContext (DbContextOptions<KancelarWebContext> options)

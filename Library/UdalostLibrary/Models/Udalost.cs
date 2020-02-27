@@ -16,7 +16,9 @@ namespace UdalostLibrary.Models
         public DateTime DatumOd { get; set; }
         public DateTime DatumDo { get; set; }
         public DateTime DatumZadal { get; set; }
-      
-    
+        public string Nazev { get; set; }
+        public string UzivatelCeleJmeno { get; set; }
+
+
     }
 }

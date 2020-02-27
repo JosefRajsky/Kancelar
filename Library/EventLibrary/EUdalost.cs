@@ -6,20 +6,26 @@ namespace EventLibrary
     {
         public int UdalostTypId { get; set; }
         public string Popis { get; set; }
+        public string Nazev { get; set; }
+        public string UzivatelCeleJmeno { get; set; }
         public int UzivatelId { get; set; }
         public DateTime DatumZadal { get; set; }
         public DateTime DatumOd { get; set; }
-        public DateTime DatumDo { get; set; }
+        public DateTime DatumDo { get; set; }      
+       
     }
     public class CommandUdalostUpdate
     {
         public int UdalostTypId { get; set; }
         public string Popis { get; set; }
         public int UdalostId { get; set; }
+        public string Nazev { get; set; }
+        public string UzivatelCeleJmeno { get; set; }
         public int UzivatelId { get; set; }
         public DateTime DatumZadal { get; set; }
         public DateTime DatumOd { get; set; }
         public DateTime DatumDo { get; set; }
+      
     }
     public class CommandUdalostRemove
     {       
@@ -33,6 +39,8 @@ namespace EventLibrary
         public DateTime DatumZadal { get; set; }
         public DateTime DatumOd { get; set; }
         public DateTime DatumDo { get; set; }
+        public string Nazev { get; set; }
+        public string UzivatelCeleJmeno { get; set; }
     }
     public class EventUdalostUpdated
     {
@@ -43,6 +51,8 @@ namespace EventLibrary
         public DateTime DatumZadal { get; set; }
         public DateTime DatumOd { get; set; }
         public DateTime DatumDo { get; set; }
+        public string Nazev { get; set; }
+        public string UzivatelCeleJmeno { get; set; }
     }
     public class EventUdalostRemoved 
     {

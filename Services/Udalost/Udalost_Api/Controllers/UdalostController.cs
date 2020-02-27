@@ -37,12 +37,13 @@ namespace Udalost_Api.Controllers
             {
                 var u = new UdalostModel();
                 u.Id = item.Id ;
-                u.UdalostTypId = item.UdalostTypId ;
+                u.UdalostTypId = item.UdalostTypId;
                 u.Popis = item.Popis ;
+                u.Nazev = item.Nazev;
+                u.UzivatelCeleJmeno = item.UzivatelCeleJmeno;
                 u.DatumOd = item.DatumOd ;
                 u.DatumDo = item.DatumDo ;
                 u.UzivatelId = item.UzivatelId ;
-                u.UzivatelCeleJmeno = " --- " ;
 
                 response.Add(u);
             }

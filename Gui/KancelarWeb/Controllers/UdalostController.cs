@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using UdalostLibrary;
 using System.Net.Http;
 using KancelarWeb.Services;
+using KancelarWeb.CommandsModels;
+using System.Linq;
 
 namespace KancelarWeb.Controllers
 {
@@ -15,9 +17,11 @@ namespace KancelarWeb.Controllers
     {
 
         UdalostClient client;
+        UzivatelClient clientUzivatel;
         public UdalostController()
         {
             client = new UdalostClient();
+            clientUzivatel = new UzivatelClient();
         }
 
         public async Task<IActionResult> Index()
@@ -36,6 +40,8 @@ namespace KancelarWeb.Controllers
             var command = new CommandUdalostCreate() {
                 UzivatelId = model.UzivatelId,                 
                 DatumDo = model.DatumDo,
+                Nazev = model.Nazev,
+                UzivatelCeleJmeno = model.UzivatelCeleJmeno,
                 DatumOd = model.DatumDo,
                 DatumZadal = DateTime.Today,
                 Popis = model.Popis,
@@ -52,6 +58,8 @@ namespace KancelarWeb.Controllers
                 UdalostId = model.Id,
                 UzivatelId = model.UzivatelId,
                 DatumDo = model.DatumDo,
+                Nazev = model.Nazev,
+                UzivatelCeleJmeno = model.UzivatelCeleJmeno,
                 DatumOd = model.DatumDo,
                 DatumZadal = DateTime.Today,
                 Popis = model.Popis,
@@ -67,17 +75,23 @@ namespace KancelarWeb.Controllers
             await client.RemoveAsync(command);
             return RedirectToAction("Index");
         }
-        public IActionResult Edit()
+        public async Task<IActionResult> EditAsync()
         {
             var model = new UdalostModel();
             model.DatumDo = DateTime.Today;
             model.DatumOd = DateTime.Today;
-            //model.UdalostTypList = new SelectList(Enum.GetValues(typeof(UdalostTyp)));
-            //model.UdalostTypList = new List<SelectListItem>();
-            //foreach (var item in (UdalostTyp[])Enum.GetValues(typeof(UdalostTyp)))
-            //{
-            //    model.UdalostTypList.Add(new SelectListItem() { Text = EmumExtension.GetDescription(item), Value = (int)item });
-            //}
+
+            ViewBag.UdalostTypList = new SelectList(Enum.GetValues(typeof(EUdalostTyp)).Cast<EUdalostTyp>().Select(v => new SelectListItem
+            {
+                Text = v.Description(),
+                Value = v.ToString()
+            }).ToList(), "Value", "Text");
+
+            ViewBag.UzivatelList = new List<SelectListItem>();
+            foreach (var item in await clientUzivatel.GetListAsync())
+            {
+                ViewBag.UzivatelList.Add(new SelectListItem { Value = item.Id.ToString(), Text = $"{item.Prijmeni} {item.Jmeno}" });
+            }           
             return View(model);
         }
 

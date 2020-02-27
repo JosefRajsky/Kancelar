@@ -5,10 +5,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Událostí - přehled</h2>
+<h5>Události - přehled</h5>
 
 <p>
-    <a asp-action="Edit" asp-controller="Udalost" class="btn btn-outline-primary">Nová událost</a>
+    <a asp-action="Edit" asp-controller="Udalost" class="btn btn-success">Nová událost</a>
 </p>
 <table class="table">
     <thead>
@@ -16,28 +16,31 @@
             <th>
                 @Html.DisplayNameFor(model => model.Id)
             </th>
+            @*<th>
+                @Html.DisplayNameFor(model => model.UzivatelId)
+            </th>*@
             <th>
+                @Html.DisplayNameFor(model => model.UzivatelCeleJmeno)
+            </th>
+            @*<th>
                 @Html.DisplayNameFor(model => model.UdalostTypId)
-            </th>
+            </th>*@
+
             <th>
-                @Html.DisplayNameFor(model => model.Popis)
+                @Html.DisplayNameFor(model => model.Nazev)
             </th>
+
             <th>
                 @Html.DisplayNameFor(model => model.DatumOd)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.DatumDo)
             </th>
+
             <th>
-                @Html.DisplayNameFor(model => model.UzivatelId)
+                @Html.DisplayNameFor(model => model.Popis)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UzivatelCeleJmeno)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Nazev)
-            </th>
-           
+
             <th></th>
         </tr>
     </thead>
@@ -47,11 +50,17 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Id)
             </td>
+            @*<td>
+                @Html.DisplayFor(modelItem => item.UzivatelId)
+            </td>*@
+            <td>
+               @Html.DisplayFor(modelItem => item.UzivatelCeleJmeno)       
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.UdalostTypId)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Popis)
+            <td class="pan">
+              <span class="btn btn-dark disabled"> @Html.DisplayFor(modelItem => item.Nazev)</span>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DatumOd)
@@ -59,21 +68,12 @@
             <td>
                 @Html.DisplayFor(modelItem => item.DatumDo)
             </td>
+           
             <td>
-                @Html.DisplayFor(modelItem => item.UzivatelId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UzivatelCeleJmeno)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nazev)
-            </td>
-            
-            <td>
-                <a asp-action="Edit" asp-controller="Udalost" asp-route-id="@item.Id" class="btn btn-xs btn-primary">Upravit</a>
-                <a asp-action="Detail" asp-controller="Udalost" asp-route-id="@item.Id" class="btn btn-xs btn-info">Detail</a>
-                <a asp-action="Remove" asp-controller="Udalost" asp-route-id="@item.Id" class="btn btn-xs btn-danger">Odstranit</a>
-
+                <a asp-action="Edit" asp-controller="Udalost" asp-route-id="@item.Id" class="btn btn-xs btn-outline-primary" title="Upravit"><span class="oi oi-pencil"></span></a>
+                <a asp-action="Detail" asp-controller="Udalost" asp-route-id="@item.Id" class="btn btn-xs btn-outline-info" title="Detail"><span class="oi oi-magnifying-glass"></span></a>
+                <a asp-action="Remove" asp-controller="Udalost" asp-route-id="@item.Id" class="btn btn-xs btn-outline-danger" title="Odstranit"><span class="oi oi-x"></span></a>
+                              
             </td>
         </tr>
 }
