@@ -1,14 +1,14 @@
 ﻿@model IEnumerable<KancelarWeb.ViewModels.UzivatelModel>
 
 @{
-    ViewData["Title"] = "Přehled účtů";
+    ViewData["Title"] = "Uživatel - Přehled";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>View</h1>
+<h2>Uživatel - Přehled</h2>
 
 <p>
-    <a asp-action="Edit" asp-controller="Uzivatel" class="btn btn-primary"><span class="oi oi-plus"></span>Přidat</a>
+    <a asp-action="Edit" asp-controller="Uzivatel" class="btn btn-outline-primary">Přidat uživatele</a>
 </p>
 <table class="table">
     <thead>
@@ -80,9 +80,10 @@
                 @Html.DisplayFor(modelItem => item.Foto)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                <a asp-action="Edit" asp-controller="Uzivatel" asp-route-id="@item.Id" class="btn btn-xs btn-primary">Upravit</a>
+                <a asp-action="Detail" asp-controller="Uzivatel" asp-route-id="@item.Id" class="btn btn-xs btn-info">Detail</a>
+                <a asp-action="Remove" asp-controller="Uzivatel" asp-route-id="@item.Id" class="btn btn-xs btn-danger">Odstranit</a>
+          
             </td>
         </tr>
 }

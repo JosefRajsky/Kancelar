@@ -1,34 +1,81 @@
 ﻿@model IEnumerable<KancelarWeb.ViewModels.UdalostModel>
+
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-    <a class="btn btn-primary dropright" href='@Url.Action("Edit", "Udalost")'> Přidat</a>
-<hr />
-    <table class="table table-borderless bg-light">
-        <thead>
-            <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Název</th>
-                <th scope="col">Od</th>
-                <th scope="col">Do</th>
-                <th scope="col"></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <th scope="row">@item.Id</th>
-                    <td>@item.Nazev</td>
-                    <td>@item.DatumOd.ToShortDateString()</td>
-                    <td>@item.DatumDo.ToShortDateString()</td>
-                    <td><a class="btn btn-xs btn-warning" href='@Url.Action("Remove", "Udalost", new {@id = item.Id })'> odebrat </a></td>
-                </tr>
 
-            }
-        </tbody>
-    </table>
+<h2>Událostí - přehled</h2>
 
-<hr />
+<p>
+    <a asp-action="Edit" asp-controller="Udalost" class="btn btn-outline-primary">Nová událost</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UdalostTypId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Popis)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DatumOd)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DatumDo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UzivatelId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UzivatelCeleJmeno)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nazev)
+            </th>
+           
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UdalostTypId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Popis)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DatumOd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DatumDo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UzivatelId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UzivatelCeleJmeno)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nazev)
+            </td>
+            
+            <td>
+                <a asp-action="Edit" asp-controller="Udalost" asp-route-id="@item.Id" class="btn btn-xs btn-primary">Upravit</a>
+                <a asp-action="Detail" asp-controller="Udalost" asp-route-id="@item.Id" class="btn btn-xs btn-info">Detail</a>
+                <a asp-action="Remove" asp-controller="Udalost" asp-route-id="@item.Id" class="btn btn-xs btn-danger">Odstranit</a>
 
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -15,8 +15,8 @@ ViewData["Title"] = "Edit";
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     @Html.LabelFor(Model => Model.Nazev)
-                    <label asp-for="Url" class="control-label"></label>
-                    @Html.DropDownListFor(Model => Model.UdalostTypId, Model.UdalostTypList,"Typ dovolené", new { @class = "form-control" })
+                    <label asp-for="UdalostTypId" class="control-label"></label>
+                    <select asp-for="UdalostTypId" class="form-control" asp-items="@Html.GetEnumSelectList<AppEnums.UdalostTyp>()"></select>
                    
                     <span asp-validation-for="Nazev" class="text-danger"></span>
 

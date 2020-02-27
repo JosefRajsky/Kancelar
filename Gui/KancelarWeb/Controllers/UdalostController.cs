@@ -31,15 +31,15 @@ namespace KancelarWeb.Controllers
             return View(model);
         }
         [HttpPost]
-        public async Task<IActionResult> Add( UdalostModel model)
+        public async Task<IActionResult> Add([FromForm]UdalostModel model)
         {
             var command = new CommandUdalostCreate() {
-                UzivatelId = model.UzivatelId,
+                UzivatelId = model.UzivatelId,                 
                 DatumDo = model.DatumDo,
                 DatumOd = model.DatumDo,
                 DatumZadal = DateTime.Today,
                 Popis = model.Popis,
-                UdalostTypId = model.Id
+                UdalostTypId = model.UdalostTypId
             };
             await client.AddAsync(command);
 
@@ -72,7 +72,7 @@ namespace KancelarWeb.Controllers
             var model = new UdalostModel();
             model.DatumDo = DateTime.Today;
             model.DatumOd = DateTime.Today;
-            model.UdalostTypList = new SelectList(Enum.GetValues(typeof(UdalostTyp)));
+            //model.UdalostTypList = new SelectList(Enum.GetValues(typeof(UdalostTyp)));
             //model.UdalostTypList = new List<SelectListItem>();
             //foreach (var item in (UdalostTyp[])Enum.GetValues(typeof(UdalostTyp)))
             //{

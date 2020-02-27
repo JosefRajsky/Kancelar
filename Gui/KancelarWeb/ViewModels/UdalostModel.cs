@@ -1,4 +1,5 @@
 ﻿
+using KancelarWeb.Controllers;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
@@ -21,11 +22,11 @@ namespace KancelarWeb.ViewModels
         public string Popis { get; set; }
 
         [Display(Name = "Od")]
-        [DisplayFormat(DataFormatString = "{0:dd. MM. yyyy}")]
+        [DataType(DataType.DateTime)]
         public DateTime DatumOd { get; set; }
 
         [Display(Name = "Do")]
-        [DisplayFormat(DataFormatString = "{0:dd. MM. yyyy}")]
+        [DataType(DataType.DateTime)]
         public DateTime DatumDo { get; set; }
             
         public int UzivatelId { get; set; }
@@ -37,7 +38,7 @@ namespace KancelarWeb.ViewModels
                 return EmumExtension.GetDescription((UdalostTyp)UdalostTypId);
             } }
 
-        public virtual SelectList UdalostTypList { get; set; }
+        public virtual AppEnums.UdalostTyp UdalostTypList { get; set; }
 
     }
 }

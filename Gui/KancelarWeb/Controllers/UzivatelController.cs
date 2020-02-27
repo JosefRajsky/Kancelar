@@ -35,9 +35,13 @@ namespace KancelarWeb.Controllers
 
         public async Task<IActionResult> Add([FromForm]UzivatelModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Edit");
+            }
             var command = new CommandUzivatelCreate()
             {
-                DatumNarozeni = model.DatumNarozeni,
+                DatumNarozeni = (model.DatumNarozeni == null)? DateTime.MinValue: model.DatumNarozeni,
                 Email = model.Email,
                 Foto = model.Foto,
                 Jmeno = model.Jmeno,
@@ -55,7 +59,7 @@ namespace KancelarWeb.Controllers
         {
             var command = new CommandUzivatelUpdate()
             {
-                DatumNarozeni = model.DatumNarozeni,
+                DatumNarozeni =  (model.DatumNarozeni == null)? DateTime.MinValue : model.DatumNarozeni,
                 Email = model.Email,
                 Foto = model.Foto,
                 Jmeno = model.Jmeno,
@@ -81,6 +85,7 @@ namespace KancelarWeb.Controllers
         public IActionResult Edit()
         {
             var model = new UzivatelModel();
+            model.DatumNarozeni = DateTime.Today;
             
             return View(model);
         }

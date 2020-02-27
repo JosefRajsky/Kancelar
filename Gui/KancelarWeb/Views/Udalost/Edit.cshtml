@@ -9,16 +9,11 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="View">
+        <form asp-action="Add" asp-controller="Udalost">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" />
-                <span asp-validation-for="Id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UdalostTypId" class="control-label"></label>
-                <input asp-for="UdalostTypId" class="form-control" />
+                <label asp-for="UdalostTypId" class="control-label"></label>  
+                <select asp-for="UdalostTypId" class="form-control" asp-items="@Html.GetEnumSelectList<AppEnums.UdalostTyp>()"></select>
                 <span asp-validation-for="UdalostTypId" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -52,13 +47,13 @@
                 <span asp-validation-for="Nazev" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Uložit" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Zpět na přehled</a>
 </div>
 

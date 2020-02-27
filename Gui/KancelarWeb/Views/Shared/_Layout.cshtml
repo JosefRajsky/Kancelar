@@ -14,11 +14,13 @@
 
 </head>
 <body>
-   @Html.Partial("../Menu/Index")
+    @await Component.InvokeAsync("Menu")
     <div class="row">
-        <@*div class="container col-xl-2 bg-light">
-            @Html.Partial("../Strom/List")
-        </div>*@
+        <div class="container col-xl-2 bg-light">
+            @await Component.InvokeAsync("Strom")
+
+
+        </div>
         <div class="container col-xl-10"> @RenderBody()</div>
     </div>
 </body>

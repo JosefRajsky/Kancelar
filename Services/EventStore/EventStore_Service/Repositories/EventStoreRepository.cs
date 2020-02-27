@@ -27,8 +27,10 @@ namespace EventStore_Service.Repositories
             var message = new Message();
             message.Guid = Guid.NewGuid();
             message.CurrentGuid = origin.Guid;
+            message.TopicId = 0;
             message.ParentGuid = origin.ParentGuid;
             message.MessageType = origin.MessageType;
+            message.MessageTypeText = origin.MessageType.ToString();
             message.Version = origin.Version;
             message.Created = origin.Created;
             message.Body = origin.Message;
