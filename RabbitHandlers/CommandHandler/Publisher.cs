@@ -12,7 +12,7 @@ using RabbitMQ.Client.Exceptions;
 
 namespace CommandHandler
 {
-    public class Publisher
+    public class Publisher : IPublisher
     {
         private ConnectionFactory _factory { get; set; }
         private IConnection _connection { get; set; }

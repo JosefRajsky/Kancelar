@@ -10,10 +10,8 @@ namespace CommandHandler
 {
     public interface IPublisher
     {
-        Task<bool> Push(string message);
+        Task Push(string message);
 
-        Task<bool> PushToStore(string message);
-
-        EventingBasicConsumer Start();
+        
     }
 }

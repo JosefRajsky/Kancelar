@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using CommandHandler;
 using Consul;
@@ -41,21 +42,59 @@ namespace Dochazka_Api
             });
             services.AddSwaggerDocument();
 
+            var exchanges = new List<string>();
+            //exchanges.Add(Configuration.GetValue<string>("Setting:Exchange"));
+            exchanges.Add("dochazka.ex");
+
             services.AddTransient<IDochazkaRepository, DochazkaRepository>();
             services.AddSingleton<Publisher>(s => new Publisher(factory, "dochazka.ex","dochazka.q"));
             services.AddDbContext<DochazkaDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));    
             services.AddControllers();
+
+            var _factory = factory;
+            _factory.AutomaticRecoveryEnabled = true;
+            _factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(5);
+            var _connection = _factory.CreateConnection();
+            var _channel = _connection.CreateModel(); 
+            var queueName = _channel.QueueDeclare().QueueName;
+
+            var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, _connection, _channel,queueName)).BuildServiceProvider()
+                    .GetService<ISubscriber>()
+                    .Start();
+            foreach (var ex in exchanges)
+            {
+                _channel.QueueBind(queue: queueName,
+                              exchange: ex,
+                              routingKey: "");
+            }
+            var repository = new ListenerRouter(services.BuildServiceProvider().GetService<IDochazkaRepository>());
+            consumer.Received += (model, ea) =>
+            {
+                //-------------Description: Formátování pøijaté zprávy
+                var body = ea.Body;
+                var message = Encoding.UTF8.GetString(body);
+                //-------------Description: Vytvoøení repositáøe pro pøístup k entitám služby.
+
+                
+                //-------------Description: Odeslání zprávy do repositáøe
+                repository.AddCommand(message);
+            };
+
         }
 
+
+
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        //public void Configure(IApplicationBuilder app, IWebHostEnvironment env, Microsoft.AspNetCore.Hosting.IApplicationLifetime lifetime)
+        
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-
+           
+            
             app.UseStaticFiles();
             //Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseOpenApi();

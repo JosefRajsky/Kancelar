@@ -86,31 +86,31 @@ services:
       - rabbitmq
       - eventstoreservice
 
-  dochazkaservice:
-    image: ${DOCKER_REGISTRY-}dochazka_service
-    hostname: "dochazkaservice"    
-    ports:
-      - "8081:80"
-    build:
-      context: .
-      dockerfile: Services/Dochazka/Dochazka_Service/Dockerfile
-    depends_on:
-      - sqlserver
-      - rabbitmq
-      - eventstoreservice
+#  dochazkaservice:
+#    image: ${DOCKER_REGISTRY-}dochazka_service
+#    hostname: "dochazkaservice"    
+#    ports:
+#      - "8081:80"
+#    build:
+#      context: .
+#      dockerfile: Services/Dochazka/Dochazka_Service/Dockerfile
+#    depends_on:
+#      - sqlserver
+#      - rabbitmq
+#      - eventstoreservice
 
-  udalostservice:
-    image: ${DOCKER_REGISTRY-}udalost_service
-    hostname: "udalostservice"    
-    ports:
-      - "8082:80"
-    build:
-      context: .
-      dockerfile: Services/Udalost/Udalost_Service/Dockerfile
-    depends_on:
-      - sqlserver
-      - rabbitmq
-      - eventstoreservice
+#  udalostservice:
+#    image: ${DOCKER_REGISTRY-}udalost_service
+#    hostname: "udalostservice"    
+#    ports:
+#      - "8082:80"
+#    build:
+#      context: .
+#      dockerfile: Services/Udalost/Udalost_Service/Dockerfile
+#    depends_on:
+#      - sqlserver
+#      - rabbitmq
+#      - eventstoreservice
 
   udalostapi:
     image: ${DOCKER_REGISTRY-}udalost_api

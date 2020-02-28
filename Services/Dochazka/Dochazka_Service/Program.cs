@@ -35,7 +35,7 @@ namespace Dochazka_Service
                     var body = ea.Body;
                     var message = Encoding.UTF8.GetString(body);
                     //-------------Description: Vytvoření repositáře pro přístup k entitám služby.
-                    //-------------Description: Název ConnectionString získán z konfiguračního souboru appsetting.json
+                 
                     var repository = new DochazkaServiceRepository();
                     //-------------Description: Odeslání zprávy do repositáře
                     repository.AddCommand(message);

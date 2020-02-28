@@ -20,16 +20,33 @@ namespace EventStore_Service
                     .Build();               
                 var exchanges = new List<string>();
                 exchanges.Add(config.GetValue<string>("Setting:Exchange"));
+
+                var factory = new ConnectionFactory() { HostName = "rabbitmq" };
+                var _factory = factory;
+                _factory.AutomaticRecoveryEnabled = true;
+                _factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(5);
+                var _connection = _factory.CreateConnection();
+                var _channel = _connection.CreateModel();
+                var queueName = _channel.QueueDeclare().QueueName;
+    
+
                 var consumer = new ServiceCollection()
-                    .AddSingleton<ISubscriber>(s => new Subscriber(new ConnectionFactory() { HostName = "rabbitmq" }, exchanges))
+                    .AddSingleton<ISubscriber>(s => new Subscriber(exchanges,_connection,_channel,queueName))
                     .BuildServiceProvider()
                     .GetService<ISubscriber>()
                     .Start();
+                foreach (var ex in exchanges)
+                {
+                    _channel.QueueBind(queue: queueName,
+                                  exchange: ex,
+                                  routingKey: "");
+                }
+                var repository = new EventStoreRepository(config.GetValue<string>("Setting:ConnectionString"));
                 consumer.Received += (model, ea) =>
                 {                   
                     var body = ea.Body;
                     var message = Encoding.UTF8.GetString(body);                   
-                    var repository = new EventStoreRepository(config.GetValue<string>("Setting:ConnectionString"));                 
+                                   
                     repository.AddMessageAsync(message).Wait();
                 };
             }

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using CommandHandler;
 using Microsoft.AspNetCore.Builder;
@@ -12,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Exceptions;
 using Udalost_Api.Repositories;
 
 namespace Udalost_Api
@@ -36,8 +39,37 @@ namespace Udalost_Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Udalost Api", Version = "v1" });
             });
-            services.AddSwaggerDocument();
+            var exchanges = new List<string>();
+            exchanges.Add("udalost.ex");
+            exchanges.Add("dochazka.ex");
 
+            var _factory = factory;
+            _factory.AutomaticRecoveryEnabled = true;
+            _factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(5);        
+            var _connection = _factory.CreateConnection();
+            var _channel = _connection.CreateModel();
+            var queueName = _channel.QueueDeclare().QueueName;
+            var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, _connection, _channel,queueName)).BuildServiceProvider()
+                    .GetService<ISubscriber>()
+                    .Start();
+            foreach (var ex in exchanges)
+            {
+                _channel.QueueBind(queue: queueName,
+                              exchange: ex,
+                              routingKey: "");
+            }
+            var repository = new UdalostServiceRepository(services.BuildServiceProvider().GetService<IUdalostRepository>());
+            consumer.Received += (model, ea) =>
+            {
+                //-------------Description: Formátování pøijaté zprávy
+                var body = ea.Body;
+                var message = Encoding.UTF8.GetString(body);
+                //-------------Description: Vytvoøení repositáøe pro pøístup k entitám služby.
+
+            
+                //-------------Description: Odeslání zprávy do repositáøe
+                repository.AddCommand(message);
+            };
 
         }
 
