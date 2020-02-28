@@ -9,8 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Udalost_Api.Models;
 using UdalostLibrary;
-using UdalostLibrary.Models;
 
 namespace Udalost_Api.Repositories
 {

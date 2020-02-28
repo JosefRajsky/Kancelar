@@ -1,7 +1,5 @@
 version: '3.4'
-networks:
-  consul-network:
-    driver: bridge
+
 services:
 
   sqlserver:
@@ -20,20 +18,6 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
-  consulsrv:
-    image: bitnami/consul:latest
-    hostname: "consulsrv"
-    container_name: 'Consul'
-    networks:
-      - consul-network
-    ports:
-      - '8300:8300'
-      - '8301:8301'
-      - '8301:8301/udp'
-      - '8500:8500'
-      - '8600:8600'
-      - '8600:8600/udp'
- 
   
   rabbitmq:
     image: "rabbitmq:3-management"
@@ -48,6 +32,19 @@ services:
       - ./rabbitmq-isolated.conf:/etc/rabbitmq/rabbitmq.config
     depends_on:
       - sqlserver
+
+  monitor:
+    image: ${DOCKER_REGISTRY-}monitor
+    hostname: "monitor"
+    container_name: 'HealtMonitor'
+    ports:
+      - "8091:80"
+    build:
+      context: .
+      dockerfile: Services/Monitor/Monitor/Dockerfile
+    depends_on:
+      - sqlserver
+      - rabbitmq
 
   eventstoreservice:
     image: ${DOCKER_REGISTRY-}eventstore_service
@@ -85,32 +82,6 @@ services:
       - sqlserver
       - rabbitmq
       - eventstoreservice
-
-#  dochazkaservice:
-#    image: ${DOCKER_REGISTRY-}dochazka_service
-#    hostname: "dochazkaservice"    
-#    ports:
-#      - "8081:80"
-#    build:
-#      context: .
-#      dockerfile: Services/Dochazka/Dochazka_Service/Dockerfile
-#    depends_on:
-#      - sqlserver
-#      - rabbitmq
-#      - eventstoreservice
-
-#  udalostservice:
-#    image: ${DOCKER_REGISTRY-}udalost_service
-#    hostname: "udalostservice"    
-#    ports:
-#      - "8082:80"
-#    build:
-#      context: .
-#      dockerfile: Services/Udalost/Udalost_Service/Dockerfile
-#    depends_on:
-#      - sqlserver
-#      - rabbitmq
-#      - eventstoreservice
 
   udalostapi:
     image: ${DOCKER_REGISTRY-}udalost_api

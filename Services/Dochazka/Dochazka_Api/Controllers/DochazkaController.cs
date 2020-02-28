@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Dochazka_Api.Models;
 using Dochazka_Api.Repositories;
-using DochazkaLibrary.Models;
 using EventLibrary;
 using Microsoft.AspNetCore.Mvc;
 

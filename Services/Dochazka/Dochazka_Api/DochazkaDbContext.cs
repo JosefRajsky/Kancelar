@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
-using DochazkaLibrary.Models;
+using Dochazka_Api.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dochazka_Api

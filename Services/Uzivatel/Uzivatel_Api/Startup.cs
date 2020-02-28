@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CommandHandler;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
@@ -36,10 +39,22 @@ namespace Uzivatel_Api
             });
             services.AddSwaggerDocument();
 
+            //Description: Kontrola stavu služby
+            services.AddHealthChecks()
+                .AddCheck("Servis", () => HealthCheckResult.Healthy())
+                .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
+                        healthQuery: "SELECT 1;",
+                        name: "DB",
+                        failureStatus: HealthStatus.Degraded)
+                 .AddRabbitMQ(sp => factory);
+
+
+
             services.AddTransient<IUzivatelRepository, UzivatelRepository>();
             services.AddSingleton<Publisher>(s => new Publisher(factory, "uzivatel.ex", "uzivatel.q"));
             services.AddDbContext<UzivatelDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
             services.AddControllers();
+            services.AddHealthChecks();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,6 +64,7 @@ namespace Uzivatel_Api
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseHealthChecks("/hc");
             app.UseStaticFiles();
             //Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseOpenApi();
@@ -65,7 +81,12 @@ namespace Uzivatel_Api
             app.UseRouting();
 
             app.UseAuthorization();
-
+            
+            app.UseHealthChecks("/healthcheck", new HealthCheckOptions
+            {
+                Predicate = _ => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            });
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

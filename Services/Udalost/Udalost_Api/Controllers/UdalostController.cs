@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Udalost_Api.Entities;
+using Udalost_Api.Models;
 using Udalost_Api.Repositories;
-using UdalostLibrary.Models;
 
 namespace Udalost_Api.Controllers
 {

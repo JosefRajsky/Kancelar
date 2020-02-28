@@ -5,12 +5,15 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CommandHandler;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using RabbitMQ.Client;
@@ -30,11 +33,13 @@ namespace Udalost_Api
         public IConfiguration Configuration { get; }
         public void ConfigureServices(IServiceCollection services)
         {
-            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
+              var factory = new ConnectionFactory() { HostName = "rabbitmq" };
             services.AddTransient<IUdalostRepository, UdalostRepository>();
             services.AddSingleton<Publisher>(s => new Publisher(factory, "udalost.ex","udalost.q"));
             services.AddDbContext<UdalostDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
             services.AddControllers();
+            services.AddHealthChecks();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Udalost Api", Version = "v1" });
@@ -43,10 +48,22 @@ namespace Udalost_Api
             exchanges.Add("udalost.ex");
             exchanges.Add("dochazka.ex");
 
-            var _factory = factory;
-            _factory.AutomaticRecoveryEnabled = true;
-            _factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(5);        
-            var _connection = _factory.CreateConnection();
+         
+            factory.AutomaticRecoveryEnabled = true;
+            factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(5);
+
+            
+
+            //Description: Kontrola stavu služby
+            services.AddHealthChecks()
+                .AddCheck("API Udalost", () => HealthCheckResult.Healthy())
+                .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
+                        healthQuery: "SELECT 1;",
+                        name: "Database",
+                        failureStatus: HealthStatus.Degraded)
+                 .AddRabbitMQ(sp => factory);
+
+            var _connection = factory.CreateConnection();
             var _channel = _connection.CreateModel();
             var queueName = _channel.QueueDeclare().QueueName;
             var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, _connection, _channel,queueName)).BuildServiceProvider()
@@ -80,6 +97,7 @@ namespace Udalost_Api
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseHealthChecks("/hc");
             app.UseStaticFiles();
             //Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseOpenApi();
@@ -92,7 +110,11 @@ namespace Udalost_Api
             });
 
             app.UseRouting();
-
+            app.UseHealthChecks("/healthcheck", new HealthCheckOptions
+            {
+                Predicate = _ => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            });
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

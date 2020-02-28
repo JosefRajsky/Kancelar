@@ -1,5 +1,4 @@
 ﻿
-using DochazkaLibrary.Models;
 using EventLibrary;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;

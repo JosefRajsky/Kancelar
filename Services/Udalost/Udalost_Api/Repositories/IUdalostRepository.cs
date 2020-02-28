@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Udalost_Api.Entities;
-using UdalostLibrary.Models;
+using Udalost_Api.Models;
 
 namespace Udalost_Api.Repositories
 {
