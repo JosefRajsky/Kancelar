@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using UdalostLibrary;
 using UdalostLibrary.Models;
 
 namespace Udalost_Service.Repositories
@@ -70,7 +71,8 @@ namespace Udalost_Service.Repositories
                 DatumOd = evt.Datum,
                 DatumDo = evt.Datum.AddHours(8),
                 Popis = string.Empty,
-                UdalostTypId = 0,
+                UdalostTypId = 1,
+                Nazev = "Přítomnost",
                 UzivatelId = evt.UzivatelId,
             };
             var client = new HttpClient();

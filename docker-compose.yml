@@ -1,5 +1,7 @@
 version: '3.4'
-
+networks:
+  consul-network:
+    driver: bridge
 services:
 
   sqlserver:
@@ -18,7 +20,21 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
+  consulsrv:
+    image: bitnami/consul:latest
+    hostname: "consulsrv"
+    container_name: 'Consul'
+    networks:
+      - consul-network
+    ports:
+      - '8300:8300'
+      - '8301:8301'
+      - '8301:8301/udp'
+      - '8500:8500'
+      - '8600:8600'
+      - '8600:8600/udp'
  
+  
   rabbitmq:
     image: "rabbitmq:3-management"
     hostname: "rabbit"
@@ -108,6 +124,18 @@ services:
       - sqlserver
       - rabbitmq
       - eventstoreservice
+  dochazkaapi:
+    image: ${DOCKER_REGISTRY-}dochazka_api
+    hostname: "dochazkaapi"       
+    ports:
+      - "8084:80"
+    build:
+      context: .
+      dockerfile: Services/Dochazka/Dochazka_Api/Dockerfile
+    depends_on:
+      - sqlserver
+      - rabbitmq
+      - eventstoreservice
 
   uzivatelapi:
     image: ${DOCKER_REGISTRY-}uzivatel_api
@@ -122,18 +150,7 @@ services:
       - rabbitmq
       - eventstoreservice
 
-  dochazkaapi:
-    image: ${DOCKER_REGISTRY-}dochazka_api
-    hostname: "dochazkaapi"       
-    ports:
-      - "8084:80"
-    build:
-      context: .
-      dockerfile: Services/Dochazka/Dochazka_Api/Dockerfile
-    depends_on:
-      - sqlserver
-      - rabbitmq
-      - eventstoreservice
+
 
 
 

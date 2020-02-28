@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CommandHandler;
+using Consul;
 using Dochazka_Api.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using RabbitMQ.Client;
 
@@ -44,12 +48,14 @@ namespace Dochazka_Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        //public void Configure(IApplicationBuilder app, IWebHostEnvironment env, Microsoft.AspNetCore.Hosting.IApplicationLifetime lifetime)
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
             app.UseStaticFiles();
             //Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseOpenApi();
@@ -60,6 +66,35 @@ namespace Dochazka_Api
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Dochazka Api v1");
             });
+
+            //// Retrieve Consul client from DI
+            //var consulClient = app.ApplicationServices
+            //                    .GetRequiredService<IConsulClient>();
+            //var consulConfig = app.ApplicationServices
+            //                    .GetRequiredService<IOptions<ConsulConfig>>();
+
+            //// Get server address information
+            //var features = app.Properties["server.Features"] as FeatureCollection;
+            //var addresses = features.Get<IServerAddressesFeature>();
+            //var address = addresses.Addresses.First();
+            //var uri = new Uri(address);
+
+            //// Register service with consul
+            //var registration = new AgentServiceRegistration()
+            //{
+            //    ID = $"{consulConfig.Value.ServiceID}-{uri.Port}",
+            //    Name = consulConfig.Value.ServiceName,
+            //    Address = $"{uri.Scheme}://{uri.Host}",
+            //    Port = uri.Port,
+            //    Tags = new[] { "Students", "Courses", "School" }
+            //};
+            //consulClient.Agent.ServiceDeregister(registration.ID).Wait();
+            //consulClient.Agent.ServiceRegister(registration).Wait();
+
+            //lifetime.ApplicationStopping.Register(() => {
+            //    consulClient.Agent.ServiceDeregister(registration.ID).Wait();
+            //});
+
 
             app.UseHttpsRedirection();
 
