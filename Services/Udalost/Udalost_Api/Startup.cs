@@ -59,7 +59,7 @@ namespace Udalost_Api
                 .AddCheck("API Udalost", () => HealthCheckResult.Healthy())
                 .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
                         healthQuery: "SELECT 1;",
-                        name: "Database",
+                        name: "DB",
                         failureStatus: HealthStatus.Degraded)
                  .AddRabbitMQ(sp => factory);
 

@@ -46,14 +46,14 @@ services:
       - sqlserver
       - rabbitmq
 
-  eventstoreservice:
-    image: ${DOCKER_REGISTRY-}eventstore_service
-    hostname: "eventstoreservice"    
+  eventstore:
+    image: ${DOCKER_REGISTRY-}eventstore_api
+    hostname: "eventstore"    
     ports:
       - "8070:80"
     build:
       context: .
-      dockerfile: Services/EventStore/EventStore_Service/Dockerfile
+      dockerfile: Services/EventStore/EventStore_API/Dockerfile
     depends_on:
       - sqlserver
       - rabbitmq
@@ -68,7 +68,7 @@ services:
     depends_on:
       - sqlserver
       - rabbitmq
-      - eventstoreservice
+      - eventstore
 
   webapiocelot:
     image: ${DOCKER_REGISTRY-}webapi
@@ -81,7 +81,7 @@ services:
     depends_on:
       - sqlserver
       - rabbitmq
-      - eventstoreservice
+      - eventstore
 
   udalostapi:
     image: ${DOCKER_REGISTRY-}udalost_api
@@ -94,7 +94,7 @@ services:
     depends_on:
       - sqlserver
       - rabbitmq
-      - eventstoreservice
+      - eventstore
   dochazkaapi:
     image: ${DOCKER_REGISTRY-}dochazka_api
     hostname: "dochazkaapi"       
@@ -106,7 +106,7 @@ services:
     depends_on:
       - sqlserver
       - rabbitmq
-      - eventstoreservice
+      - eventstore
 
   uzivatelapi:
     image: ${DOCKER_REGISTRY-}uzivatel_api
@@ -119,7 +119,7 @@ services:
     depends_on:
       - sqlserver
       - rabbitmq
-      - eventstoreservice
+      - eventstore
 
 
 

@@ -41,7 +41,7 @@ namespace Uzivatel_Api
 
             //Description: Kontrola stavu služby
             services.AddHealthChecks()
-                .AddCheck("Servis", () => HealthCheckResult.Healthy())
+                .AddCheck("Uzivatel API", () => HealthCheckResult.Healthy())
                 .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
                         healthQuery: "SELECT 1;",
                         name: "DB",
@@ -54,7 +54,6 @@ namespace Uzivatel_Api
             services.AddSingleton<Publisher>(s => new Publisher(factory, "uzivatel.ex", "uzivatel.q"));
             services.AddDbContext<UzivatelDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
             services.AddControllers();
-            services.AddHealthChecks();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -87,6 +86,7 @@ namespace Uzivatel_Api
                 Predicate = _ => true,
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
             });
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

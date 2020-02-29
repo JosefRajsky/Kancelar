@@ -49,15 +49,9 @@ namespace Dochazka_Api
                 .AddCheck("API Dochazka", () => HealthCheckResult.Healthy())
                 .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
                         healthQuery: "SELECT 1;",
-                        name: "Database",
+                        name: "DB",
                         failureStatus: HealthStatus.Degraded)
                  .AddRabbitMQ(sp => factory);
-
-
-            //services.AddHealthChecksUI(setupSettings: setup =>
-            //{
-            //    setup.AddHealthCheckEndpoint("Dochazka Api", "http://dochazkaapi/healthcheck");
-            //});
 
             services.AddControllers();
 
@@ -140,7 +134,7 @@ namespace Dochazka_Api
                 Predicate = _ => true,
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
             });
-            //app.UseHealthChecksUI();
+     
 
             app.UseEndpoints(endpoints =>
             {

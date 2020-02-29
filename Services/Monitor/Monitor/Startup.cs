@@ -45,7 +45,7 @@ namespace Monitor
                 setup.AddHealthCheckEndpoint("Dochazka", "http://dochazkaapi/healthcheck");           
                 setup.AddHealthCheckEndpoint("Udalost", "http://udalostapi/healthcheck");
                 setup.AddHealthCheckEndpoint("Uzivatel", "http://uzivatelapi/healthcheck");
-                //setup.AddHealthCheckEndpoint("Eventstore", "http://eventstore/healthcheck");
+                setup.AddHealthCheckEndpoint("Eventstore", "http://eventstore/healthcheck");
             });    
         }
 
