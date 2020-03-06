@@ -32,8 +32,8 @@ namespace Dochazka_Api.Repositories
         {
             var version = 1;
             var cmdGuid = await _handler.MakeCommand(cmd, MessageType.DochazkaCreate, null, version, false);
-            //TODO: ulozit create do EventStore;
-            var model = new Dochazka()
+
+             var model = new Dochazka()
             {
                 Den = cmd.Datum.Day,
                 DenTydne = (int)cmd.Datum.DayOfWeek,
@@ -44,7 +44,9 @@ namespace Dochazka_Api.Repositories
                 UzivatelId = cmd.UzivatelId,
                 Datum = cmd.Datum,
                 CteckaId = cmd.CteckaId
-                
+
+
+
             };
             db.Dochazka.Add(model);
             await db.SaveChangesAsync();

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Udalost_Api.Repositories
 {
-    public interface IUdalostServiceRepository
+    public interface IListener
     {
 
         void AddCommand(string message);

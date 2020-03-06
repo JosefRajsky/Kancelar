@@ -10,6 +10,7 @@ namespace KancelarWeb.Controllers
     {
         public IActionResult Index()
         {
+           return RedirectToAction("Index", "Kalendar");
             return View("Index");
         }
         public IActionResult Error()

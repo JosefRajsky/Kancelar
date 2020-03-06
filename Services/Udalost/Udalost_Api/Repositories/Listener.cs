@@ -14,20 +14,22 @@ using UdalostLibrary;
 
 namespace Udalost_Api.Repositories
 {
-    public class UdalostServiceRepository : IUdalostServiceRepository
+    public class Listener : IListener
     {
         string _BaseUrl;
-        private readonly IUdalostRepository _udalostRepository;
-        public UdalostServiceRepository(IUdalostRepository udalostService)
+        private readonly IUdalostRepository _repository;
+        public Listener(IUdalostRepository repository)
         {
-            _udalostRepository = udalostService;
+            _repository = repository;
             _BaseUrl = "http://udalostapi/udalost/";
         }
         public void AddCommand(string message)
         {
             //-------------Description: Deserializace Json objektu na základní typ zprávy
-            var envelope = JsonConvert.DeserializeObject<Command>(message);
+            var envelope = JsonConvert.DeserializeObject<Message>(message);
+            var body = JsonConvert.DeserializeObject<string>(envelope.Body);
             //-------------Description: Rozhodnutí o typu získazné zprávy. Typ vázaný na Enum z knihovny
+
             switch (envelope.MessageType)
             {
                 case MessageType.UdalostCreate:
@@ -35,25 +37,25 @@ namespace Udalost_Api.Repositories
                     if (envelope.Version == 1)
                     {
                         //-------------Description: Deserializace zprávy do správného typu a odeslání k uložení do DB; 
-                        this.Add(JsonConvert.DeserializeObject<CommandUdalostCreate>(message));
+                        this.Add(JsonConvert.DeserializeObject<CommandUdalostCreate>(body));
                     }
                     break;
                 case MessageType.UdalostRemove:
                     if (envelope.Version == 1)
                     {
-                        this.Remove(JsonConvert.DeserializeObject<CommandUdalostRemove>(message));
+                        this.Remove(JsonConvert.DeserializeObject<CommandUdalostRemove>(body));
                     }
                     break;
                 case MessageType.UdalostUpdate:
                     if (envelope.Version == 1)
                     {
-                        this.Update(JsonConvert.DeserializeObject<CommandUdalostUpdate>(message));
+                        this.Update(JsonConvert.DeserializeObject<CommandUdalostUpdate>(body));
                     }
                     break;
                 case MessageType.DochazkaCreated:
                     if (envelope.Version == 1)
                     {
-                        this.AddByDochazka(JsonConvert.DeserializeObject<EventDochazkaCreated>(message));
+                        this.AddByDochazka(JsonConvert.DeserializeObject<EventDochazkaCreated>(body));
                     }
                     break;
 
@@ -61,7 +63,7 @@ namespace Udalost_Api.Repositories
         }
         public void Add(CommandUdalostCreate cmd)
         {
-            _udalostRepository.Add(cmd);
+            _repository.Add(cmd);
             var client = new HttpClient();
             client.BaseAddress = new Uri(_BaseUrl);
             //client.PutAsJsonAsync("Add", cmd);
@@ -80,7 +82,7 @@ namespace Udalost_Api.Repositories
             var client = new HttpClient();
             client.BaseAddress = new Uri(_BaseUrl);
 
-            _udalostRepository.Add(cmd);
+            _repository.Add(cmd);
             //client.PutAsJsonAsync("Add", cmd);
         }
         public void Remove(CommandUdalostRemove cmd)
@@ -104,5 +106,8 @@ namespace Udalost_Api.Repositories
             //client.PostAsJsonAsync("Update", model);
 
         }
+        //public void AcceptCommand(Guid guid) {
+        //    _repository.AcceptCommand(guid);
+        //}
     }
 }

@@ -58,6 +58,19 @@ services:
       - sqlserver
       - rabbitmq
 
+  webapiocelot:
+    image: ${DOCKER_REGISTRY-}webapi
+    hostname: "webapiocelot"       
+    ports:
+      - "8090:80"
+    build:
+      context: .
+      dockerfile: Api/WebApi/Dockerfile
+    depends_on:
+      - sqlserver
+      - rabbitmq
+      - eventstore
+
   kancelarweb:
     image: ${DOCKER_REGISTRY-}kancelarweb
     ports:
@@ -69,15 +82,19 @@ services:
       - sqlserver
       - rabbitmq
       - eventstore
+      - kalendarapi
+      - udalostapi
+      - dochazkapi
+      - uzivatelapi
 
-  webapiocelot:
-    image: ${DOCKER_REGISTRY-}webapi
-    hostname: "webapiocelot"       
+  kalendarapi:
+    image: ${DOCKER_REGISTRY-}kalendar_api
+    hostname: "kalendarapi"       
     ports:
-      - "8090:80"
+      - "8086:80"
     build:
       context: .
-      dockerfile: Api/WebApi/Dockerfile
+      dockerfile: Services/Kalendar/Kalendar_Api/Dockerfile
     depends_on:
       - sqlserver
       - rabbitmq
@@ -95,6 +112,7 @@ services:
       - sqlserver
       - rabbitmq
       - eventstore
+
   dochazkaapi:
     image: ${DOCKER_REGISTRY-}dochazka_api
     hostname: "dochazkaapi"       
@@ -120,6 +138,8 @@ services:
       - sqlserver
       - rabbitmq
       - eventstore
+
+
 
 
 

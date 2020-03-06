@@ -4,9 +4,17 @@
 @foreach (var item in Model)
 {
     <ul class="list-group list-group-flush">
-        <li class="list-group-item">@Html.DisplayFor(modelItem => item.Prijmeni) @Html.DisplayFor(modelItem => item.Jmeno)</li>
+        <li class="list-group-item">
+            @Html.DisplayFor(modelItem => item.Prijmeni) @Html.DisplayFor(modelItem => item.Jmeno)
+            <span class="btn-group-sm">
+                <a class="btn btn-xs btn-success" href='@Url.Action("AddPrichod", "Dochazka", new { @prichod = "true", @uzivatelId=item.Id })'> In</a>
+                <a class="btn btn-xs btn-warning" href='@Url.Action("AddPrichod", "Dochazka", new {@prichod = "false",@uzivatelId=item.Id })'> Out</a>
+            </span>
+        </li>
     </ul>
 }
+
+<hr />
 
 
 

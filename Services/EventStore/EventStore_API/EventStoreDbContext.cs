@@ -1,8 +1,5 @@
-﻿using EventLibrary;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace EventStore_Api
@@ -16,18 +13,6 @@ namespace EventStore_Api
         }
 
         public DbSet<Message> Messages { get; set; }
-    }
-    public class Message {
-        [Key]
-        public Guid Guid { get; set; }
-        public Guid CurrentGuid { get; set; }
-        public Guid? ParentGuid { get; set; }
-        public int? TopicId { get; set; }
-        public MessageType MessageType { get; set; }
-        public string MessageTypeText { get; set; }
-        public int Version { get; set; }
-        public DateTime Created { get; set; }      
-        public string Body { get; set; }
     }
 
 }

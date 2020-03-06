@@ -15,13 +15,13 @@ namespace CommandHandler
         }
         public async Task<Guid> MakeCommand<T>(T message, MessageType typ, Guid? parentGuid, int version, bool send)
         {
-            var cmd = new Command() {
+            var cmd = new Message() {
                 Guid = Guid.NewGuid(),
                 MessageType =typ,
                 Version = version,
                 Created = DateTime.Now,
                 ParentGuid = parentGuid,
-                Message = await Task.Run(() => JsonConvert.SerializeObject(message))
+                Body = await Task.Run(() => JsonConvert.SerializeObject(message))
             };
             if (send) await _publisher.Push(await Task.Run(() => JsonConvert.SerializeObject(cmd)));
             return cmd.Guid;
@@ -29,14 +29,14 @@ namespace CommandHandler
 
         public async Task<Guid> PublishEvent<T>(T message, MessageType typ, Guid? parentGuid, int version, bool send)
         {
-            var ev = new Event()
+            var ev = new Message()
             {
                 Guid = Guid.NewGuid(),
                 MessageType = typ,
                 Version = version,
                 Created = DateTime.Now,
                 ParentGuid = parentGuid,
-                Message = await Task.Run(() => JsonConvert.SerializeObject(message))
+                Body = await Task.Run(() => JsonConvert.SerializeObject(message))
         };
 
             if (send) await _publisher.Push(await Task.Run(() => JsonConvert.SerializeObject(ev)));

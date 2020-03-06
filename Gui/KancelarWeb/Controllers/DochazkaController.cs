@@ -16,32 +16,45 @@ namespace KancelarWeb.Controllers
     public class DochazkaController : Controller
     {
         DochazkaClient client;
+        UzivatelClient UzivatelServis;
         public DochazkaController() 
         {
             client = new DochazkaClient();
+            UzivatelServis = new UzivatelClient();
         }
 
         public async Task<IActionResult> Index()
         {          
             var model = await client.GetListAsync();
+
+            //TODO: pridat do DB, nevolat addhoc
+            foreach (var item in model)
+            {
+                var uzivatel = await UzivatelServis.GetAsync(item.UzivatelId);
+                item.UzivatelCeleJmeno = $"{uzivatel.Prijmeni} {uzivatel.Jmeno}";
+            }
+
+
             return View(model);
         }
         public async Task<IActionResult> Detail(int id)
         {
             var model = await client.GetAsync(id);
+            var uzivatel = await UzivatelServis.GetAsync(model.UzivatelId);
+            model.UzivatelCeleJmeno = $"{uzivatel.Prijmeni} {uzivatel.Jmeno}";
             return View(model);
         }
         
       
-        public async Task<IActionResult> AddPrichod(string prichod)
+        public async Task<IActionResult> AddPrichod(string prichod, string uzivatelId)
         {            
             Random rnd = new Random();
             var model = new CommandDochazkaCreate()
-            { 
-            CteckaId = "",
-            Datum = (Convert.ToBoolean(prichod)) ? DateTime.Now.AddHours(-rnd.Next(1, 5)) : DateTime.Now.AddHours(rnd.Next(1, 4)),
-            Prichod = Convert.ToBoolean(prichod),
-            UzivatelId = rnd.Next(100, 1000)
+            {
+                CteckaId = "",
+                Datum = DateTimeOffset.Now,
+                Prichod = Convert.ToBoolean(prichod),
+                UzivatelId = Convert.ToInt32(uzivatelId),
             };
            
             await client.AddAsync(model);

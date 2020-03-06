@@ -1,0 +1,45 @@
+﻿@model List<KancelarWeb.ViewModels.KalendarModel>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@foreach (var item in Model)
+{
+    <div class="panel panel-default">
+        <div class="panel-heading"><h5>@item.Rok - @item.CeleJmeno</h5></div>
+        <div class="panel-body">
+            <table class="table table-bordered">
+                @foreach (var mesic in item.Kalendar.Months)
+                {
+
+
+                    <tr>
+                        <td rowspan="2" style="width:50px;">@mesic.MonthName</td>
+                        @foreach (var den in mesic.Days)
+                        {
+                            <td style="width:25px" class="@(den.IsSvatek ? "bg-danger" : (den.TypId == 6 | den.TypId == 7)?"bg-info": ""  )">@den.Id</td>
+                        }
+                    </tr>
+                    <tr>
+                        @foreach (var den in mesic.Days)
+                        {
+                            <td class="@(den.Polozky.Any()? "bg-primary" : den.IsSvatek ? "bg-danger" : (den.TypId == 6 | den.TypId == 7)?"bg-info": ""  )">
+                                @if (den.Polozky.Any())
+                                {
+                                    <span>@den.Polozky.Count()</span>
+                                }
+
+                            </td>
+                        }
+                    </tr>
+
+
+                }
+            </table>
+
+            </div>
+    </div>
+}
+

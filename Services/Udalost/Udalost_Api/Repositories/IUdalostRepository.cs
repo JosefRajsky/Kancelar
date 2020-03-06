@@ -14,6 +14,8 @@ namespace Udalost_Api.Repositories
         Task<List<Udalost>> GetList();
         Task<Udalost> Get(int id);
 
+        //Task AcceptCommand(Guid guid);
+
         Task Add(CommandUdalostCreate cmd);
 
         Task Update(CommandUdalostUpdate cmd);

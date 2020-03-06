@@ -25,7 +25,11 @@ namespace Udalost_Api.Repositories
             _publisher = publisher;
             _handler = new MessageHandler(publisher);
         }
-
+        //public async Task AcceptCommand(Guid guid)
+        //{
+        //    db.ReadLog.Add(new ReadLog() { Guid = guid, Created = DateTime.Now });
+        //    await db.SaveChangesAsync();
+        //}
         public async Task Add(CommandUdalostCreate cmd)
         {
             var version = 1;
@@ -42,6 +46,7 @@ namespace Udalost_Api.Repositories
                 UzivatelId = cmd.UzivatelId,
             };
             db.Udalosti.Add(model);
+            //await AcceptCommand(cmd.Guid);
             await db.SaveChangesAsync();
 
             var ev = JsonConvert.SerializeObject(
@@ -117,6 +122,8 @@ namespace Udalost_Api.Repositories
                 ) ;
             var responseGuid = await _handler.PublishEvent(ev, MessageType.UdalostUpdated, cmdGuid, version, true);
         }
+
+
 
     }
 }

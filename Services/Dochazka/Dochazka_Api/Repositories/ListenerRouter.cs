@@ -22,27 +22,28 @@ namespace Dochazka_Api.Repositories
         }
        
         public void AddCommand(string message)
-        {           
-            var envelope = JsonConvert.DeserializeObject<Command>(message);          
+        {
+            var envelope = JsonConvert.DeserializeObject<Message>(message);
+            var body = JsonConvert.DeserializeObject<string>(envelope.Body);
             switch (envelope.MessageType)
             {
-                case (int)MessageType.DochazkaCreate:
+                case MessageType.DochazkaCreate:
                    
                     if (envelope.Version == 1)
                     {                      
-                        this.AddAsync(JsonConvert.DeserializeObject<CommandDochazkaCreate>(message));
+                        this.AddAsync(JsonConvert.DeserializeObject<CommandDochazkaCreate>(body));
                     }
                     break;
                 case MessageType.DochazkaRemove:
                     if (envelope.Version == 1)
                     {
-                        this.Remove(JsonConvert.DeserializeObject<CommandDochazkaRemove>(message));
+                        this.Remove(JsonConvert.DeserializeObject<CommandDochazkaRemove>(body));
                     }
                     break;
                 case MessageType.DochazkaUpdate:
                     if (envelope.Version == 1)
                     {
-                        this.Update(JsonConvert.DeserializeObject<CommandDochazkaUpdate>(message));
+                        this.Update(JsonConvert.DeserializeObject<CommandDochazkaUpdate>(body));
                     }
                     break;
               

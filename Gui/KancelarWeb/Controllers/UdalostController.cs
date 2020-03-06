@@ -16,21 +16,32 @@ namespace KancelarWeb.Controllers
     {
 
         UdalostClient client;
-        UzivatelClient clientUzivatel;
+        UzivatelClient UzivatelServis;
         public UdalostController()
         {
             client = new UdalostClient();
-            clientUzivatel = new UzivatelClient();
+            UzivatelServis = new UzivatelClient();
         }
 
         public async Task<IActionResult> Index()
         {
             var model = await client.GetListAsync();
+            //foreach (var item in model)
+            //{
+            //    var uzivatel = await UzivatelServis.GetAsync(item.UzivatelId);
+            //    item.UzivatelCeleJmeno = $"{uzivatel.Prijmeni} {uzivatel.Jmeno}";
+            //}
             return View(model);
         }
         public async Task<IActionResult> Detail(int id)
         {
             var model = await client.GetAsync(id);
+
+          
+                var uzivatel = await UzivatelServis.GetAsync(model.UzivatelId);
+                model.UzivatelCeleJmeno = $"{uzivatel.Prijmeni} {uzivatel.Jmeno}";
+           
+
             return View(model);
         }
         [HttpPost]
@@ -87,7 +98,7 @@ namespace KancelarWeb.Controllers
             }).ToList(), "Value", "Text");
 
             ViewBag.UzivatelList = new List<SelectListItem>();
-            foreach (var item in await clientUzivatel.GetListAsync())
+            foreach (var item in await UzivatelServis.GetListAsync())
             {
                 ViewBag.UzivatelList.Add(new SelectListItem { Value = item.Id.ToString(), Text = $"{item.Prijmeni} {item.Jmeno}" });
             }           

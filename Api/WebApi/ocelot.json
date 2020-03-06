@@ -35,6 +35,18 @@
       "UpstreamPathTemplate": "/api/uzivatel/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "SwaggerKey": "uzivatel"
+    },
+    {
+      "DownstreamPathTemplate": "/kalendar/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "kalendarapi/"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/kalendar/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "SwaggerKey": "kalendar"
     }
   ],
   "SwaggerEndPoints": [
@@ -65,6 +77,16 @@
           "Name": "Uzivatel API",
           "Version": "v1",
           "Url": "http://uzivatelapi/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "kalendar",
+      "Config": [
+        {
+          "Name": "Kalendar API",
+          "Version": "v1",
+          "Url": "http://kalendarapi/swagger/v1/swagger.json"
         }
       ]
     }

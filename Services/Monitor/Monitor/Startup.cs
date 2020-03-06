@@ -46,6 +46,7 @@ namespace Monitor
                 setup.AddHealthCheckEndpoint("Udalost", "http://udalostapi/healthcheck");
                 setup.AddHealthCheckEndpoint("Uzivatel", "http://uzivatelapi/healthcheck");
                 setup.AddHealthCheckEndpoint("Eventstore", "http://eventstore/healthcheck");
+                setup.AddHealthCheckEndpoint("Kalendar", "http://kalendarapi/healthcheck");
             });    
         }
 

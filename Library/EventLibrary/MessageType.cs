@@ -47,23 +47,36 @@ namespace EventLibrary
         UdalostUpdated = 11,
         #endregion
         #region Uzivatel
-        [Description("Command: Vytvoření nové docházky")]
+        [Description("Command: Vytvoření nového uživatele")]
         UzivatelCreate = 12,
 
-        [Description("Command: Odstranění docházky")]
+        [Description("Command: Odstranění uživatele")]
         UzivatelRemove = 13,
 
-        [Description("Command: Update docházky")]
+        [Description("Command: Update uživatele")]
         UzivatelUpdate = 14,
 
-        [Description("Command: Vytvoření nové docházky")]
+        [Description("Command: Uživatel byl vytvořen")]
         UzivatelCreated = 15,
 
-        [Description("Command: Odstranění docházky")]
+        [Description("Command: Uživatel byl odstraněn")]
         UzivatelRemoved = 16,
 
-        [Description("Command: Update docházky")]
+        [Description("Command: Uživatel byl upraven")]
         UzivatelUpdated = 17,
+        #endregion
+        #region Kalendar
+        [Description("Command: Vytvoření nového kalendáře")]
+        KalendarCreate = 18,       
+
+        [Description("Command: Update kalendáře")]
+        KalendarUpdate = 19,
+
+        [Description("Event: Kalendář byl vytvořen")]
+        KalendarCreated = 20,       
+
+        [Description("Event: kalendář byl upraven")]
+        KalendarUpdated = 21,
         #endregion
 
 

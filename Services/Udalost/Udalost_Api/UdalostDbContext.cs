@@ -21,6 +21,7 @@ namespace Udalost_Api
         }  
        
         public  DbSet<Udalost> Udalosti { get; set; }
+        //public DbSet<ReadLog> ReadLog { get; set; }
 
 
      

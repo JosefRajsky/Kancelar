@@ -10,6 +10,8 @@ namespace EventStore_Api.Repositories
     public interface IEventStoreRepository
     {
         Task AddMessageAsync(string msg);
+        Task<List<Message>> GetList();
+        Task<Message> Get(string id);
 
 
 
