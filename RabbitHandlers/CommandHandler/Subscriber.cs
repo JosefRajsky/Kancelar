@@ -22,7 +22,9 @@ namespace CommandHandler
         {
             foreach (var ex in _exchange)
             {
-                _channel.ExchangeDeclare(exchange: ex, type: ExchangeType.Fanout);
+                var args = new Dictionary<string, object>();
+                args.Add("x-message-ttl", 432000);
+                _channel.ExchangeDeclare(exchange: ex, type: ExchangeType.Fanout,false,false,args);
             }
             //_channel.BasicPublish(
             // exchange: _exchange,

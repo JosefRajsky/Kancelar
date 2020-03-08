@@ -94,21 +94,26 @@ namespace Kalendar_Api.Repositories
             var model = db.Kalendare.FirstOrDefault(k => k.UzivatelId == evt.UzivatelId && k.Rok == evt.DatumOd.Year);
             var kalendar = JsonConvert.DeserializeObject<Year>(model.Body);
 
-            var mesic = kalendar.Months[evt.DatumOd.Month-1];
-             var den = mesic.Days[evt.DatumOd.Day-1];
-            //den.Body = JsonConvert.SerializeObject(evt);
-            var polozka = new Polozka()
-            {
-                Id = evt.UdalostTypId,
-                DatumDo = evt.DatumOd,
-                DatumOd = evt.DatumDo,
-                Nazev = evt.Nazev,
-                UzivatelId = evt.UzivatelId,
-                CeleJmeno = evt.UzivatelCeleJmeno
-            };
-            den.Polozky.Add(polozka);
-            var result = JsonConvert.SerializeObject(kalendar);
 
+            var interval = (evt.DatumDo - evt.DatumOd).TotalDays;
+
+            for (int i = 0 ; i <=interval ; i++)
+            {
+                var focus = evt.DatumOd.AddDays(i);
+                var mesic = kalendar.Months[focus.Month - 1];
+                var den = mesic.Days[focus.Day - 1];
+                var polozka = new Polozka()
+                {
+                    Id = evt.UdalostTypId,
+                    DatumDo = evt.DatumOd,
+                    DatumOd = evt.DatumDo,
+                    Nazev = evt.Nazev,
+                    UzivatelId = evt.UzivatelId,
+                    CeleJmeno = evt.UzivatelCeleJmeno
+                };
+                den.Polozky.Add(polozka);
+            }           
+            var result = JsonConvert.SerializeObject(kalendar);
             model.Body = result;
             await db.SaveChangesAsync();
         }

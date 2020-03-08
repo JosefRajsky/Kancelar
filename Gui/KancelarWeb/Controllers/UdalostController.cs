@@ -48,11 +48,11 @@ namespace KancelarWeb.Controllers
         public async Task<IActionResult> Add([FromForm]UdalostModel model)
         {
             var command = new CommandUdalostCreate() {
-                UzivatelId = model.UzivatelId,                 
-                DatumDo = model.DatumDo,
+                UzivatelId = model.UzivatelId,  
                 Nazev = model.Nazev,
                 UzivatelCeleJmeno = model.UzivatelCeleJmeno,
-                DatumOd = model.DatumDo,
+                DatumOd = model.DatumOd,
+                DatumDo = model.DatumDo,
                 DatumZadal = DateTime.Today,
                 Popis = model.Popis,
                 UdalostTypId = model.UdalostTypId

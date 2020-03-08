@@ -86,7 +86,9 @@ namespace CommandHandler
                 this._connection = _factory.CreateConnection();
             }
             this._channel = _connection.CreateModel();
-            _channel.ExchangeDeclare(_exchange, ExchangeType.Fanout);
+            var args = new Dictionary<string, object>();
+            args.Add("x-message-ttl", 432000);
+            _channel.ExchangeDeclare(_exchange, ExchangeType.Fanout,false,false,args);
 
         }
 

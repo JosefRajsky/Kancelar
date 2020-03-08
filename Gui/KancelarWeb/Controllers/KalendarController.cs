@@ -25,22 +25,52 @@ namespace KancelarWeb.Controllers
             UzivatelServis = new UzivatelClient();
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? rok, int? mesic)
         {
-            var model = await client.GetListAsync();
+            if (rok == null) {
+                rok = DateTime.Today.Year;
+            }
+            if (mesic != null) {
+                ViewBag.Mesic = mesic;
+            }
+            var kalendarList = await client.GetListAsync();            
+            var model = kalendarList.Where(k => k.Rok == rok).ToList();
+           
+            foreach (var item in model)
+            {
+                var uzivatel = await UzivatelServis.GetAsync(item.UzivatelId);
+                item.CeleJmeno = $"{uzivatel.Prijmeni} {uzivatel.Jmeno}";
+            }
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> Mesic(int? mesic, int? rok)
+        {
+            if (rok == 0)
+            {
+                rok = DateTime.Today.Year;
+            }
+            if (mesic != null)
+            {
+                ViewBag.Mesic = mesic;
+            }
+            var kalendarList = await client.GetListAsync();
+            var model = kalendarList.Where(k => k.Rok == rok);
 
             foreach (var item in model)
             {
                 var uzivatel = await UzivatelServis.GetAsync(item.UzivatelId);
                 item.CeleJmeno = $"{uzivatel.Prijmeni} {uzivatel.Jmeno}";
             }
+
             return View(model);
         }
-       
-     
 
-       
-      
+
+
+
+
 
     }
 }

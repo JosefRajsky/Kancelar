@@ -16,7 +16,6 @@ namespace KancelarWeb.ViewModels
 
         [Newtonsoft.Json.JsonProperty("rok", Required = Newtonsoft.Json.Required.Always)]
         public int Rok { get; set; }
-
         public virtual string CeleJmeno { get; set; }
 
         [Newtonsoft.Json.JsonProperty("kalendar", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -44,7 +43,7 @@ namespace KancelarWeb.ViewModels
         public int Id { get; set; }
 
         [Newtonsoft.Json.JsonProperty("days", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<Day> Days { get; set; }
+        public System.Collections.Generic.IList<Day> Days { get; set; }
 
         [Newtonsoft.Json.JsonProperty("dayCount", Required = Newtonsoft.Json.Required.Always)]
         public int DayCount { get; set; }

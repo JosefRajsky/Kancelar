@@ -71,21 +71,7 @@ services:
       - rabbitmq
       - eventstore
 
-  kancelarweb:
-    image: ${DOCKER_REGISTRY-}kancelarweb
-    ports:
-      - "85:80"
-    build:
-      context: .
-      dockerfile: Gui/KancelarWeb/Dockerfile
-    depends_on:
-      - sqlserver
-      - rabbitmq
-      - eventstore
-      - kalendarapi
-      - udalostapi
-      - dochazkapi
-      - uzivatelapi
+
 
   kalendarapi:
     image: ${DOCKER_REGISTRY-}kalendar_api
@@ -139,6 +125,21 @@ services:
       - rabbitmq
       - eventstore
 
+  kancelarweb:
+    image: ${DOCKER_REGISTRY-}kancelarweb
+    ports:
+      - "85:80"
+    build:
+      context: .
+      dockerfile: Gui/KancelarWeb/Dockerfile
+    depends_on:
+      - sqlserver
+      - rabbitmq
+      - eventstore
+      - kalendarapi
+      - udalostapi
+      - dochazkaapi
+      - uzivatelapi
 
 
 
