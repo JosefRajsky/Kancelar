@@ -10,7 +10,10 @@
       ],
       "UpstreamPathTemplate": "/api/dochazka/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-      "SwaggerKey": "dochazka"
+      "SwaggerKey": "dochazka",
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
     {
       "DownstreamPathTemplate": "/udalost/{everything}",
@@ -22,7 +25,10 @@
       ],
       "UpstreamPathTemplate": "/api/udalost/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-      "SwaggerKey": "udalost"
+      "SwaggerKey": "udalost",
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
     {
       "DownstreamPathTemplate": "/uzivatel/{everything}",
@@ -34,7 +40,10 @@
       ],
       "UpstreamPathTemplate": "/api/uzivatel/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-      "SwaggerKey": "uzivatel"
+      "SwaggerKey": "uzivatel",
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     },
     {
       "DownstreamPathTemplate": "/kalendar/{everything}",
@@ -46,9 +55,12 @@
       ],
       "UpstreamPathTemplate": "/api/kalendar/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-      "SwaggerKey": "kalendar"
+      "SwaggerKey": "kalendar",
+      "LoadBalancerOptions": {
+        "Type": "LeastConnection"
+      }
     }
-  ],
+  ],  
   "SwaggerEndPoints": [
     {
       "Key": "dochazka",
@@ -90,9 +102,6 @@
         }
       ]
     }
-  ],
-  "GlobalConfiguration": {
-    "AdministrationPath": "/administration"
-
-  }
+  ]
+  
 }

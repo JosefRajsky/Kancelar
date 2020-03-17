@@ -33,36 +33,16 @@ namespace Udalost_Api
         public IConfiguration Configuration { get; }
         public void ConfigureServices(IServiceCollection services)
         {
-              var factory = new ConnectionFactory() { HostName = "rabbitmq" };
+            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
             services.AddTransient<IUdalostRepository, UdalostRepository>();
             services.AddSingleton<Publisher>(s => new Publisher(factory, "udalost.ex","udalost.q"));
             services.AddDbContext<UdalostDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
             services.AddControllers();
-            services.AddHealthChecks();
-
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Udalost Api", Version = "v1" });
-            });
             var exchanges = new List<string>();
             exchanges.Add("udalost.ex");
             exchanges.Add("dochazka.ex");
-
-         
             factory.AutomaticRecoveryEnabled = true;
             factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(5);
-
-            
-
-            //Description: Kontrola stavu služby
-            services.AddHealthChecks()
-                .AddCheck("API Udalost", () => HealthCheckResult.Healthy())
-                .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
-                        healthQuery: "SELECT 1;",
-                        name: "DB",
-                        failureStatus: HealthStatus.Degraded)
-                 .AddRabbitMQ(sp => factory);
-
             var _connection = factory.CreateConnection();
             var _channel = _connection.CreateModel();
             var queueName = _channel.QueueDeclare().QueueName;
@@ -87,6 +67,23 @@ namespace Udalost_Api
                 //-------------Description: Odeslání zprávy do repositáøe
                 repository.AddCommand(message);
             };
+
+            services.AddHealthChecks();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Udalost Api", Version = "v1" });
+            });
+           
+
+            //Description: Kontrola stavu služby
+            services.AddHealthChecks()
+                .AddCheck("API Udalost", () => HealthCheckResult.Healthy())
+                .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
+                        healthQuery: "SELECT 1;",
+                        name: "DB",
+                        failureStatus: HealthStatus.Degraded)
+                 .AddRabbitMQ(sp => factory);
 
         }
 

@@ -13,11 +13,11 @@ using System.Threading.Tasks;
 
 namespace Kalendar_Api.Repositories
 {
-    public class ListenerRouter : IListenerRouter
+    public class Listener : IListenerRouter
     {
         //string _BaseUrl;
         private readonly IKalendarRepository _repository;
-        public ListenerRouter(IKalendarRepository repository)
+        public Listener(IKalendarRepository repository)
         {
             _repository = repository;
         }
@@ -48,9 +48,20 @@ namespace Kalendar_Api.Repositories
                     break;
                 case MessageType.UzivatelCreated:
                     if (envelope.Version == 1)
+                    {                       
+                        this.AddByUzivatel(JsonConvert.DeserializeObject<EventUzivatelCreated>(body));
+                    }
+                    break;
+                case MessageType.UzivatelUpdated:
+                    if (envelope.Version == 1)
                     {
-                       
-                        this.AddByUzivatelCreated(JsonConvert.DeserializeObject<EventUzivatelCreated>(body));
+                        this.UpdateWithUzivatel(JsonConvert.DeserializeObject<EventUzivatelUpdated>(body));
+                    }
+                    break;
+                case MessageType.UzivatelRemoved:
+                    if (envelope.Version == 1)
+                    {
+                        this.DeleteWithUzivatel(JsonConvert.DeserializeObject<EventUzivatelDeleted>(body));
                     }
                     break;
                 default:
@@ -72,9 +83,16 @@ namespace Kalendar_Api.Repositories
         {
             _repository.UpdateByUdalost(evt);
         }
-        public void AddByUzivatelCreated(EventUzivatelCreated evt)
+        public void AddByUzivatel(EventUzivatelCreated evt)
         {
             _repository.AddByUzivatel(evt);
+        }
+        public void UpdateWithUzivatel(EventUzivatelUpdated evt)
+        {
+            _repository.UpdateByUzivatel(evt);
+        }
+        public void DeleteWithUzivatel(EventUzivatelDeleted evt) {
+            _repository.DeleteByUzivatel(evt);
         }
 
 

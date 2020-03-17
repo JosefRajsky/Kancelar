@@ -90,7 +90,7 @@ namespace Kalendar_Api
                               routingKey: "");
             }
             //Description: vytvoøení smìrovaèe pøijatých zpráv ke kterým je služba pøihlášena
-            var repository = new ListenerRouter(services.BuildServiceProvider().GetService<IKalendarRepository>());
+            var repository = new Listener(services.BuildServiceProvider().GetService<IKalendarRepository>());
 
             //Description: Zpracování a odeslání zprávy do smìrovaèe
             consumer.Received += (model, ea) =>

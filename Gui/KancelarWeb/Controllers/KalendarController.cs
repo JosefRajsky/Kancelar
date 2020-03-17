@@ -33,16 +33,19 @@ namespace KancelarWeb.Controllers
             if (mesic != null) {
                 ViewBag.Mesic = mesic;
             }
-            var kalendarList = await client.GetListAsync();            
-            var model = kalendarList.Where(k => k.Rok == rok).ToList();
+            var model = await client.GetListAsync();            
            
-            foreach (var item in model)
+           
+            foreach (var item in model.Where(w => w.Rok == rok))
             {
                 var uzivatel = await UzivatelServis.GetAsync(item.UzivatelId);
-                item.CeleJmeno = $"{uzivatel.Prijmeni} {uzivatel.Jmeno}";
+                if (uzivatel != null) {
+                    item.CeleJmeno = $"{uzivatel.Prijmeni} {uzivatel.Jmeno}";
+                }
+                
             }
 
-            return View(model);
+            return View(model.Where(w => w.Rok == rok).ToList());
         }
 
         public async Task<IActionResult> Mesic(int? mesic, int? rok)

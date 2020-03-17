@@ -21,7 +21,7 @@ namespace CommandHandler
         private string _queue { get; set; }
         public async Task Push(string message) {
 
-          
+
 
             await Task.Run(() =>
                 {
@@ -32,43 +32,17 @@ namespace CommandHandler
                       exchange: "eventstore.ex",
                       routingKey: "",
                       basicProperties: null,
-                      body: body);                  
-                   
+                      body: body);  
                     _channel.BasicPublish(
                          exchange: _exchange,                        
                          routingKey: "",
                          basicProperties: null,
                          body: body);
-
                     _channel.TxCommit();
-
-                    //var queueName = _channel.QueueDeclare(_queue).QueueName;
-                    //_channel.QueueBind(queue: queueName,
-                    //              exchange: _exchange,
-                    //              routingKey: "");
-
-                });
-          
+                });         
            
         }
-        //public async Task<bool> PushToStore(string message)
-        //{
-
-
-        //    await Task.Run(() =>
-        //    {
-        //        var body = Encoding.UTF8.GetBytes(message);
-
-        //               _channel.BasicPublish(
-        //               exchange: "eventstore.ex",
-        //               routingKey: "",
-        //               basicProperties: null,
-        //               body: body);               
-
-        //    });
-
-
-        //}
+    
         public Publisher(ConnectionFactory connectionFactory, string exchange,string queue)
         {
             this._exchange = exchange;
@@ -85,7 +59,10 @@ namespace CommandHandler
                 Thread.Sleep(5000);
                 this._connection = _factory.CreateConnection();
             }
-            this._channel = _connection.CreateModel();
+
+            this._channel = _connection.CreateModel();            
+            IBasicProperties props = _channel.CreateBasicProperties();
+            props.Expiration = "432000";
             var args = new Dictionary<string, object>();
             args.Add("x-message-ttl", 432000);
             _channel.ExchangeDeclare(_exchange, ExchangeType.Fanout,false,false,args);

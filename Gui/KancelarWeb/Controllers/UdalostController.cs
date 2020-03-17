@@ -26,11 +26,15 @@ namespace KancelarWeb.Controllers
         public async Task<IActionResult> Index()
         {
             var model = await client.GetListAsync();
-            //foreach (var item in model)
-            //{
-            //    var uzivatel = await UzivatelServis.GetAsync(item.UzivatelId);
-            //    item.UzivatelCeleJmeno = $"{uzivatel.Prijmeni} {uzivatel.Jmeno}";
-            //}
+            foreach (var item in model)
+            {
+                var uzivatel = await UzivatelServis.GetAsync(item.UzivatelId);
+                if (uzivatel != null)
+                {
+                    item.UzivatelCeleJmeno = $"{uzivatel.Prijmeni} {uzivatel.Jmeno}";
+                }
+
+            }
             return View(model);
         }
         public async Task<IActionResult> Detail(int id)

@@ -32,6 +32,18 @@ services:
       - ./rabbitmq-isolated.conf:/etc/rabbitmq/rabbitmq.config
     depends_on:
       - sqlserver
+  consul:
+    image: consul:latest
+    command: 'agent -server -ui -client=0.0.0.0 -node=consul consul monitor -log-level debug'
+    hostname: "consul"
+    container_name: "Consul"
+    ports:
+      - '8300:8300'
+      - '8301:8301'
+      - '8302:8302'
+      - '8400:8400'
+      - '8500:8500'
+      - '8600:53/udp'
 
   monitor:
     image: ${DOCKER_REGISTRY-}monitor
@@ -58,6 +70,8 @@ services:
       - sqlserver
       - rabbitmq
 
+
+
   webapiocelot:
     image: ${DOCKER_REGISTRY-}webapi
     hostname: "webapiocelot"       
@@ -70,8 +84,6 @@ services:
       - sqlserver
       - rabbitmq
       - eventstore
-
-
 
   kalendarapi:
     image: ${DOCKER_REGISTRY-}kalendar_api
@@ -136,10 +148,6 @@ services:
       - sqlserver
       - rabbitmq
       - eventstore
-      - kalendarapi
-      - udalostapi
-      - dochazkaapi
-      - uzivatelapi
 
 
 

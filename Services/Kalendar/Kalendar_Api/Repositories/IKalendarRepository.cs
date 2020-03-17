@@ -17,5 +17,7 @@ namespace Kalendar_Api.Repositories
         Task Update(CommandKalendarUpdate cmd);
         Task UpdateByUdalost(EventUdalostCreated evt);
         Task AddByUzivatel(EventUzivatelCreated evt);
+        Task UpdateByUzivatel(EventUzivatelUpdated evt);        
+        Task DeleteByUzivatel(EventUzivatelDeleted evt);
     }
 }

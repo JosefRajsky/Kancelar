@@ -31,7 +31,11 @@ namespace KancelarWeb.Controllers
             foreach (var item in model)
             {
                 var uzivatel = await UzivatelServis.GetAsync(item.UzivatelId);
-                item.UzivatelCeleJmeno = $"{uzivatel.Prijmeni} {uzivatel.Jmeno}";
+                if (uzivatel != null)
+                {
+                    item.UzivatelCeleJmeno = $"{uzivatel.Prijmeni} {uzivatel.Jmeno}";
+                }
+
             }
 
 

@@ -21,6 +21,7 @@ using OcelotSwagger.Configuration;
 using Ocelot.Administration;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.OpenApi.Models;
+using Ocelot.Provider.Consul;
 
 namespace WebApi
 {
@@ -39,7 +40,7 @@ namespace WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {           
-            services.AddControllers();    
+            services.AddControllers();
             //Pøidání gateway engine: Ocelot
             services.AddOcelot(_config);
             services.AddSwaggerForOcelot(_config);

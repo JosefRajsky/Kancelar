@@ -59,6 +59,7 @@ namespace Udalost_Api.Repositories
                     }
                     break;
 
+
             }
         }
         public void Add(CommandUdalostCreate cmd)

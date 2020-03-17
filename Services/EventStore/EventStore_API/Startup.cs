@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using CommandHandler;
 using EventStore_Api;
@@ -18,6 +19,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Exceptions;
 
 namespace EventStore_API
 {
@@ -29,17 +31,28 @@ namespace EventStore_API
         }
 
         public IConfiguration Configuration { get; }
+        public IConnection _connection { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            try
-            {
+           
                 var factory = new ConnectionFactory() { HostName = "rabbitmq" };
                 var _factory = factory;
                 _factory.AutomaticRecoveryEnabled = true;
                 _factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(5);
-                var _connection = _factory.CreateConnection();
+            
+                try
+                {
+                _connection = _factory.CreateConnection();
+                 }
+                catch (BrokerUnreachableException e)
+                {
+                Thread.Sleep(5000);
+                 _connection = _factory.CreateConnection();
+                }
+
+          
                 var _channel = _connection.CreateModel();
                 var queueName = _channel.QueueDeclare().QueueName;
 
@@ -79,12 +92,8 @@ namespace EventStore_API
                     repository.AddMessageAsync(message).Wait();
 
                 };
-            }
-            catch (Exception e)
-            {
-
-                throw e;
-            }
+         
+            
            
         }
 

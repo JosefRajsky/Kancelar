@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommandHandler;
+using Consul;
 using Dochazka_Api.Repositories;
 using HealthChecks.RabbitMQ;
 using HealthChecks.UI.Client;
@@ -50,8 +51,8 @@ namespace Dochazka_Api
                 .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
                         healthQuery: "SELECT 1;",
                         name: "DB",
-                        failureStatus: HealthStatus.Degraded)
-                 .AddRabbitMQ(sp => factory);
+                        failureStatus: Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Degraded)
+                 .AddRabbitMQ(sp => factory);         
 
             services.AddControllers();
 
@@ -75,8 +76,8 @@ namespace Dochazka_Api
             //Description: Pøihlášení k odbìru zpráv z RabbitMQ
             factory.AutomaticRecoveryEnabled = true;
             factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(5);
+            
             var _connection = factory.CreateConnection();
-
             //Descripiton: vytvoøení komunikaèního kanálu, pøipojení a definice fronty pro práci se správami
             var _channel = _connection.CreateModel();
             var queueName = _channel.QueueDeclare().QueueName;
@@ -110,44 +111,28 @@ namespace Dochazka_Api
             {
                 app.UseDeveloperExceptionPage();
             }
-
-
             app.UseStaticFiles();
-
             app.UseOpenApi();
-
             app.UseSwaggerUi3();
-
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Dochazka Api v1");
-            });
-
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Dochazka Api v1"));
+           
             app.UseHttpsRedirection();
-
-
-
             app.UseRouting();
-
             app.UseHealthChecks("/healthcheck", new HealthCheckOptions
             {
                 Predicate = _ => true,
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-            });
-     
-
+            });  
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-
-                //Description: Cesta pro Stav služby
-
-
-
                 endpoints.MapControllerRoute(
                 name: "default",
                 pattern: "{controller}/{action}/{id?}");
             });
         }
+
     }
+
+    
 }
