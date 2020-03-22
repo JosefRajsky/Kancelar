@@ -13,6 +13,7 @@ namespace Kalendar_Api
     {
          public KalendarDbContext(DbContextOptions options) : base(options) {
             this.Database.EnsureCreated();
+            this.Database.Migrate();
         }  
        
         public  DbSet<Kalendar> Kalendare { get; set; }

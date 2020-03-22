@@ -39,7 +39,7 @@ namespace Kalendar_Api.Controllers
         [Route("Add")]
         public async Task Add(CommandKalendarCreate cmd)      
         {         
-         await _repository.Add(cmd);            
+         await _repository.Add(cmd,true);            
         }
 
        
@@ -47,7 +47,7 @@ namespace Kalendar_Api.Controllers
         [Route("Update")]
         public async Task Update(CommandKalendarUpdate cmd)
         {
-            await _repository.Update(cmd);        
+            await _repository.Update(cmd, true);        
         }
     }
 }

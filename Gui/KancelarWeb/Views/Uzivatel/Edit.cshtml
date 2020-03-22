@@ -12,7 +12,8 @@
     <div class="row">
         <div class="col-md-4">
             <form asp-controller="Uzivatel" asp-action="Add" method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>               
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>  
+                <input type="hidden" asp-for="Id">
                 <div class="form-group">
                     <label asp-for="TitulPred" class="control-label"></label>
                     <input asp-for="TitulPred" class="form-control" />

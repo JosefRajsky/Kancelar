@@ -11,7 +11,7 @@ namespace Uzivatel_Api
     {
         public UzivatelModel(Uzivatel uzivatel)
         {
-            Id = uzivatel.Id;
+            Id = uzivatel.Guid;
             TitulPred = uzivatel.TitulPred;
             Jmeno = uzivatel.Jmeno;
             Prijmeni = uzivatel.Prijmeni;
@@ -25,7 +25,7 @@ namespace Uzivatel_Api
 
         [Key]
         [DisplayName("Id")]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [DisplayName("Titul")]
         public string TitulPred { get; set; }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using CommandHandler;
@@ -18,6 +19,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Polly;
+using Polly.Extensions.Http;
 using RabbitMQ.Client;
 
 namespace Kalendar_Api
@@ -30,9 +33,13 @@ namespace Kalendar_Api
         }
         public IConfiguration Configuration { get; }
 
+
+
+         
         public void ConfigureServices(IServiceCollection services)
         {
            
+
             //Description: Pøidání služby popisu metod API
             services.AddSwaggerGen(c =>
             {
@@ -56,7 +63,7 @@ namespace Kalendar_Api
 
             var exchanges = new List<string>();
 
-            exchanges.Add(Configuration["ConnectionString:Exchange"]);            
+            exchanges.Add(Configuration["ConnectionString:Exchange"]);
             //Description: Seznam zájmových exchage            
             exchanges.Add("dochazka.ex");
             exchanges.Add("udalost.ex");
@@ -91,7 +98,6 @@ namespace Kalendar_Api
             }
             //Description: vytvoøení smìrovaèe pøijatých zpráv ke kterým je služba pøihlášena
             var repository = new Listener(services.BuildServiceProvider().GetService<IKalendarRepository>());
-
             //Description: Zpracování a odeslání zprávy do smìrovaèe
             consumer.Received += (model, ea) =>
             {
@@ -102,6 +108,7 @@ namespace Kalendar_Api
                 //-------------Description: Odeslání zprávy do smìrovaèe
                 repository.AddCommand(message);
             };
+           
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -129,9 +136,6 @@ namespace Kalendar_Api
             });
 
             app.UseHttpsRedirection();
-
-
-
             app.UseRouting();
 
             app.UseHealthChecks("/healthcheck", new HealthCheckOptions

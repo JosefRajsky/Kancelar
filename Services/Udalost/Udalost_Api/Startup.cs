@@ -61,9 +61,7 @@ namespace Udalost_Api
                 //-------------Description: Formátování pøijaté zprávy
                 var body = ea.Body;
                 var message = Encoding.UTF8.GetString(body);
-                //-------------Description: Vytvoøení repositáøe pro pøístup k entitám služby.
-
-            
+                //-------------Description: Vytvoøení repositáøe pro pøístup k entitám služby.            
                 //-------------Description: Odeslání zprávy do repositáøe
                 repository.AddCommand(message);
             };

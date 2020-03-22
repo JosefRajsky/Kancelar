@@ -8,8 +8,8 @@ namespace CommandHandler
 {
     public interface IMessageHandler
     {
-        Task<Guid> MakeCommand<T>(T message, MessageType typ, Guid? parentGuid, int version, bool send);
-        Task<Guid> PublishEvent<T>(T message, MessageType typ, Guid? parentGuid, int version, bool send);
+        Task<Message> MakeCommand<T>(T message, MessageType typ, Guid? parentGuid, int version, bool send);
+        Task<Guid> PublishEvent<E,C>(E message,C cmd, MessageType typ, Guid? parentGuid, int generation, Guid entityId);
 
     }
 }

@@ -11,7 +11,7 @@ namespace Kalendar_Api.Models
     {
         [Key]
         public int Id { get; set; }
-        public int UzivatelId { get; set; }
+        public Guid UzivatelId { get; set; }
         public int Rok { get; set; }
         public Year Kalendar { get; set; }
     }

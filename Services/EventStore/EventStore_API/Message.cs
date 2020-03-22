@@ -14,7 +14,9 @@ namespace EventStore_Api
         public string MessageTypeText { get; set; }
         public int Version { get; set; }
         public DateTime Created { get; set; }      
-        public string Body { get; set; }
+        public string Command { get; set; }
+        public string Event { get; set; }
+        public string EntityId { get; set; }
     }
 
 }

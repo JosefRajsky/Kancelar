@@ -12,7 +12,7 @@ namespace KancelarWeb.ViewModels
         public int Id { get; set; }
 
         [Newtonsoft.Json.JsonProperty("uzivatelId", Required = Newtonsoft.Json.Required.Always)]
-        public int UzivatelId { get; set; }
+        public Guid UzivatelId { get; set; }
 
         [Newtonsoft.Json.JsonProperty("rok", Required = Newtonsoft.Json.Required.Always)]
         public int Rok { get; set; }
@@ -80,13 +80,13 @@ namespace KancelarWeb.ViewModels
     public partial class Polozka
     {
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [Newtonsoft.Json.JsonProperty("nazev", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Nazev { get; set; }
 
         [Newtonsoft.Json.JsonProperty("uzivatelId", Required = Newtonsoft.Json.Required.Always)]
-        public int UzivatelId { get; set; }
+        public Guid UzivatelId { get; set; }
 
         [Newtonsoft.Json.JsonProperty("celeJmeno", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string CeleJmeno { get; set; }

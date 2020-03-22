@@ -9,7 +9,7 @@ namespace KancelarWeb.CommandsModels
     public partial class CommandUzivatelCreate
     {
         [Newtonsoft.Json.JsonProperty("uzivatelId", Required = Newtonsoft.Json.Required.Always)]
-        public int UzivatelId { get; set; }
+        public Guid UzivatelId { get; set; }
 
         [Newtonsoft.Json.JsonProperty("titulPred", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string TitulPred { get; set; }
@@ -46,7 +46,7 @@ namespace KancelarWeb.CommandsModels
     public partial class CommandUzivatelRemove
     {
         [Newtonsoft.Json.JsonProperty("uzivatelId", Required = Newtonsoft.Json.Required.Always)]
-        public int UzivatelId { get; set; }
+        public Guid UzivatelId { get; set; }
 
 
     }
@@ -55,7 +55,7 @@ namespace KancelarWeb.CommandsModels
     public partial class CommandUzivatelUpdate
     {
         [Newtonsoft.Json.JsonProperty("uzivatelId", Required = Newtonsoft.Json.Required.Always)]
-        public int UzivatelId { get; set; }
+        public Guid UzivatelId { get; set; }
 
         [Newtonsoft.Json.JsonProperty("titulPred", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string TitulPred { get; set; }

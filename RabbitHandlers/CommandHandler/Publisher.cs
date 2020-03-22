@@ -19,9 +19,16 @@ namespace CommandHandler
         private IModel _channel { get; set; }
         private string _exchange { get; set; }
         private string _queue { get; set; }
+        public void PushToExchange(string exchange,string message)
+        {
+            var body = Encoding.UTF8.GetBytes(message);
+            _channel.BasicPublish(
+                     exchange: exchange,
+                     routingKey: "",
+                     basicProperties: null,
+                     body: body);
+        }
         public async Task Push(string message) {
-
-
 
             await Task.Run(() =>
                 {
@@ -68,6 +75,7 @@ namespace CommandHandler
             _channel.ExchangeDeclare(_exchange, ExchangeType.Fanout,false,false,args);
 
         }
+
 
     }
 }

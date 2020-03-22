@@ -5,23 +5,32 @@ namespace EventLibrary
     public class CommandKalendarCreate 
     {     
 
-        public int UzivatelId { get; set; }
+        public Guid UzivatelId { get; set; }
         public string CeleJmeno { get; set; }
+        public int Rok { get; set; }
        
     }
     public class CommandKalendarUpdate
-    {    
+    {
         public int KalendarId { get; set; }
-        public int UzivatelId { get; set; }   
+        public Guid UzivatelId { get; set; }
+        public string CeleJmeno { get; set; }
+        public int Rok { get; set; }
     }
     public class EventKalendarCreated
     {
-        public int UzivatelId { get; set; }
+        public Guid UzivatelId { get; set; }
+        public string CeleJmeno { get; set; }
+        public int Rok { get; set; }
+        public Guid SourceGuid { get; set; }
     }
     public class EventKalendarUpdated
     {
-        public int UzivatelId { get; set; }
-      
+        public int KalendarId { get; set; }
+        public Guid UzivatelId { get; set; }
+        public string CeleJmeno { get; set; }
+        public int Rok { get; set; }
+
     }
  
 }

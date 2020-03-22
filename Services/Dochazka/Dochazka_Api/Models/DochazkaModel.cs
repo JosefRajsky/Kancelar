@@ -10,10 +10,10 @@ namespace Dochazka_Api.Models
     public class DochazkaModel
     {
  
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         [DisplayName("Datum a čas")]
         public DateTime Datum { get; set; }
-        public int UzivatelId { get; set; }
+        public Guid UzivatelId { get; set; }
         [DisplayName("Jméno a Příjmení")]
         public string UzivatelCeleJmeno { get; set; }
         [DisplayName("Druh")]

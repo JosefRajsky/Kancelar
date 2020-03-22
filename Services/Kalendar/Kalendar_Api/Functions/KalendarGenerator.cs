@@ -30,7 +30,7 @@ namespace Kalendar_Api.Functions
     public class Polozka { 
     public int Id { get; set; }
     public string Nazev { get; set; }
-    public int UzivatelId { get; set; }
+    public Guid UzivatelId { get; set; }
     public string CeleJmeno { get; set; }
     public DateTime DatumOd { get; set; }
     public DateTime DatumDo { get; set; }

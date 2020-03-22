@@ -10,8 +10,10 @@ namespace Kalendar_Api.Models
     {
         [Key]
         public int Id { get; set; }
-        public int UzivatelId { get; set; }
+        public Guid UzivatelId { get; set; }
+        public string UzivatelCeleJmeno { get; set; }
         public int Rok { get; set; }
         public string Body { get; set; }
+        public DateTime DatumAktualizace { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CommandHandler;
 using Consul;
 using Dochazka_Api.Repositories;
+using EventLibrary;
 using HealthChecks.RabbitMQ;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
@@ -23,6 +24,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 
 namespace Dochazka_Api
@@ -37,6 +39,7 @@ namespace Dochazka_Api
 
         public void ConfigureServices(IServiceCollection services)
         {
+        #region HealthCheck
             //Description: Pøidání služby popisu metod API
             services.AddSwaggerGen(c =>
             {
@@ -52,8 +55,8 @@ namespace Dochazka_Api
                         healthQuery: "SELECT 1;",
                         name: "DB",
                         failureStatus: Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Degraded)
-                 .AddRabbitMQ(sp => factory);         
-
+                 .AddRabbitMQ(sp => factory);
+            #endregion
             services.AddControllers();
 
             //Description: Vytvoøení factory pro RabbitMQ
@@ -92,7 +95,7 @@ namespace Dochazka_Api
                               routingKey: "");
             }
             //Description: vytvoøení smìrovaèe pøijatých zpráv ke kterým je služba pøihlášena
-            var repository = new ListenerRouter(services.BuildServiceProvider().GetService<IDochazkaRepository>());
+            var repository = new Listener(services.BuildServiceProvider().GetService<IDochazkaRepository>());
 
             //Description: Zpracování a odeslání zprávy do smìrovaèe
             consumer.Received += (model, ea) =>
@@ -104,7 +107,12 @@ namespace Dochazka_Api
                 //-------------Description: Odeslání zprávy do smìrovaèe
                 repository.AddCommand(message);
             };
+            //HealOnStart(services.BuildServiceProvider().GetService<Publisher>(), exchanges[1],exchanges[0]);
+
+          
         }
+      
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

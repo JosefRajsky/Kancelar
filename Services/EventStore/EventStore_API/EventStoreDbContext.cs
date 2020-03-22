@@ -12,7 +12,7 @@ namespace EventStore_Api
             this.Database.EnsureCreated();
         }
 
-        public DbSet<Message> Messages { get; set; }
+        public DbSet<StoreMessage> Messages { get; set; }
     }
 
 }

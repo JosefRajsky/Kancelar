@@ -77,7 +77,7 @@ namespace KancelarWeb.Controllers
                 DatumOd = model.DatumDo,
                 DatumZadal = DateTime.Today,
                 Popis = model.Popis,
-                UdalostTypId = model.Id
+                UdalostTypId = model.UdalostTypId
             };
             await client.UpdateAsync(command);
 

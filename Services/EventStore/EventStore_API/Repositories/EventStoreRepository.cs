@@ -1,6 +1,8 @@
 ﻿
 
+using CommandHandler;
 using EventLibrary;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
@@ -14,43 +16,58 @@ namespace EventStore_Api.Repositories
 {
     public class EventStoreRepository : IEventStoreRepository
     {
-        private string _connectionString;
-        private EventStoreDbContext _db;
-        public EventStoreRepository(string connectionString)
+        private readonly EventStoreDbContext db;
+        private Publisher _publisher;
+        public EventStoreRepository(EventStoreDbContext dbContext, Publisher publisher)
         {
-            _connectionString = connectionString;
-        }       
-
+            db = dbContext;
+            _publisher = publisher;
+        }
+        public async Task<List<StoreMessage>> GetListByDate(DateTime datum)
+        {
+            return await Task.Run(() => db.Messages.Where(m => m.Created > datum).ToList());
+        }
         public async Task AddMessageAsync(string msg)
         {
-            var origin = JsonConvert.DeserializeObject<Message>(msg);
-            var message = new Message();
+            var origin = JsonConvert.DeserializeObject<Message>( msg);
+            var message = new StoreMessage();
             message.Guid = Guid.NewGuid();
-            message.CurrentGuid = origin.Guid;
-            message.TopicId = 0;
+            //message.CurrentGuid = origin.Guid;
+            //message.TopicId = 0;
             message.ParentGuid = origin.ParentGuid;
             message.MessageType = origin.MessageType;
-            message.MessageTypeText = origin.MessageType.ToString();
-            message.Version = origin.Version;
-            message.Created = origin.Created;
-            message.Body = origin.Body;
-       
-            await Task.Run(()=> _db = new EventStoreDbContextFactory(_connectionString).CreateDbContext());                        
-                _db.Messages.Add(message);
-                await _db.SaveChangesAsync();
-                _db.Dispose();
+            //message.MessageTypeText = origin.MessageType.ToString();
            
+            message.Created = origin.Created;
+            message.Event = msg;
+            message.Command = origin.Command;
+            db.Messages.Add(message);
+            await db.SaveChangesAsync();
+           
+
         }
 
-        public async Task<Message> Get(string guid)
+        public async Task<StoreMessage> Get(string guid)
         {
-
-           return await Task.Run(() => _db.Messages.FirstOrDefault(m => m.Guid == Guid.Parse(guid))) ;
+            return await Task.Run(() => db.Messages.FirstOrDefault(m => m.Guid == Guid.Parse(guid)));
         }
 
-        public async Task<List<Message>> GetList()
+        [HttpGet]
+        [Route("GetList")]
+        public async Task<List<StoreMessage>> GetList()
         {
-            return await _db.Messages.ToListAsync();
+            return await db.Messages.ToListAsync();
+        }
+
+        public void ServiceHeal(string message)
+        {
+            var storeMessages = db.Messages;
+            var envelope = JsonConvert.DeserializeObject<Message>(message);
+            var ev = JsonConvert.DeserializeObject<EventServiceReady>(envelope.Event);
+            foreach (var msg in storeMessages)
+            {
+                _publisher.PushToExchange(ev.Exchange, msg.Event);
+            }           
         }
     }
 }

@@ -13,33 +13,33 @@ namespace CommandHandler
         public MessageHandler(Publisher publisher) {
             _publisher = publisher;
         }
-        public async Task<Guid> MakeCommand<T>(T message, MessageType typ, Guid? parentGuid, int version, bool send)
+        public async Task<Message> MakeCommand<T>(T message, MessageType typ, Guid? parentGuid, int version, bool send)
         {
             var cmd = new Message() {
                 Guid = Guid.NewGuid(),
-                MessageType =typ,
-                Version = version,
+                MessageType =typ,               
                 Created = DateTime.Now,
                 ParentGuid = parentGuid,
-                Body = await Task.Run(() => JsonConvert.SerializeObject(message))
+                Command = await Task.Run(() => JsonConvert.SerializeObject(message))
             };
             if (send) await _publisher.Push(await Task.Run(() => JsonConvert.SerializeObject(cmd)));
-            return cmd.Guid;
+            return cmd;
         }
 
-        public async Task<Guid> PublishEvent<T>(T message, MessageType typ, Guid? parentGuid, int version, bool send)
+        public async Task<Guid> PublishEvent<E,C>(E message,C command, MessageType typ, Guid? parentGuid, int generation, Guid entityId)
         {
             var ev = new Message()
             {
                 Guid = Guid.NewGuid(),
                 MessageType = typ,
-                Version = version,
                 Created = DateTime.Now,
                 ParentGuid = parentGuid,
-                Body = await Task.Run(() => JsonConvert.SerializeObject(message))
-        };
-
-            if (send) await _publisher.Push(await Task.Run(() => JsonConvert.SerializeObject(ev)));
+                Event = await Task.Run(() => JsonConvert.SerializeObject(message)),
+                Command = await Task.Run(() => JsonConvert.SerializeObject(command)),
+                EntityId = entityId,
+                Generation = generation,
+            };
+            await _publisher.Push(await Task.Run(() => JsonConvert.SerializeObject(ev)));
             return ev.Guid;
         }
 

@@ -11,9 +11,8 @@ namespace KancelarWeb.ViewModels
     
     public partial class UzivatelModel
     {
-        [Display(Name = "Id")]
-        public int Id { get; set; }
-
+      
+        public Guid Id { get; set; }
         [Display(Name = "Titul")]
         public string TitulPred { get; set; }
         [Required]

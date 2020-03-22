@@ -41,7 +41,7 @@ namespace KancelarWeb.Controllers
 
             return View(model);
         }
-        public async Task<IActionResult> Detail(int id)
+        public async Task<IActionResult> Detail(Guid id)
         {
             var model = await client.GetAsync(id);
             var uzivatel = await UzivatelServis.GetAsync(model.UzivatelId);
@@ -50,7 +50,7 @@ namespace KancelarWeb.Controllers
         }
         
       
-        public async Task<IActionResult> AddPrichod(string prichod, string uzivatelId)
+        public async Task<IActionResult> AddPrichod(string prichod, Guid uzivatelId)
         {            
             Random rnd = new Random();
             var model = new CommandDochazkaCreate()
@@ -58,7 +58,7 @@ namespace KancelarWeb.Controllers
                 CteckaId = "",
                 Datum = DateTimeOffset.Now,
                 Prichod = Convert.ToBoolean(prichod),
-                UzivatelId = Convert.ToInt32(uzivatelId),
+                UzivatelId = uzivatelId,
             };
            
             await client.AddAsync(model);
@@ -66,7 +66,7 @@ namespace KancelarWeb.Controllers
             return RedirectToAction("Index"); 
         }
        
-        public async Task<IActionResult> Remove(int id)
+        public async Task<IActionResult> Remove(Guid id)
         {
             var model = new CommandDochazkaRemove()
             {

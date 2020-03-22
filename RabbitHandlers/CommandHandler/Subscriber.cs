@@ -61,43 +61,17 @@ namespace CommandHandler
             this._connection = conn;
             this._channel = channel;
             this._queueName = queue;
-
-           //this._factory.AutomaticRecoveryEnabled = true;
-           // this._factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(5);
-           // try
-           // {
-           //     this._connection = _factory.CreateConnection();
-           // }
-           // catch (BrokerUnreachableException e)
-           // {
-           //     Thread.Sleep(5000);
-           //     this._connection = _factory.CreateConnection();
-           // }
-           // this._connection = _factory.CreateConnection();
-           // this._channel = _connection.CreateModel();
-
-
         }
-        //public Subscriber(ConnectionFactory connectionFactory, List<string> exchange)
-        //{
-        //    this._exchange = exchange;
-        //    this._factory = connectionFactory;
-        //    this._factory.AutomaticRecoveryEnabled = true;
-        //    this._factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(5);
-        //    try
-        //    {
-        //        this._connection = _factory.CreateConnection();
-        //    }
-        //    catch (BrokerUnreachableException e)
-        //    {
-        //        Thread.Sleep(5000);
-        //        this._connection = _factory.CreateConnection();
-        //    }
-        //    this._connection = _factory.CreateConnection();
-        //    this._channel = _connection.CreateModel();
+        public Subscriber(string exchange, IConnection conn, IModel channel, string queue)
+        {
+            var exchanges = new List<string>();
+            exchanges.Add(exchange);
+            this._exchange = exchanges;
+            this._connection = conn;
+            this._channel = channel;
+            this._queueName = queue;
+        }
 
-
-        //}
 
     }
 }

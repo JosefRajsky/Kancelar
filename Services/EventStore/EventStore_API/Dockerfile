@@ -6,12 +6,12 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["Services/EventStore/EventStore_API/EventStore_Api.csproj", "Services/EventStore/EventStore_API/"]
+COPY ["Services/EventStore/EventStore_Api/EventStore_Api.csproj", "Services/EventStore/EventStore_Api/"]
 COPY ["RabbitHandlers/CommandHandler/CommandHandler.csproj", "RabbitHandlers/CommandHandler/"]
 COPY ["Library/EventLibrary/EventLibrary.csproj", "Library/EventLibrary/"]
-RUN dotnet restore "Services/EventStore/EventStore_API/EventStore_Api.csproj"
+RUN dotnet restore "Services/EventStore/EventStore_Api/EventStore_Api.csproj"
 COPY . .
-WORKDIR "/src/Services/EventStore/EventStore_API"
+WORKDIR "/src/Services/EventStore/EventStore_Api"
 RUN dotnet build "EventStore_Api.csproj" -c Release -o /app/build
 
 FROM build AS publish

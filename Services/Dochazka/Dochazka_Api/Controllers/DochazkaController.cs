@@ -1,28 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Dochazka_Api.Models;
+﻿using Dochazka_Api.Models;
 using Dochazka_Api.Repositories;
 using EventLibrary;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Dochazka_Api.Controllers
 {
-    
+
     [ApiController]
     [Route("[controller]")]
     public class DochazkaController : ControllerBase
     {
-        private readonly IDochazkaRepository _dochazkaRepository;
+        private readonly IDochazkaRepository _repository;
         public DochazkaController(IDochazkaRepository dochazkaService)
         {
-            _dochazkaRepository = dochazkaService;
+            _repository = dochazkaService;
         }
         [HttpGet]
         [Route("Get/{id?}")]
-        public async Task<ActionResult<DochazkaModel>> Get(int id)
+        public async Task<ActionResult<DochazkaModel>> Get(Guid id)
         {
-            var item = await _dochazkaRepository.Get(id.ToString());
+            var item = await _repository.Get(id);
             var response = new DochazkaModel() {
                 Id = item.Id,
                 Datum = new DateTime(item.Rok, item.Mesic, item.Den),
@@ -41,7 +41,7 @@ namespace Dochazka_Api.Controllers
         public async Task<List<DochazkaModel>> GetList()
         {
 
-            var model = await _dochazkaRepository.GetList();
+            var model = await _repository.GetList();
 
             //TODO: Vytvořit Wiew a nečíst přímo z entity.
             var response = new List<DochazkaModel>();
@@ -63,20 +63,20 @@ namespace Dochazka_Api.Controllers
         [Route("Add")]
         public async Task Add(CommandDochazkaCreate cmd)      
         {         
-         await _dochazkaRepository.Add(cmd);            
+         await _repository.Add(cmd, true);            
         }
 
         [HttpPost]
         [Route("Remove")]
         public async Task Delete(CommandDochazkaRemove cmd)
         {
-           await _dochazkaRepository.Remove(cmd);   
+           await _repository.Remove(cmd, true);   
         }
         [HttpPost]
         [Route("Update")]
         public async Task Update(CommandDochazkaUpdate cmd)
         {
-            await _dochazkaRepository.Update(cmd);        
+            await _repository.Update(cmd, true);        
         }
     }
 }

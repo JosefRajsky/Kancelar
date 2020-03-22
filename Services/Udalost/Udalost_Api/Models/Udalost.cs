@@ -9,10 +9,10 @@ namespace Udalost_Api.Models
     public class Udalost
     {
         [Key]
-        public int Id { get; set; }  
+        public Guid Id { get; set; }  
         public int UdalostTypId { get; set; }
         public string Popis { get; set; }
-        public int UzivatelId { get; set; }
+        public Guid UzivatelId { get; set; }
         public DateTime DatumOd { get; set; }
         public DateTime DatumDo { get; set; }
         public DateTime DatumZadal { get; set; }

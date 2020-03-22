@@ -9,8 +9,8 @@ namespace Dochazka_Api.Models
     public class Dochazka
     {
         [Key]
-        public int Id { get; set; }
-        public int UzivatelId { get; set; }
+        public Guid Id { get; set; }
+        public Guid UzivatelId { get; set; }
         public int Rok { get; set; }
         public int Den { get; set; }
         public int Mesic { get; set; }

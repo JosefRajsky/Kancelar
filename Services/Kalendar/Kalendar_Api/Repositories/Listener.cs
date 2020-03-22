@@ -13,57 +13,55 @@ using System.Threading.Tasks;
 
 namespace Kalendar_Api.Repositories
 {
-    public class Listener : IListenerRouter
+    public class Listener : IListener
     {
         //string _BaseUrl;
         private readonly IKalendarRepository _repository;
+        
         public Listener(IKalendarRepository repository)
         {
             _repository = repository;
+           
         }
-       
+
         public void AddCommand(string message)
         {
+           
             var envelope = JsonConvert.DeserializeObject<Message>(message);
-            var body = JsonConvert.DeserializeObject<string>(envelope.Body);
             switch (envelope.MessageType)
             {
                 case MessageType.KalendarCreate:
                    
-                    if (envelope.Version == 1)
-                    {                      
-                        this.AddAsync(JsonConvert.DeserializeObject<CommandKalendarCreate>(body));
-                    }
+                                    
+                        this.AddAsync(JsonConvert.DeserializeObject<CommandKalendarCreate>(envelope.Event));
+                  
                     break;              
                 case MessageType.KalendarUpdate:
-                    if (envelope.Version == 1)
-                    {
-                        this.Update(JsonConvert.DeserializeObject<CommandKalendarUpdate>(body));
-                    }
+                  
+                    
+                        this.Update(JsonConvert.DeserializeObject<CommandKalendarUpdate>(envelope.Event));
+                 
                     break;
                 case MessageType.UdalostCreated:
-                    if (envelope.Version == 1) {
-                        this.UpdateByUdalost(JsonConvert.DeserializeObject<EventUdalostCreated>(body));
-                    }
+                    
+                        this.UpdateByUdalost(JsonConvert.DeserializeObject<EventUdalostCreated>(envelope.Event));
+                 
                     break;
-                case MessageType.UzivatelCreated:
-                    if (envelope.Version == 1)
-                    {                       
-                        this.AddByUzivatel(JsonConvert.DeserializeObject<EventUzivatelCreated>(body));
-                    }
-                    break;
-                case MessageType.UzivatelUpdated:
-                    if (envelope.Version == 1)
-                    {
-                        this.UpdateWithUzivatel(JsonConvert.DeserializeObject<EventUzivatelUpdated>(body));
-                    }
-                    break;
-                case MessageType.UzivatelRemoved:
-                    if (envelope.Version == 1)
-                    {
-                        this.DeleteWithUzivatel(JsonConvert.DeserializeObject<EventUzivatelDeleted>(body));
-                    }
-                    break;
+                //case MessageType.UzivatelCreated:
+                                         
+                //        this.AddByUzivatel(JsonConvert.DeserializeObject<EventUzivatelCreated>(envelope.Event));
+                 
+                //    break;
+                //case MessageType.UzivatelUpdated:
+                   
+                //        this.UpdateWithUzivatel(JsonConvert.DeserializeObject<EventUzivatelUpdated>(envelope.Event));
+                  
+                //    break;
+                //case MessageType.UzivatelRemoved:
+                   
+                //        this.DeleteWithUzivatel(JsonConvert.DeserializeObject<EventUzivatelDeleted>(envelope.Event));
+                  
+                //    break;
                 default:
                     
                     break;
@@ -72,12 +70,12 @@ namespace Kalendar_Api.Repositories
 
         public void AddAsync(CommandKalendarCreate cmd)
         {                                
-            _repository.Add(cmd);
+            _repository.Add(cmd,false);
         }      
        
         public void Update(CommandKalendarUpdate cmd)
         {
-            _repository.Update(cmd);             
+            _repository.Update(cmd,false);             
         }
         public void UpdateByUdalost(EventUdalostCreated evt)
         {

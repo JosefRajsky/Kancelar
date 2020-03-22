@@ -9,7 +9,7 @@ namespace KancelarWeb.CommandsModels
     public partial class CommandDochazkaCreate
     {
         [Newtonsoft.Json.JsonProperty("uzivatelId", Required = Newtonsoft.Json.Required.Always)]
-        public int UzivatelId { get; set; }
+        public Guid UzivatelId { get; set; }
 
         [Newtonsoft.Json.JsonProperty("prichod", Required = Newtonsoft.Json.Required.Always)]
         public bool Prichod { get; set; }
@@ -28,7 +28,7 @@ namespace KancelarWeb.CommandsModels
     public partial class CommandDochazkaRemove
     {
         [Newtonsoft.Json.JsonProperty("dochazkaId", Required = Newtonsoft.Json.Required.Always)]
-        public int DochazkaId { get; set; }
+        public Guid DochazkaId { get; set; }
 
 
     }
@@ -37,10 +37,10 @@ namespace KancelarWeb.CommandsModels
     public partial class CommandDochazkaUpdate
     {
         [Newtonsoft.Json.JsonProperty("dochazkaId", Required = Newtonsoft.Json.Required.Always)]
-        public int DochazkaId { get; set; }
+        public Guid DochazkaId { get; set; }
 
         [Newtonsoft.Json.JsonProperty("uzivatelId", Required = Newtonsoft.Json.Required.Always)]
-        public int UzivatelId { get; set; }
+        public Guid UzivatelId { get; set; }
 
         [Newtonsoft.Json.JsonProperty("prichod", Required = Newtonsoft.Json.Required.Always)]
         public bool Prichod { get; set; }

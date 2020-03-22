@@ -24,27 +24,24 @@ namespace Dochazka_Api.Repositories
         public void AddCommand(string message)
         {
             var envelope = JsonConvert.DeserializeObject<Message>(message);
-            var body = JsonConvert.DeserializeObject<string>(envelope.Body);
+            var body = JsonConvert.DeserializeObject<string>(envelope.Event);
             switch (envelope.MessageType)
             {
                 case MessageType.DochazkaCreate:
                    
-                    if (envelope.Version == 1)
-                    {                      
-                        this.AddAsync(JsonConvert.DeserializeObject<CommandDochazkaCreate>(body));
-                    }
+                                    
+                        this.AddAsync(JsonConvert.DeserializeObject<CommandDochazkaCreate>(envelope.Command));
+                 
                     break;
                 case MessageType.DochazkaRemove:
-                    if (envelope.Version == 1)
-                    {
-                        this.Remove(JsonConvert.DeserializeObject<CommandDochazkaRemove>(body));
-                    }
+                   
+                        this.Remove(JsonConvert.DeserializeObject<CommandDochazkaRemove>(envelope.Command));
+                   
                     break;
                 case MessageType.DochazkaUpdate:
-                    if (envelope.Version == 1)
-                    {
-                        this.Update(JsonConvert.DeserializeObject<CommandDochazkaUpdate>(body));
-                    }
+                    
+                        this.Update(JsonConvert.DeserializeObject<CommandDochazkaUpdate>(envelope.Command));
+                   
                     break;
               
                 default:
@@ -56,7 +53,7 @@ namespace Dochazka_Api.Repositories
         public void AddAsync(CommandDochazkaCreate cmd)
         {                        
         
-            _dochazkaRepository.Add(cmd);
+            _dochazkaRepository.Add(cmd,false);
             //client.PutAsJsonAsync("Add", cmd);
 
         }
@@ -64,12 +61,12 @@ namespace Dochazka_Api.Repositories
         public void Remove(CommandDochazkaRemove cmd)
         {           
            
-            _dochazkaRepository.Remove(cmd);
+            _dochazkaRepository.Remove(cmd, false);
           
         }
         public void Update(CommandDochazkaUpdate cmd)
         {
-            _dochazkaRepository.Update(cmd);
+            _dochazkaRepository.Update(cmd, false);
              
         }
         

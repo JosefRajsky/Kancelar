@@ -13,7 +13,7 @@ namespace KancelarWeb.ViewModels
 {
     public class UdalostModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         [Display(Name = "Typ události")]
         public int UdalostTypId { get; set; }
         [Display(Name = "Popis")]
@@ -29,7 +29,7 @@ namespace KancelarWeb.ViewModels
         public DateTime DatumDo { get; set; }
 
         [Display(Name = "Uživatel")]
-        public int UzivatelId { get; set; }
+        public Guid UzivatelId { get; set; }
 
         [Display(Name = "Jméno a Příjmení")]
         public string UzivatelCeleJmeno { get; set; }

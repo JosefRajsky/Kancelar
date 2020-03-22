@@ -4,7 +4,7 @@ namespace EventLibrary
 {
     public class CommandDochazkaCreate
     {   
-        public int UzivatelId { get; set; }
+        public Guid UzivatelId { get; set; }
         public bool Prichod { get; set; }
         public DateTime Datum { get; set; }
         public string CteckaId { get; set; }
@@ -12,8 +12,8 @@ namespace EventLibrary
     }
     public class CommandDochazkaUpdate 
     {
-        public int DochazkaId { get; set; }
-        public int UzivatelId { get; set; }
+        public Guid DochazkaId { get; set; }
+        public Guid UzivatelId { get; set; }
         public bool Prichod { get; set; }
         public DateTime Datum { get; set; }
         public string CteckaId { get; set; }
@@ -22,12 +22,12 @@ namespace EventLibrary
     }
     public class CommandDochazkaRemove
     {        
-        public int DochazkaId { get; set; }
+        public Guid DochazkaId { get; set; }
     }
     public class EventDochazkaCreated 
     {
    
-        public int UzivatelId { get; set; }
+        public Guid UzivatelId { get; set; }
         public bool Prichod { get; set; }
         public DateTime Datum { get; set; }
         public string CteckaId { get; set; }
@@ -36,8 +36,8 @@ namespace EventLibrary
     }
     public class EventDochazkaUpdated
     {      
-        public int DochazkaId { get; set; }
-        public int UzivatelId { get; set; }
+        public Guid DochazkaId { get; set; }
+        public Guid UzivatelId { get; set; }
         public bool Prichod { get; set; }
         public DateTime Datum { get; set; }
         public string CteckaId { get; set; }
@@ -49,7 +49,7 @@ namespace EventLibrary
         public int MessageTypeId { get; set; }
        
         public int Version { get; set; }
-        public int DochazkaId { get; set; }
+        public Guid DochazkaId { get; set; }
 
 
     }

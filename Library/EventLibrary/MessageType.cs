@@ -7,6 +7,8 @@ namespace EventLibrary
 {
     public enum MessageType
     {
+        [Description("Prikaz k obnove entity")]
+        HealMe = 1000,
         #region Dochazka
         [Description("Command: Vytvoření nové docházky")]
         DochazkaCreate = 0,

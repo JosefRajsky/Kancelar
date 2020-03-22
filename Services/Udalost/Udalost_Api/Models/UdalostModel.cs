@@ -9,7 +9,7 @@ namespace Udalost_Api.Models
 {
     public class UdalostModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public int UdalostTypId { get; set; }
 
         [DisplayName("Popis")]
@@ -23,7 +23,7 @@ namespace Udalost_Api.Models
         [DisplayFormat(DataFormatString = "{0:dd. MM. yyyy}")]
         public DateTime DatumDo { get; set; }
             
-        public int UzivatelId { get; set; }
+        public Guid UzivatelId { get; set; }
 
         [DisplayName("Jméno a Příjmení")]
         public string UzivatelCeleJmeno { get; set; }

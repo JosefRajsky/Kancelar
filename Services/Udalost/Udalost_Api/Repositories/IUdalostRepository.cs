@@ -12,11 +12,11 @@ namespace Udalost_Api.Repositories
     public interface IUdalostRepository
     {
         Task<List<Udalost>> GetList();
-        Task<Udalost> Get(int id);
+        Task<Udalost> Get(Guid id);
 
-        //Task AcceptCommand(Guid guid);
 
         Task Add(CommandUdalostCreate cmd);
+
 
         Task Update(CommandUdalostUpdate cmd);
 

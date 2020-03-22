@@ -24,7 +24,7 @@ namespace Udalost_Api.Controllers
         }
         [HttpGet]
         [Route("Get/{id?}")]
-        public async Task<ActionResult<UdalostModel>> Get(int id) => Ok(await _udalostRepository.Get(id));
+        public async Task<ActionResult<UdalostModel>> Get(Guid id) => Ok(await _udalostRepository.Get(id));
 
         [HttpGet]
         [Route("GetList")]

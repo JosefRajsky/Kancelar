@@ -21,7 +21,7 @@ namespace KancelarWeb.CommandsModels
         public string Nazev { get; set; }
 
         [Newtonsoft.Json.JsonProperty("uzivatelId", Required = Newtonsoft.Json.Required.Always)]
-        public int UzivatelId { get; set; }
+        public Guid UzivatelId { get; set; }
 
         [Newtonsoft.Json.JsonProperty("datumZadal", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
@@ -63,10 +63,10 @@ namespace KancelarWeb.CommandsModels
         public string Nazev { get; set; }
 
         [Newtonsoft.Json.JsonProperty("udalostId", Required = Newtonsoft.Json.Required.Always)]
-        public int UdalostId { get; set; }
+        public Guid UdalostId { get; set; }
 
         [Newtonsoft.Json.JsonProperty("uzivatelId", Required = Newtonsoft.Json.Required.Always)]
-        public int UzivatelId { get; set; }
+        public Guid UzivatelId { get; set; }
 
         [Newtonsoft.Json.JsonProperty("datumZadal", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]

@@ -28,7 +28,7 @@ namespace KancelarWeb.Controllers
             var model = await client.GetListAsync();
             return View(model);
         }
-        public async Task<IActionResult> Detail(int id)
+        public async Task<IActionResult> Detail(Guid id)
         {
             var model = await client.GetAsync(id);
             return View(model);
@@ -37,7 +37,7 @@ namespace KancelarWeb.Controllers
         {
             var model = new UzivatelModel();
             model.DatumNarozeni = DateTime.Today;
-            
+
             ViewBag.PohlaviList = new SelectList(Enum.GetValues(typeof(EPohlavi)).Cast<EPohlavi>().Select(v => new SelectListItem
             {
                 Text = v.Description(),
@@ -53,6 +53,22 @@ namespace KancelarWeb.Controllers
             {
                 return RedirectToAction("Edit");
             }
+            if (model.Id != Guid.Empty) {
+                var command = new CommandUzivatelUpdate()
+                {
+                    DatumNarozeni = model.DatumNarozeni,
+                    Email = model.Email,
+                    Foto = model.Foto,
+                    Jmeno = model.Jmeno,
+                    Pohlavi = model.Pohlavi,
+                    Prijmeni = model.Prijmeni,
+                    Telefon = model.Telefon,
+                    TitulPred = model.TitulPred,
+                    TitulZa = model.TitulZa,
+                    UzivatelId = model.Id
+                };
+                await client.UpdateAsync(command);
+            } else { 
             var command = new CommandUzivatelCreate()
             {
                 DatumNarozeni = (model.DatumNarozeni == null)? DateTime.MinValue: model.DatumNarozeni,
@@ -67,6 +83,7 @@ namespace KancelarWeb.Controllers
                 UzivatelId = model.Id
             };
             await client.AddAsync(command);
+            }
             return RedirectToAction("Index");
         }
         public async Task<IActionResult> Update([FromForm]UzivatelModel model)
@@ -88,13 +105,11 @@ namespace KancelarWeb.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Remove(int id)
+        public async Task<IActionResult> Remove(Guid id)
         {
             await client.DeleteAsync(new CommandUzivatelRemove() {
                 UzivatelId = id 
             });
-
-          
 
             return RedirectToAction("Index");
         }

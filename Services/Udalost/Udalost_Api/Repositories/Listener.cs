@@ -16,58 +16,63 @@ namespace Udalost_Api.Repositories
 {
     public class Listener : IListener
     {
-        string _BaseUrl;
         private readonly IUdalostRepository _repository;
         public Listener(IUdalostRepository repository)
         {
             _repository = repository;
-            _BaseUrl = "http://udalostapi/udalost/";
+            //CheckState();
         }
+        public async void CheckState()
+        {
+            var _BaseUrl = "http://eventstore/eventstore/";
+            var client = new HttpClient();
+            client.BaseAddress = new Uri(_BaseUrl);
+            var result = new HttpResponseMessage();
+            result = await client.GetAsync("GetList");
+            if (result.IsSuccessStatusCode)
+            {
+                var items = result.Content.ReadAsAsync<List<Message>>().Result;
+                foreach (var item in items)
+                {
+                    AddCommand(JsonConvert.SerializeObject(item));
+                }
+            }
+        }
+       
         public void AddCommand(string message)
         {
+           
             //-------------Description: Deserializace Json objektu na základní typ zprávy
             var envelope = JsonConvert.DeserializeObject<Message>(message);
-            var body = JsonConvert.DeserializeObject<string>(envelope.Body);
             //-------------Description: Rozhodnutí o typu získazné zprávy. Typ vázaný na Enum z knihovny
 
             switch (envelope.MessageType)
             {
-                case MessageType.UdalostCreate:
-                    //-------------Description: Kontrola verze zprávy 
-                    if (envelope.Version == 1)
-                    {
-                        //-------------Description: Deserializace zprávy do správného typu a odeslání k uložení do DB; 
-                        this.Add(JsonConvert.DeserializeObject<CommandUdalostCreate>(body));
-                    }
-                    break;
+
                 case MessageType.UdalostRemove:
-                    if (envelope.Version == 1)
-                    {
-                        this.Remove(JsonConvert.DeserializeObject<CommandUdalostRemove>(body));
-                    }
+                   
+                        this.Remove(JsonConvert.DeserializeObject<CommandUdalostRemove>(envelope.Event));
+                   
                     break;
                 case MessageType.UdalostUpdate:
-                    if (envelope.Version == 1)
-                    {
-                        this.Update(JsonConvert.DeserializeObject<CommandUdalostUpdate>(body));
-                    }
+                    
+                        this.Update(JsonConvert.DeserializeObject<CommandUdalostUpdate>(envelope.Event));
+                   
                     break;
                 case MessageType.DochazkaCreated:
-                    if (envelope.Version == 1)
-                    {
-                        this.AddByDochazka(JsonConvert.DeserializeObject<EventDochazkaCreated>(body));
-                    }
+
+                        this.AddByDochazka(JsonConvert.DeserializeObject<EventDochazkaCreated>(envelope.Event));
+                   
                     break;
 
 
             }
         }
+  
         public void Add(CommandUdalostCreate cmd)
         {
             _repository.Add(cmd);
-            var client = new HttpClient();
-            client.BaseAddress = new Uri(_BaseUrl);
-            //client.PutAsJsonAsync("Add", cmd);
+      
         }
         public void AddByDochazka(EventDochazkaCreated evt)
         {
@@ -80,35 +85,16 @@ namespace Udalost_Api.Repositories
                 Nazev = "Přítomnost",
                 UzivatelId = evt.UzivatelId,
             };
-            var client = new HttpClient();
-            client.BaseAddress = new Uri(_BaseUrl);
-
             _repository.Add(cmd);
-            //client.PutAsJsonAsync("Add", cmd);
         }
         public void Remove(CommandUdalostRemove cmd)
         {
-            var client = new HttpClient();
-            client.BaseAddress = new Uri(_BaseUrl);
-            //client.PostAsJsonAsync("Remove", cmd);
+            _repository.Remove(cmd);
         }
         public void Update(CommandUdalostUpdate cmd)
         {
-            var model = new UdalostModel()
-            {
-                DatumOd = cmd.DatumOd,
-                DatumDo = cmd.DatumDo,
-                Popis = cmd.Popis,
-                UdalostTypId = cmd.UdalostTypId,
-                UzivatelId = cmd.UzivatelId,
-            };
-            var client = new HttpClient();
-            client.BaseAddress = new Uri(_BaseUrl);
-            //client.PostAsJsonAsync("Update", model);
-
+            _repository.Update(cmd);
         }
-        //public void AcceptCommand(Guid guid) {
-        //    _repository.AcceptCommand(guid);
-        //}
+
     }
 }

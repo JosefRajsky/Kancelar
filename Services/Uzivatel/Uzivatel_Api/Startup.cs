@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using CommandHandler;
+using EventLibrary;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -15,6 +17,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using Uzivatel_Api.Repositories;
 
@@ -47,13 +50,61 @@ namespace Uzivatel_Api
                         name: "DB",
                         failureStatus: HealthStatus.Degraded)
                  .AddRabbitMQ(sp => factory);
-
-
+           
+            var exchanges = new List<string>();
+            exchanges.Add("uzivatel.ex");
 
             services.AddTransient<IUzivatelRepository, UzivatelRepository>();
-            services.AddSingleton<Publisher>(s => new Publisher(factory, "uzivatel.ex", "uzivatel.q"));
+            services.AddSingleton<Publisher>(s => new Publisher(factory, exchanges[0], "uzivatel.q"));
             services.AddDbContext<UzivatelDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
             services.AddControllers();
+
+            //Description: Pøihlášení k odbìru zpráv z RabbitMQ
+            factory.AutomaticRecoveryEnabled = true;
+            factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(5);
+
+            var _connection = factory.CreateConnection();
+            //Descripiton: vytvoøení komunikaèního kanálu, pøipojení a definice fronty pro práci se správami
+            var _channel = _connection.CreateModel();
+            var queueName = _channel.QueueDeclare().QueueName;
+            var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, _connection, _channel, queueName)).BuildServiceProvider().GetService<ISubscriber>().Start();
+            //Description: Propojení exchange a fronty
+            foreach (var ex in exchanges)
+            {
+                _channel.QueueBind(queue: queueName,
+                              exchange: ex,
+                              routingKey: "");
+            }
+            //Description: vytvoøení smìrovaèe pøijatých zpráv ke kterým je služba pøihlášena
+            var listener = new Listener(services.BuildServiceProvider().GetService<IUzivatelRepository>());
+           
+            //Description: Zpracování a odeslání zprávy do smìrovaèe
+            consumer.Received += (model, ea) =>
+            {
+                //-------------Description: Formátování pøijaté zprávy
+                var body = ea.Body;
+                var message = Encoding.UTF8.GetString(body);
+
+                //-------------Description: Odeslání zprávy do smìrovaèe
+                
+                listener.AddCommand(message);
+            };
+
+            HealOnStart(services.BuildServiceProvider().GetService<Publisher>(), exchanges[0]);
+        }
+        public async Task HealOnStart(Publisher publisher,  string willRecoverOn)
+        {
+            var _handler = new MessageHandler(publisher);
+            var evt = new EventServiceReady() { Exchange = willRecoverOn };
+            var msg = new Message()
+            {
+                Guid = Guid.NewGuid(),
+                MessageType = MessageType.HealMe,                
+                Created = DateTime.Now,
+                ParentGuid = null,
+                Event = await Task.Run(() => JsonConvert.SerializeObject(evt))
+            };
+            await publisher.Push(JsonConvert.SerializeObject(msg));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -13,7 +13,7 @@ namespace KancelarWeb.ViewModels
     {
         [DisplayName("Id")]
         [JsonProperty("id", Required = Required.Always)]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [DisplayName("Datum a čas")]
         [JsonProperty("datum", Required = Required.Always)]
@@ -22,7 +22,7 @@ namespace KancelarWeb.ViewModels
 
         [DisplayName("Uživatel Id")]
         [JsonProperty("uzivatelId", Required = Required.Always)]
-        public int UzivatelId { get; set; }
+        public Guid UzivatelId { get; set; }
 
         [DisplayName("Jméno a příjmení")]
         [JsonProperty("uzivatelCeleJmeno", Required = Required.Default, NullValueHandling = NullValueHandling.Ignore)]
