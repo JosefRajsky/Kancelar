@@ -54,8 +54,20 @@ namespace EventStore_Api.Repositories
         {
             return await db.Messages.ToListAsync();
         }
+        //public async Task Replay(string message) {
+        //    var envelope = JsonConvert.DeserializeObject<Message>(message);
+        //    var ev = JsonConvert.DeserializeObject<EventServiceReady>(envelope.Event);
+        //    foreach (var type in ev.MessageTypes)
+        //    {
+        //        var storeMessages = db.Messages.Where(m => m.MessageType == type).OrderBy(d => d.Created);
+        //        foreach (var msg in storeMessages)
+        //        {
+        //            _publisher.PushToExchange(ev.Exchange, msg.Event);
+        //        }
+        //    }
+        //}
 
-        public void ServiceHeal(string message)
+        public async Task ServiceHeal(string message)
         {
             
             var envelope = JsonConvert.DeserializeObject<Message>(message);
@@ -66,10 +78,10 @@ namespace EventStore_Api.Repositories
                 var storeMessages = db.Messages.Where(m =>  m.MessageType == type).OrderBy(d => d.Created);
                 foreach (var msg in storeMessages)
                 {
-                    _publisher.PushToExchange(ev.Exchange, msg.Event);
+                   await _publisher.PushToExchange(ev.Exchange, msg.Event);
                 }
             }
-            //AddMessageAsync(message);
+            await AddMessageAsync(message);
 
 
         }

@@ -33,7 +33,7 @@ namespace Uzivatel_Api
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public async void ConfigureServices(IServiceCollection services)
         {
             var factory = new ConnectionFactory() { HostName = "rabbitmq" };
             services.AddSwaggerGen(c =>
@@ -90,7 +90,7 @@ namespace Uzivatel_Api
                 listener.AddCommand(message);
             };
 
-            HealOnStart(services.BuildServiceProvider().GetService<Publisher>(), exchanges[0]);
+            await HealOnStart(services.BuildServiceProvider().GetService<Publisher>(), exchanges[0]);
         }
         public async Task HealOnStart(Publisher publisher,  string willRecoverOn)
         {

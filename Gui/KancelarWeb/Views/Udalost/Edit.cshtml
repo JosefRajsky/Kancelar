@@ -13,7 +13,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <div class="form-group">
-                    <label asp-for="UzivatelId" class="control-label"></label>
+                    <label  asp-for="UzivatelId" class="control-label"></label>
                     <select asp-for="UzivatelId" asp-items="@ViewBag.UzivatelList" class="form-control" onchange="onIndexChange(this,'UzivatelCeleJmeno')">
                         <option value="">Vyberte Uživatele</option>
                     </select>

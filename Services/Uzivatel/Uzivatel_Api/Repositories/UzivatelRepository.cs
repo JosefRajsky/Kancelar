@@ -23,10 +23,10 @@ namespace Uzivatel_Api.Repositories
             db = dbContext;
             _publisher = publisher;
             _handler = new MessageHandler(publisher);
+
         }
         public async Task<Uzivatel> Get(Guid id) => await Task.Run(() => db.Uzivatele.FirstOrDefault(b => b.Guid == id));
         public async Task<List<Uzivatel>> GetList() => await db.Uzivatele.ToListAsync();
-
         public async Task Restore(CommandUzivatelCreate cmd, Guid entityId)
         {
             var item = db.Uzivatele.Find(entityId);
@@ -124,8 +124,7 @@ namespace Uzivatel_Api.Repositories
             };
             var responseGuid = await _handler.PublishEvent(ev, cmd, MessageType.UzivatelRemoved, remove.LastEvent, remove.Generation + 1, remove.Guid);
             await db.SaveChangesAsync();
-        }
-      
+        }      
         public async Task Update(CommandUzivatelUpdate cmd)
         {
                 var model = db.Uzivatele.Find(cmd.UzivatelId);
