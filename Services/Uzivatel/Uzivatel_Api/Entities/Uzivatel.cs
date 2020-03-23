@@ -20,7 +20,7 @@ namespace Uzivatel_Api
         public string Email { get; set; }
         public string Telefon { get; set; }
         public string Foto { get; set; }
-        public Guid LastEvent { get; set; }
+        public Guid? LastEvent { get; set; }
         public int Generation { get; set; }
         
     }

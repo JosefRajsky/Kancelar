@@ -8,5 +8,7 @@ namespace EventLibrary
     {
         public string Exchange { get; set; }
 
+        public List<MessageType> MessageTypes { get; set; }
+
     }
 }

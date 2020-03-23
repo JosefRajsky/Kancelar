@@ -50,20 +50,20 @@ namespace Uzivatel_Api.Controllers
         [Route("Add")]
         public async Task Add(CommandUzivatelCreate cmd)      
         { 
-         await _repository.Add(cmd,null);            
+         await _repository.Add(cmd);            
         }
 
         [HttpDelete]
         [Route("Remove")]
         public async Task Delete(CommandUzivatelRemove cmd)
         {
-           await _repository.Remove(cmd, null);   
+           await _repository.Remove(cmd);   
         }
         [HttpPost]
         [Route("Update")]
         public async Task Update(CommandUzivatelUpdate cmd)
         {
-            await _repository.Update(cmd, null);        
+            await _repository.Update(cmd);        
         }
     }
 }

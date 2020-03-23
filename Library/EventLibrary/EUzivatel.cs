@@ -5,7 +5,7 @@ namespace EventLibrary
     public class CommandUzivatelCreate 
     {     
 
-        public Guid UzivatelGuid { get; set; }
+        public Guid UzivatelId { get; set; }
         public string TitulPred { get; set; }
         public string Jmeno { get; set; }
         public string Prijmeni { get; set; }
@@ -21,7 +21,7 @@ namespace EventLibrary
     public class CommandUzivatelUpdate 
     {
     
-        public Guid UzivatelGuid { get; set; }
+        public Guid UzivatelId { get; set; }
         public string TitulPred { get; set; }
         public string Jmeno { get; set; }
         public string Prijmeni { get; set; }
@@ -36,14 +36,14 @@ namespace EventLibrary
     }
     public class CommandUzivatelRemove
     {
-      public Guid UzivatelGuid { get; set; }
+      public Guid UzivatelId { get; set; }
 
 
     }
 
     public class EventUzivatelCreated 
     {
-        public Guid UzivatelGuid { get; set; }
+        public Guid UzivatelId { get; set; }
         public string TitulPred { get; set; }
         public string Jmeno { get; set; }
         public string Prijmeni { get; set; }
@@ -61,7 +61,7 @@ namespace EventLibrary
     public class EventUzivatelUpdated 
     {
 
-        public Guid UzivatelGuid { get; set; }
+        public Guid UzivatelId { get; set; }
         public string TitulPred { get; set; }
         public string Jmeno { get; set; }
         public string Prijmeni { get; set; }
@@ -75,6 +75,6 @@ namespace EventLibrary
     }
     public class EventUzivatelDeleted 
     {
-        public Guid UzivatelGuid { get; set; }
+        public Guid UzivatelId { get; set; }
     }
 }

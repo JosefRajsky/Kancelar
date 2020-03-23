@@ -95,11 +95,16 @@ namespace Uzivatel_Api
         public async Task HealOnStart(Publisher publisher,  string willRecoverOn)
         {
             var _handler = new MessageHandler(publisher);
-            var evt = new EventServiceReady() { Exchange = willRecoverOn };
+
+            var msgTypes = new List<MessageType>();
+            msgTypes.Add(MessageType.UzivatelCreated);
+            msgTypes.Add(MessageType.UzivatelUpdated);
+            msgTypes.Add(MessageType.UzivatelRemoved);
+            var evt = new EventServiceReady() { Exchange = willRecoverOn, MessageTypes = msgTypes };
             var msg = new Message()
             {
                 Guid = Guid.NewGuid(),
-                MessageType = MessageType.HealMe,                
+                MessageType = MessageType.HealMe,                  
                 Created = DateTime.Now,
                 ParentGuid = null,
                 Event = await Task.Run(() => JsonConvert.SerializeObject(evt))

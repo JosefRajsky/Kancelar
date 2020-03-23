@@ -11,9 +11,9 @@ namespace Uzivatel_Api.Repositories
     {
 
         void AddCommand(string message);
-        void Add(CommandUzivatelCreate message, Guid replayed);
-        void Remove(CommandUzivatelRemove id, Guid replayed);
-        void Update(CommandUzivatelUpdate id, Guid replayed);
+        void Restore(Message msg);
+        void Remove(Message msg);
+        void ReUpdate(Message msg);
 
 
     }

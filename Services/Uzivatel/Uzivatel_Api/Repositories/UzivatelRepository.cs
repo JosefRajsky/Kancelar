@@ -18,9 +18,6 @@ namespace Uzivatel_Api.Repositories
         private readonly UzivatelDbContext db;
         private Publisher _publisher;
         private MessageHandler _handler;
-
-
-
         public UzivatelRepository(UzivatelDbContext dbContext, Publisher publisher)
         {
             db = dbContext;
@@ -30,19 +27,14 @@ namespace Uzivatel_Api.Repositories
         public async Task<Uzivatel> Get(Guid id) => await Task.Run(() => db.Uzivatele.FirstOrDefault(b => b.Guid == id));
         public async Task<List<Uzivatel>> GetList() => await db.Uzivatele.ToListAsync();
 
-        public async Task AddGeneration(Guid entityId)
+        public async Task Restore(CommandUzivatelCreate cmd, Guid entityId)
         {
-            var model = db.Uzivatele.Find(entityId);
-            model.Generation = model.Generation + 1;
-            await db.SaveChangesAsync();
-        }
+            var item = db.Uzivatele.Find(entityId);
+            if(item == null) {
 
-        public async Task<Uzivatel> CreateRecord(CommandUzivatelCreate cmd) {
-            try
-            {
                 var model = new Uzivatel()
                 {
-                    Guid = cmd.UzivatelGuid,
+                    Guid = cmd.UzivatelId,
                     TitulPred = cmd.TitulPred,
                     Jmeno = cmd.Jmeno,
                     Prijmeni = cmd.Prijmeni,
@@ -56,72 +48,10 @@ namespace Uzivatel_Api.Repositories
                 };
                 db.Uzivatele.Add(model);
                 await db.SaveChangesAsync();
-              
-                db.Uzivatele.Update(model);
-                await db.SaveChangesAsync();
-                return model;
-            }
-            catch (Exception e) 
-            {
-                var b = e;
-                throw;
-            }
-          
-        }
-
-        public async Task Add(CommandUzivatelCreate cmd, Guid? replayed)
-        {
-            if (replayed != null)
-            {
-                var model = db.Uzivatele.Find(cmd.UzivatelGuid);
-                if (model == null)
-                {
-                    await CreateRecord(cmd);
-                }
-                else
-                {
-                    await AddGeneration(cmd.UzivatelGuid);
-                }
-            }
-            else {
-                var model = await CreateRecord(cmd);
-                //Description: Uložit a publikovat event UzivatelCreated
-                var ev = new EventUzivatelCreated()
-                {
-                    UzivatelGuid = new Guid(),
-                    TitulPred = model.TitulPred,
-                    Jmeno = model.Jmeno,
-                    Prijmeni = model.Prijmeni,
-                    TitulZa = model.TitulZa,
-                    Pohlavi = model.Pohlavi,
-                    DatumNarozeni = model.DatumNarozeni,
-                    Email = model.Email,
-                    Telefon = model.Telefon,
-                    Foto = model.Foto,
-                };
-                //TODO: Uložení Event do EventStore;
-                cmd.UzivatelGuid = model.Guid;
-                var responseGuid = await _handler.PublishEvent(ev, cmd, MessageType.UzivatelCreated, null, model.Generation + 1, model.Guid);                  
-                model.LastEvent = responseGuid;
-                await db.SaveChangesAsync();
-               
             }
         }
-
-        public async Task Remove(CommandUzivatelRemove cmd, Guid? replayed)
-        {
-            var remove = db.Uzivatele.Find(cmd.UzivatelGuid);
-            db.Uzivatele.Remove(remove);
-            var ev = new EventUzivatelDeleted()
-            {
-                UzivatelGuid = cmd.UzivatelGuid,
-            };
-            var responseGuid = await _handler.PublishEvent(ev, cmd, MessageType.UzivatelRemoved, remove.LastEvent, remove.Generation + 1, remove.Guid);
-            await db.SaveChangesAsync();
-        }
-        public async Task Update(CommandUzivatelUpdate cmd, Guid? replayed)
-        {
-            var model = db.Uzivatele.Find(cmd.UzivatelGuid);
+        public async Task ReUpdate(CommandUzivatelUpdate cmd, Guid entityId) {
+            var model = db.Uzivatele.Find(entityId);
             model.TitulPred = cmd.TitulPred;
             model.Jmeno = cmd.Jmeno;
             model.Prijmeni = cmd.Prijmeni;
@@ -131,10 +61,42 @@ namespace Uzivatel_Api.Repositories
             model.Email = cmd.Email;
             model.Telefon = cmd.Telefon;
             model.Foto = cmd.Foto;
-
-            var ev = new EventUzivatelUpdated()
+            db.Uzivatele.Update(model);
+            await db.SaveChangesAsync();
+        }
+        public async Task Remove(CommandUzivatelRemove cmd, Guid entityId)
+        {
+            var remove = db.Uzivatele.Find(cmd.UzivatelId);
+            db.Uzivatele.Remove(remove);
+            var ev = new EventUzivatelDeleted()
             {
-                UzivatelGuid = model.Guid,
+                UzivatelId = cmd.UzivatelId,
+            };
+            var responseGuid = await _handler.PublishEvent(ev, cmd, MessageType.UzivatelRemoved, remove.LastEvent, remove.Generation + 1, remove.Guid);
+            await db.SaveChangesAsync();
+        }
+
+        public async Task Add(CommandUzivatelCreate cmd)
+        {
+            var model = new Uzivatel()
+            {
+                Guid = cmd.UzivatelId,
+                TitulPred = cmd.TitulPred,
+                Jmeno = cmd.Jmeno,
+                Prijmeni = cmd.Prijmeni,
+                TitulZa = cmd.TitulZa,
+                Pohlavi = cmd.Pohlavi,
+                DatumNarozeni = cmd.DatumNarozeni,
+                Email = cmd.Email,
+                Telefon = cmd.Telefon,
+                Foto = cmd.Foto,
+                Generation = 0
+            };
+            db.Uzivatele.Add(model);
+            await db.SaveChangesAsync();   
+            var ev = new EventUzivatelCreated()
+            {
+                UzivatelId = new Guid(),
                 TitulPred = model.TitulPred,
                 Jmeno = model.Jmeno,
                 Prijmeni = model.Prijmeni,
@@ -145,19 +107,67 @@ namespace Uzivatel_Api.Repositories
                 Telefon = model.Telefon,
                 Foto = model.Foto,
             };
-            db.Uzivatele.Update(model);
-            await db.SaveChangesAsync();
-
-            var responseGuid = await _handler.PublishEvent(ev, cmd, MessageType.UzivatelUpdated, model.LastEvent, model.Generation + 1, model.Guid);
+            //TODO: Uložení Event do EventStore;
+            cmd.UzivatelId = model.Guid;
+            var responseGuid = await _handler.PublishEvent(ev, cmd, MessageType.UzivatelCreated, null, model.Generation + 1, model.Guid);           
             model.LastEvent = responseGuid;
             model.Generation = model.Generation + 1;
-
-
             await db.SaveChangesAsync();
+        }
+        public async Task Remove(CommandUzivatelRemove cmd)
+        {
+            var remove = db.Uzivatele.Find(cmd.UzivatelId);
+            db.Uzivatele.Remove(remove);
+            var ev = new EventUzivatelDeleted()
+            {
+                UzivatelId = cmd.UzivatelId,
+            };
+            var responseGuid = await _handler.PublishEvent(ev, cmd, MessageType.UzivatelRemoved, remove.LastEvent, remove.Generation + 1, remove.Guid);
+            await db.SaveChangesAsync();
+        }
+      
+        public async Task Update(CommandUzivatelUpdate cmd)
+        {
+                var model = db.Uzivatele.Find(cmd.UzivatelId);
+                model.TitulPred = cmd.TitulPred;
+                model.Jmeno = cmd.Jmeno;
+                model.Prijmeni = cmd.Prijmeni;
+                model.TitulZa = cmd.TitulZa;
+                model.Pohlavi = cmd.Pohlavi;
+                model.DatumNarozeni = cmd.DatumNarozeni;
+                model.Email = cmd.Email;
+                model.Telefon = cmd.Telefon;
+                model.Foto = cmd.Foto;
+                db.Uzivatele.Update(model);
+                await db.SaveChangesAsync();
+                
+                    var ev = new EventUzivatelUpdated()
+                    {
+                        UzivatelId = model.Guid,
+                        TitulPred = model.TitulPred,
+                        Jmeno = model.Jmeno,
+                        Prijmeni = model.Prijmeni,
+                        TitulZa = model.TitulZa,
+                        Pohlavi = model.Pohlavi,
+                        DatumNarozeni = model.DatumNarozeni,
+                        Email = model.Email,
+                        Telefon = model.Telefon,
+                        Foto = model.Foto,
+                    };
+                    var responseGuid = await _handler.PublishEvent(ev, cmd, MessageType.UzivatelUpdated, model.LastEvent, model.Generation + 1, model.Guid);
+                    model.LastEvent = responseGuid;
+                    model.Generation = model.Generation + 1;
+                    await db.SaveChangesAsync();
+                }
+
+            }
 
         }
 
 
 
-    }
-}
+  
+
+
+
+

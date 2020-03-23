@@ -33,11 +33,14 @@ namespace KancelarWeb.Controllers
             var model = await client.GetAsync(id);
             return View(model);
         }
-        public IActionResult Edit()
+        public async Task<IActionResult> Edit(Guid? id)
         {
             var model = new UzivatelModel();
             model.DatumNarozeni = DateTime.Today;
-
+            if (id != null) {
+                model = await client.GetAsync(new Guid(id.ToString()));
+            }          
+          
             ViewBag.PohlaviList = new SelectList(Enum.GetValues(typeof(EPohlavi)).Cast<EPohlavi>().Select(v => new SelectListItem
             {
                 Text = v.Description(),
@@ -56,6 +59,7 @@ namespace KancelarWeb.Controllers
             if (model.Id != Guid.Empty) {
                 var command = new CommandUzivatelUpdate()
                 {
+
                     DatumNarozeni = model.DatumNarozeni,
                     Email = model.Email,
                     Foto = model.Foto,

@@ -32,21 +32,17 @@ namespace EventStore_Api.Repositories
             var origin = JsonConvert.DeserializeObject<Message>( msg);
             var message = new StoreMessage();
             message.Guid = Guid.NewGuid();
-            //message.CurrentGuid = origin.Guid;
-            //message.TopicId = 0;
             message.ParentGuid = origin.ParentGuid;
             message.MessageType = origin.MessageType;
-            //message.MessageTypeText = origin.MessageType.ToString();
-           
+            message.MessageTypeText = origin.MessageType.ToString();
             message.Created = origin.Created;
+            message.Generation = origin.Generation;
+            message.EntityId = origin.EntityId;
             message.Event = msg;
             message.Command = origin.Command;
             db.Messages.Add(message);
             await db.SaveChangesAsync();
-           
-
         }
-
         public async Task<StoreMessage> Get(string guid)
         {
             return await Task.Run(() => db.Messages.FirstOrDefault(m => m.Guid == Guid.Parse(guid)));
@@ -61,13 +57,22 @@ namespace EventStore_Api.Repositories
 
         public void ServiceHeal(string message)
         {
-            var storeMessages = db.Messages;
+            
             var envelope = JsonConvert.DeserializeObject<Message>(message);
-            var ev = JsonConvert.DeserializeObject<EventServiceReady>(envelope.Event);
-            foreach (var msg in storeMessages)
+            var ev = JsonConvert.DeserializeObject<EventServiceReady>(envelope.Event); 
+           
+            foreach (var type in ev.MessageTypes)
             {
-                _publisher.PushToExchange(ev.Exchange, msg.Event);
-            }           
+                var storeMessages = db.Messages.Where(m =>  m.MessageType == type).OrderBy(d => d.Created);
+                foreach (var msg in storeMessages)
+                {
+                    _publisher.PushToExchange(ev.Exchange, msg.Event);
+                }
+            }
+            //AddMessageAsync(message);
+
+
         }
+
     }
 }

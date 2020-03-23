@@ -11,12 +11,16 @@ namespace Uzivatel_Api.Repositories
     {
         Task<List<Uzivatel>> GetList();
         Task<Uzivatel> Get(Guid id);
-        Task AddGeneration(Guid id);
-        Task Add(CommandUzivatelCreate cmd, Guid? replayed);
+        Task Add(CommandUzivatelCreate cmd);
+        Task Restore(CommandUzivatelCreate cmd, Guid entityId);
 
-        Task Update(CommandUzivatelUpdate cmd, Guid? replayed);
+        Task ReUpdate(CommandUzivatelUpdate cmd, Guid entityId);
 
-        Task Remove(CommandUzivatelRemove cmd, Guid? replayed);
+        Task Remove(CommandUzivatelRemove cmd, Guid entityId);
+
+        Task Remove(CommandUzivatelRemove cmd);
+
+        Task Update(CommandUzivatelUpdate cmd);
 
 
     }

@@ -133,12 +133,12 @@ namespace Kalendar_Api.Repositories
         public async Task AddByUzivatel(EventUzivatelCreated evt)
         {
             var rok = DateTime.Today.Year;
-            if (!db.Kalendare.Where(k => k.UzivatelId == evt.UzivatelGuid && k.Rok == rok).Any())
+            if (!db.Kalendare.Where(k => k.UzivatelId == evt.UzivatelId && k.Rok == rok).Any())
             {
                 var body = await new KalendarGenerator().KalendarNew();
                 var kalendar = new Kalendar()
                 {
-                    UzivatelId = evt.UzivatelGuid,
+                    UzivatelId = evt.UzivatelId,
                     Rok = rok,
                     Body = JsonConvert.SerializeObject(body),
                     DatumAktualizace = DateTime.Now
@@ -157,7 +157,7 @@ namespace Kalendar_Api.Repositories
 
         public async Task DeleteByUzivatel(EventUzivatelDeleted evt)
         {
-            var forRemove = db.Kalendare.Where(k => k.UzivatelId == evt.UzivatelGuid);
+            var forRemove = db.Kalendare.Where(k => k.UzivatelId == evt.UzivatelId);
             db.Kalendare.RemoveRange(forRemove);
             await db.SaveChangesAsync();
         }

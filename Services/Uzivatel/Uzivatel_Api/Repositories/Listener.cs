@@ -32,41 +32,30 @@ namespace Uzivatel_Api.Repositories
             {
                 case MessageType.UzivatelCreated:
                     //-------------Description: Deserializace zprávy do správného typu a odeslání k uložení do DB; 
-                    this.ConfirmCreated(envelope);
+                    this.Restore(envelope);
                     break;
-                //case MessageType.UzivatelCreate:                       
-                //        //-------------Description: Deserializace zprávy do správného typu a odeslání k uložení do DB; 
-                //        this.Add(JsonConvert.DeserializeObject<CommandUzivatelCreate>(envelope.Event));                   
-                //    break;
-                //case MessageType.UzivatelRemove:                   
-                //        this.Remove(JsonConvert.DeserializeObject<CommandUzivatelRemove>(envelope.Event));                  
-                //    break;
-                //case MessageType.UzivatelUpdate:                  
-                //        this.Update(JsonConvert.DeserializeObject<CommandUzivatelUpdate>(envelope.Event));                 
-                //    break;
+                case MessageType.UzivatelUpdated:
+                    //-------------Description: Deserializace zprávy do správného typu a odeslání k uložení do DB; 
+                    this.ReUpdate(envelope);
+                    break;
+                case MessageType.UzivatelRemoved:
+                    //-------------Description: Deserializace zprávy do správného typu a odeslání k uložení do DB; 
+                    this.Remove(envelope);
+                    break;       
             }
         }
-        public void ConfirmCreated(Message msg) {   
-         _repository.Add(JsonConvert.DeserializeObject<CommandUzivatelCreate>(msg.Command), msg.Guid);
+        public void Restore(Message msg) {   
+         _repository.Restore(JsonConvert.DeserializeObject<CommandUzivatelCreate>(msg.Command), msg.EntityId);
         }
-   
-        public void Add(CommandUzivatelCreate cmd, Guid replayed)
+        public void Remove(Message msg)
         {
-            _repository.Add(cmd, replayed);
+            _repository.Remove(JsonConvert.DeserializeObject<CommandUzivatelRemove>(msg.Command), msg.Guid);
+        }
+        public void ReUpdate(Message msg)
+        {
+            _repository.ReUpdate(JsonConvert.DeserializeObject<CommandUzivatelUpdate>(msg.Command), msg.EntityId);
         }
 
-        public void Remove(CommandUzivatelRemove cmd, Guid replayed)
-        {
-            _repository.Remove(cmd,replayed);
-
-
-        }
-        public void Update(CommandUzivatelUpdate cmd, Guid replayed)
-        {
-            _repository.Update(cmd, replayed);
-        }
-        //public void AcceptCommand(Guid guid) {
-        //    _repository.AcceptCommand(guid);
-        //}
+      
     }
 }
