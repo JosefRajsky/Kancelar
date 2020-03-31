@@ -9,7 +9,8 @@ namespace Uzivatel_Api
     public class Uzivatel
     {
         [Key]
-        public Guid Guid { get; set; }
+        public Guid Id { get; set; }
+        public Guid UzivatelId { get; set; }
         public string TitulPred { get; set; }
         public string Jmeno { get; set; }
         public string Prijmeni { get; set; }
@@ -19,8 +20,7 @@ namespace Uzivatel_Api
         public DateTime DatumNarozeni { get; set; }
         public string Email { get; set; }
         public string Telefon { get; set; }
-        public string Foto { get; set; }
-        public Guid? LastEvent { get; set; }
+        public Guid? EventGuid { get; set; }
         public int Generation { get; set; }
         
     }

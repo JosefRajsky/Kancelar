@@ -1,6 +1,6 @@
 ﻿
 using CommandHandler;
-using EventLibrary;
+
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
@@ -68,7 +68,7 @@ namespace Udalost_Api.Repositories
         public async Task Remove(CommandUdalostRemove cmd)
         {
             var version = 1;
-            var cmdGuid = await _handler.MakeCommand(cmd, MessageType.UdalostRemove, null, version, true);
+            //var cmdGuid = await _handler.MakeCommand(cmd, MessageType.UdalostRemove, null, version, true);
             var remove = db.Udalosti.Find(cmd.UdalostId);
             db.Udalosti.Remove(remove);
             await db.SaveChangesAsync();

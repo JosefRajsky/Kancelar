@@ -1,6 +1,7 @@
 ﻿
 
-using EventLibrary;
+
+using CommandHandler;
 using Kalendar_Api.Models;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace Kalendar_Api.Repositories
     public interface IKalendarRepository
     {
         Task<IEnumerable<KalendarModel>> GetList();
-        Task<Kalendar> Get(string id);
+        Task<Kalendar> Get(Guid id);
         DateTime GetLast();
         Task Add(CommandKalendarCreate cmd, bool publish);
 

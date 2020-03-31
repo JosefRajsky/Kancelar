@@ -25,18 +25,7 @@ namespace EventStore_Api.Controllers
             return await _repository.Get(id.ToString());
         }
 
-        [HttpGet]
-        [Route("GetList")]
-        public async Task<List<StoreMessage>> GetList()
-        {
-
-            return await _repository.GetList();
-        }
-        [HttpPost]
-        [Route("CheckByDate")]
-        public async Task<List<StoreMessage>> CheckByDate(DateTime datum)
-        {
-            return await _repository.GetListByDate(datum);
-        }
+      
+        
     }
 }

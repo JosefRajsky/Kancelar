@@ -1,5 +1,6 @@
 ﻿
-using EventLibrary;
+
+using CommandHandler;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
@@ -26,9 +27,8 @@ namespace EventStore_Api.Repositories
             var envelope = JsonConvert.DeserializeObject<Message>(message);
             switch (envelope.MessageType)
             {
-                case MessageType.HealMe:
-                   
-                    _repository.ServiceHeal(message);
+                case MessageType.ProvideHealingStream:                   
+                    _repository.ProvideHealingStream(message);
                     break;             
               
                 default:

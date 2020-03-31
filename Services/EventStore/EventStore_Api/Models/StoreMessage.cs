@@ -1,4 +1,5 @@
-﻿using EventLibrary;
+﻿
+using CommandHandler;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -13,7 +14,7 @@ namespace EventStore_Api
         public Guid? ParentGuid { get; set; }
         public Guid EntityId { get; set; }
         public int Generation { get; set; }
-        public string Event { get; set; }
+        public string Message { get; set; }
         public string Command { get; set; }
     
     }

@@ -69,7 +69,6 @@ services:
     depends_on:
       - sqlserver
       - rabbitmq
-      - eventstore
 
   kalendarapi:
     image: ${DOCKER_REGISTRY-}kalendar_api
@@ -82,7 +81,6 @@ services:
     depends_on:
       - sqlserver
       - rabbitmq
-      - eventstore
 
   udalostapi:
     image: ${DOCKER_REGISTRY-}udalost_api
@@ -95,7 +93,6 @@ services:
     depends_on:
       - sqlserver
       - rabbitmq
-      - eventstore
 
   dochazkaapi:
     image: ${DOCKER_REGISTRY-}dochazka_api
@@ -108,7 +105,6 @@ services:
     depends_on:
       - sqlserver
       - rabbitmq
-      - eventstore
 
   uzivatelapi:
     image: ${DOCKER_REGISTRY-}uzivatel_api
@@ -121,7 +117,6 @@ services:
     depends_on:
       - sqlserver
       - rabbitmq
-      - eventstore
 
   kancelarweb:
     image: ${DOCKER_REGISTRY-}kancelarweb
@@ -133,7 +128,6 @@ services:
     depends_on:
       - sqlserver
       - rabbitmq
-      - eventstore
 
 
 

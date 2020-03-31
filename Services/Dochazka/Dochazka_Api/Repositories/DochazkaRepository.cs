@@ -1,7 +1,7 @@
 ﻿
 using CommandHandler;
 using Dochazka_Api.Models;
-using EventLibrary;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -62,7 +62,7 @@ namespace Dochazka_Api.Repositories
         public async Task Remove(CommandDochazkaRemove cmd,bool publish)
         {
             var version = 1;
-            var cmdGuid = await _handler.MakeCommand(cmd, MessageType.DochazkaRemove, null, version, publish);
+            //var cmdGuid = await _handler.MakeCommand(cmd, MessageType.DochazkaRemove, null, version, publish);
             var remove = db.Dochazka.Find(cmd.DochazkaId);
             db.Dochazka.Remove(remove);
             await db.SaveChangesAsync();
@@ -78,7 +78,7 @@ namespace Dochazka_Api.Repositories
         public async Task Update(CommandDochazkaUpdate cmd, bool publish)
         {
             var version = 1;
-            var cmdGuid = await _handler.MakeCommand(cmd, MessageType.DochazkaUpdate, null, version, publish);
+            //var cmdGuid = await _handler.MakeCommand(cmd, MessageType.DochazkaUpdate, null, version, publish);
             var update= db.Dochazka.Find(cmd.DochazkaId);
             db.Dochazka.Remove(update);
             await db.SaveChangesAsync();

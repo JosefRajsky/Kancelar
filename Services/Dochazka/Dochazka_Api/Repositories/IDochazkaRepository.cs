@@ -1,6 +1,6 @@
 ﻿
 using Dochazka_Api.Models;
-using EventLibrary;
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommandHandler;
-using EventLibrary;
+
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -90,27 +90,27 @@ namespace Uzivatel_Api
                 listener.AddCommand(message);
             };
 
-            await HealOnStart(services.BuildServiceProvider().GetService<Publisher>(), exchanges[0]);
+            //await HealOnStart(services.BuildServiceProvider().GetService<Publisher>(), exchanges[0]);
         }
-        public async Task HealOnStart(Publisher publisher,  string willRecoverOn)
-        {
-            var _handler = new MessageHandler(publisher);
+        //public async Task HealOnStart(Publisher publisher,  string willRecoverOn)
+        //{
+        //    var _handler = new MessageHandler(publisher);
 
-            var msgTypes = new List<MessageType>();
-            msgTypes.Add(MessageType.UzivatelCreated);
-            msgTypes.Add(MessageType.UzivatelUpdated);
-            msgTypes.Add(MessageType.UzivatelRemoved);
-            var evt = new EventServiceReady() { Exchange = willRecoverOn, MessageTypes = msgTypes };
-            var msg = new Message()
-            {
-                Guid = Guid.NewGuid(),
-                MessageType = MessageType.HealMe,                  
-                Created = DateTime.Now,
-                ParentGuid = null,
-                Event = await Task.Run(() => JsonConvert.SerializeObject(evt))
-            };
-            await publisher.Push(JsonConvert.SerializeObject(msg));
-        }
+        //    var msgTypes = new List<MessageType>();
+        //    msgTypes.Add(MessageType.UzivatelCreated);
+        //    msgTypes.Add(MessageType.UzivatelUpdated);
+        //    msgTypes.Add(MessageType.UzivatelRemoved);
+        //    var evt = new ProvideHealingStream() { Exchange = willRecoverOn, MessageTypes = msgTypes };
+        //    var msg = new Message()
+        //    {
+        //        Guid = Guid.NewGuid(),
+        //        MessageType = MessageType.ProvideHealingStream,                  
+        //        Created = DateTime.Now,
+        //        ParentGuid = null,
+        //        Event = await Task.Run(() => JsonConvert.SerializeObject(evt))
+        //    };
+        //    await publisher.Push(JsonConvert.SerializeObject(msg));
+        //}
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

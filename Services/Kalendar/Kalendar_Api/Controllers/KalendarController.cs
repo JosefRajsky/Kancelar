@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
-using EventLibrary;
+using CommandHandler;
 using Kalendar_Api.Models;
 using Kalendar_Api.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -21,9 +20,9 @@ namespace Kalendar_Api.Controllers
         }
         [HttpGet]
         [Route("Get/{id?}")]
-        public async Task<ActionResult<Kalendar>> Get(int id)
+        public async Task<ActionResult<Kalendar>> Get(Guid id)
         {
-            var response = await _repository.Get(id.ToString());     
+            var response = await _repository.Get(id);     
             return Ok(response);
         }
 

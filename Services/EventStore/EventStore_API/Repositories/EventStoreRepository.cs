@@ -1,7 +1,7 @@
 ﻿
 
 using CommandHandler;
-using EventLibrary;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -18,10 +18,12 @@ namespace EventStore_Api.Repositories
     {
         private readonly EventStoreDbContext db;
         private Publisher _publisher;
+        private MessageHandler _handler;
         public EventStoreRepository(EventStoreDbContext dbContext, Publisher publisher)
         {
             db = dbContext;
             _publisher = publisher;
+            _handler = new MessageHandler(publisher);
         }
         public async Task<List<StoreMessage>> GetListByDate(DateTime datum)
         {
@@ -29,7 +31,7 @@ namespace EventStore_Api.Repositories
         }
         public async Task AddMessageAsync(string msg)
         {
-            var origin = JsonConvert.DeserializeObject<Message>( msg);
+            var origin = JsonConvert.DeserializeObject<Message>(msg);
             var message = new StoreMessage();
             message.Guid = Guid.NewGuid();
             message.ParentGuid = origin.ParentGuid;
@@ -38,8 +40,7 @@ namespace EventStore_Api.Repositories
             message.Created = origin.Created;
             message.Generation = origin.Generation;
             message.EntityId = origin.EntityId;
-            message.Event = msg;
-            message.Command = origin.Command;
+            message.Message = msg;
             db.Messages.Add(message);
             await db.SaveChangesAsync();
         }
@@ -48,43 +49,50 @@ namespace EventStore_Api.Repositories
             return await Task.Run(() => db.Messages.FirstOrDefault(m => m.Guid == Guid.Parse(guid)));
         }
 
-        [HttpGet]
-        [Route("GetList")]
-        public async Task<List<StoreMessage>> GetList()
+        public async Task ProvideHealingStream(string message)
         {
-            return await db.Messages.ToListAsync();
-        }
-        //public async Task Replay(string message) {
-        //    var envelope = JsonConvert.DeserializeObject<Message>(message);
-        //    var ev = JsonConvert.DeserializeObject<EventServiceReady>(envelope.Event);
-        //    foreach (var type in ev.MessageTypes)
-        //    {
-        //        var storeMessages = db.Messages.Where(m => m.MessageType == type).OrderBy(d => d.Created);
-        //        foreach (var msg in storeMessages)
-        //        {
-        //            _publisher.PushToExchange(ev.Exchange, msg.Event);
-        //        }
-        //    }
-        //}
-
-        public async Task ServiceHeal(string message)
-        {
-            
             var envelope = JsonConvert.DeserializeObject<Message>(message);
-            var ev = JsonConvert.DeserializeObject<EventServiceReady>(envelope.Event); 
-           
-            foreach (var type in ev.MessageTypes)
+            var ev = JsonConvert.DeserializeObject<ProvideHealingStream>(envelope.Event);
+            var responseEvent = new HealingStreamProvided()
             {
-                var storeMessages = db.Messages.Where(m =>  m.MessageType == type).OrderBy(d => d.Created);
-                foreach (var msg in storeMessages)
+                EntityId = ev.EntityId,
+                MessageList = new List<string>()
+            };
+            if (ev.EntityId != Guid.Empty)
+            {
+                foreach (var type in ev.MessageTypes)
                 {
-                   await _publisher.PushToExchange(ev.Exchange, msg.Event);
+                    responseEvent.MessageList.AddRange(db.Messages.Where(m => m.MessageType == type & m.EntityId == ev.EntityId).OrderBy(g => g.Generation).Select(m => m.Message));
                 }
             }
-            await AddMessageAsync(message);
+            else
+            {
+                foreach (var type in ev.MessageTypes)
+                {
+                    responseEvent.MessageList.AddRange(db.Messages.Where(m => m.MessageType == type).OrderBy(g => g.Generation).Select(m => m.Message));
+                }
+            }
+            if (responseEvent.MessageList.Any()) {
+                var msg = new Message();
+                await _handler.PublishEventToExchange(responseEvent, MessageType.HealingStreamProvided, Guid.NewGuid(), null, 0, (ev.EntityId == Guid.Empty) ? Guid.Empty : Guid.Parse(ev.EntityId.ToString()), ev.Exchange);
+
+                //await _publisher.PushToExchange(ev.Exchange, JsonConvert.SerializeObject(response));
+                //await AddMessageAsync(message);
+                //var response = new StoreMessage();
+                //response.Guid = Guid.NewGuid();
+                //response.ParentGuid = null;
+                //response.MessageType = MessageType.HealingStreamProvided;
+                //response.MessageTypeText = MessageType.HealingStreamProvided.ToString();
+                //response.Created = DateTime.Now;
+                //response.Generation = 0;
+                //response.EntityId = (ev.EntityId == Guid.Empty) ? Guid.Empty : Guid.Parse(ev.EntityId.ToString());
+                //response.Message = JsonConvert.SerializeObject(responseEvent);
+                //await AddMessageAsync(JsonConvert.SerializeObject(response));
+            }
+          
+
 
 
         }
-
     }
 }

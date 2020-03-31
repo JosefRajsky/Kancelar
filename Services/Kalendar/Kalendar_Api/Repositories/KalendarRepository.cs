@@ -1,7 +1,7 @@
 ﻿
 using CommandHandler;
 
-using EventLibrary;
+
 using Kalendar_Api;
 using Kalendar_Api.Functions;
 using Kalendar_Api.Models;
@@ -38,7 +38,7 @@ namespace Kalendar_Api.Repositories
             }
             return DateTime.MinValue;
         }
-        public async Task<Kalendar> Get(string id) => await Task.Run(() => db.Kalendare.FirstOrDefault(b => b.Id == Convert.ToInt32(id)));
+        public async Task<Kalendar> Get(Guid id) => await Task.Run(() => db.Kalendare.FirstOrDefault(b => b.KalendarId == id));
         public async Task<IEnumerable<KalendarModel>> GetList()
         {
             var model =new List<KalendarModel>();
@@ -46,7 +46,7 @@ namespace Kalendar_Api.Repositories
             foreach (var item in list)
             {
                 var kalendar = new KalendarModel();
-                kalendar.Id = item.Id;
+                kalendar.Id = item.KalendarId;
                 kalendar.Rok = item.Rok;
                 kalendar.UzivatelId = item.UzivatelId;
                 kalendar.Kalendar = JsonConvert.DeserializeObject<Year>(item.Body);
@@ -58,8 +58,7 @@ namespace Kalendar_Api.Repositories
 
         public async Task Add(CommandKalendarCreate cmd,bool publish)
         {
-            //var version = 1;
-            //var cmdGuid = await _handler.MakeCommand(cmd, MessageType.KalendarCreate, null, version, publish);
+
             var body = await new KalendarGenerator().KalendarNew();
             var kalendar = new Kalendar()
             {
@@ -67,23 +66,16 @@ namespace Kalendar_Api.Repositories
                 UzivatelCeleJmeno = cmd.CeleJmeno,
                 Rok = cmd.Rok,
                 Body = JsonConvert.SerializeObject(body),
-                DatumAktualizace = DateTime.Now 
-                
+                DatumAktualizace = DateTime.Now                
             };
             db.Kalendare.Add(kalendar);
-            db.Dispose();
-
-            //var ev = new EventKalendarCreated()
-            //{                
-            //UzivatelId = cmd.UzivatelId
-            //};
-            //var responseGuid = await _handler.PublishEvent(ev, MessageType.KalendarCreated, null, 1, publish);                 
+            db.Dispose();           
         } 
 
         public async Task Update(CommandKalendarUpdate cmd, bool publish)
         {
             var version = 1;
-            var cmdGuid = await _handler.MakeCommand(cmd, MessageType.KalendarUpdate, null, version, publish);
+            //var cmdGuid = await _handler.MakeCommand(cmd, MessageType.KalendarUpdate, null, version, publish);
             var update= db.Kalendare.Find(cmd.KalendarId);
             db.Kalendare.Remove(update);
             await db.SaveChangesAsync();
@@ -93,13 +85,10 @@ namespace Kalendar_Api.Repositories
                     UzivatelId = cmd.UzivatelId, 
                 } ;
             update.DatumAktualizace = DateTime.Now;
-            //var responseGuid = await _handler.PublishEvent(ev, cmd, MessageType.KalendarUpdated, null, version, publish);
         }
         public async Task UpdateByUdalost(EventUdalostCreated evt)
-        {
-           
+        {           
                 var model = db.Kalendare.FirstOrDefault(k => k.UzivatelId == evt.UzivatelId && k.Rok == evt.DatumOd.Year);
-
                 var kalendar = JsonConvert.DeserializeObject<Year>(model.Body);
                 var interval = (evt.DatumDo - evt.DatumOd).TotalDays;
                 for (int i = 0; i <= interval; i++)
@@ -117,17 +106,11 @@ namespace Kalendar_Api.Repositories
                         CeleJmeno = evt.UzivatelCeleJmeno
                     };
                     den.Polozky.Add(polozka);
-
                     var result = JsonConvert.SerializeObject(kalendar);
                     model.DatumAktualizace = DateTime.Now;
                     model.Body = result;
                     await db.SaveChangesAsync();
-                }
-            
-
-               
-               
-            
+                }            
         }
 
         public async Task AddByUzivatel(EventUzivatelCreated evt)

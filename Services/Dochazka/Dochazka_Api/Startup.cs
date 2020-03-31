@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using CommandHandler;
 using Consul;
 using Dochazka_Api.Repositories;
-using EventLibrary;
+
 using HealthChecks.RabbitMQ;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;

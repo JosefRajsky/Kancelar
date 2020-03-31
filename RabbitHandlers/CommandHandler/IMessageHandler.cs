@@ -1,4 +1,4 @@
-﻿using EventLibrary;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,8 +8,9 @@ namespace CommandHandler
 {
     public interface IMessageHandler
     {
-        Task<Message> MakeCommand<T>(T message, MessageType typ, Guid? parentGuid, int version, bool send);
-        Task<Guid> PublishEvent<E,C>(E message,C cmd, MessageType typ, Guid? parentGuid, int generation, Guid entityId);
+        //Task<Message> MakeCommand<T>(T message, MessageType typ, Guid? parentGuid, int version, bool send);
+        Task PublishEvent<E>(E evt, MessageType typ, Guid? parentGuid, int generation, Guid entityId);
+        Task PublishEventToExchange<E>(E evt, MessageType typ, Guid guid, Guid? parentGuid, int generation, Guid entityId,string exchange);
 
     }
 }

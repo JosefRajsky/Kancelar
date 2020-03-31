@@ -1,6 +1,6 @@
 ﻿
 using CommandHandler;
-using EventLibrary;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -25,62 +25,101 @@ namespace Uzivatel_Api.Repositories
             _handler = new MessageHandler(publisher);
 
         }
-        public async Task<Uzivatel> Get(Guid id) => await Task.Run(() => db.Uzivatele.FirstOrDefault(b => b.Guid == id));
-        public async Task<List<Uzivatel>> GetList() => await db.Uzivatele.ToListAsync();
-        public async Task Restore(CommandUzivatelCreate cmd, Guid entityId)
-        {
-            var item = db.Uzivatele.Find(entityId);
-            if(item == null) {
 
-                var model = new Uzivatel()
+        public async Task RequestReplay(Guid? entityId)
+        {
+            var msgTypes = new List<MessageType>();
+            msgTypes.Add(MessageType.UzivatelCreated);
+            msgTypes.Add(MessageType.UzivatelUpdated);
+            msgTypes.Add(MessageType.UzivatelRemoved);
+            var evt = new ProvideHealingStream() { Exchange = "uzivatel.ex", MessageTypes = msgTypes, EntityId = entityId };
+            var msg = new Message()
+            {
+                Guid = Guid.NewGuid(),
+                MessageType = MessageType.ProvideHealingStream,
+                Created = DateTime.Now,
+                EntityId = (entityId == Guid.Empty) ? Guid.Empty : Guid.Parse(entityId.ToString()),
+                ParentGuid = null,
+                Event = await Task.Run(() => JsonConvert.SerializeObject(evt))
+            };
+            await _publisher.Push(JsonConvert.SerializeObject(msg));
+        }
+        public async Task ReplayStream(List<string> msgStream, Guid? entityId)
+        {
+            var msgList = new List<Message>();
+            foreach (var item in msgStream)
+            {
+                msgList.Add(JsonConvert.DeserializeObject<Message>(item));
+            }
+            foreach (var msg in msgList.OrderBy(g => g.Generation))
+            {
+                switch (msg.MessageType)
                 {
-                    Guid = cmd.UzivatelId,
-                    TitulPred = cmd.TitulPred,
-                    Jmeno = cmd.Jmeno,
-                    Prijmeni = cmd.Prijmeni,
-                    TitulZa = cmd.TitulZa,
-                    Pohlavi = cmd.Pohlavi,
-                    DatumNarozeni = cmd.DatumNarozeni,
-                    Email = cmd.Email,
-                    Telefon = cmd.Telefon,
-                    Foto = cmd.Foto,
-                    Generation = 0
-                };
-                db.Uzivatele.Add(model);
+                    case MessageType.UzivatelCreated:
+                        var create = JsonConvert.DeserializeObject<EventUzivatelCreated>(msg.Event);
+                        var forCreate = db.Uzivatele.FirstOrDefault(u => u.UzivatelId == create.UzivatelId);
+                        if (forCreate == null)
+                        {
+                            forCreate = Create(create);
+                        }
+                        break;
+                    case MessageType.UzivatelRemoved:
+                        var remove = JsonConvert.DeserializeObject<EventUzivatelDeleted>(msg.Event);
+                        var forRemove = db.Uzivatele.FirstOrDefault(u => u.UzivatelId == remove.UzivatelId);
+                        if(forRemove != null)  db.Uzivatele.Remove(forRemove);
+
+                        break;
+                    case MessageType.UzivatelUpdated:
+                        var update = JsonConvert.DeserializeObject<EventUzivatelUpdated>(msg.Event);
+                        var forUpdate = db.Uzivatele.FirstOrDefault(u => u.UzivatelId == update.UzivatelId);
+                        if (forUpdate == null)
+                        {
+                            forUpdate = Modify(update);
+                        }
+                        break;
+                }
+            }            
+        }
+
+        public async Task<Uzivatel> Get(Guid id) => await Task.Run(() => db.Uzivatele.FirstOrDefault(b => b.UzivatelId == id));
+        public async Task<List<Uzivatel>> GetList() => await db.Uzivatele.ToListAsync();
+        public async Task ConfirmAdd(EventUzivatelCreated evt, Guid entityId)
+        {
+            var model = db.Uzivatele.FirstOrDefault(u => u.UzivatelId == entityId);
+            if (model.Generation == evt.Generation - 1)
+            {
+                model.EventGuid = evt.EventId;
+                model.Generation = evt.Generation;
+                db.Uzivatele.Update(model);
                 await db.SaveChangesAsync();
             }
-        }
-        public async Task ReUpdate(CommandUzivatelUpdate cmd, Guid entityId) {
-            var model = db.Uzivatele.Find(entityId);
-            model.TitulPred = cmd.TitulPred;
-            model.Jmeno = cmd.Jmeno;
-            model.Prijmeni = cmd.Prijmeni;
-            model.TitulZa = cmd.TitulZa;
-            model.Pohlavi = cmd.Pohlavi;
-            model.DatumNarozeni = cmd.DatumNarozeni;
-            model.Email = cmd.Email;
-            model.Telefon = cmd.Telefon;
-            model.Foto = cmd.Foto;
-            db.Uzivatele.Update(model);
-            await db.SaveChangesAsync();
-        }
-        public async Task Remove(CommandUzivatelRemove cmd, Guid entityId)
-        {
-            var remove = db.Uzivatele.Find(cmd.UzivatelId);
-            db.Uzivatele.Remove(remove);
-            var ev = new EventUzivatelDeleted()
+            else
             {
-                UzivatelId = cmd.UzivatelId,
-            };
-            var responseGuid = await _handler.PublishEvent(ev, cmd, MessageType.UzivatelRemoved, remove.LastEvent, remove.Generation + 1, remove.Guid);
-            await db.SaveChangesAsync();
-        }
+                await RequestReplay(entityId);
+            }
 
+        }
+        public async Task ConfirmUpdate(EventUzivatelUpdated evt, Guid entityId)
+        {
+            var model = db.Uzivatele.FirstOrDefault(u => u.UzivatelId == evt.UzivatelId);
+            if (model.Generation == evt.Generation - 1)
+            {
+                model.EventGuid = evt.EventId;
+                model.Generation = evt.Generation;
+                db.Uzivatele.Update(model);
+                await db.SaveChangesAsync();
+            }
+            else
+            {
+                await RequestReplay(entityId);
+            }
+        }
         public async Task Add(CommandUzivatelCreate cmd)
         {
-            var model = new Uzivatel()
+            var ev = new EventUzivatelCreated()
             {
-                Guid = cmd.UzivatelId,
+                EventId = Guid.NewGuid(),
+                UzivatelId = Guid.NewGuid(),
                 TitulPred = cmd.TitulPred,
                 Jmeno = cmd.Jmeno,
                 Prijmeni = cmd.Prijmeni,
@@ -89,83 +128,93 @@ namespace Uzivatel_Api.Repositories
                 DatumNarozeni = cmd.DatumNarozeni,
                 Email = cmd.Email,
                 Telefon = cmd.Telefon,
-                Foto = cmd.Foto,
-                Generation = 0
+                Generation = 0,
             };
-            db.Uzivatele.Add(model);
-            await db.SaveChangesAsync();   
-            var ev = new EventUzivatelCreated()
+            var model = Create(ev);           
+            if (model != null)
             {
-                UzivatelId = new Guid(),
-                TitulPred = model.TitulPred,
-                Jmeno = model.Jmeno,
-                Prijmeni = model.Prijmeni,
-                TitulZa = model.TitulZa,
-                Pohlavi = model.Pohlavi,
-                DatumNarozeni = model.DatumNarozeni,
-                Email = model.Email,
-                Telefon = model.Telefon,
-                Foto = model.Foto,
+                ev.Generation = model.Generation + 1;
+                await _handler.PublishEvent(ev, MessageType.UzivatelCreated, ev.EventId, null, ev.Generation, model.UzivatelId);
+            }
+        }
+        public async Task Update(CommandUzivatelUpdate cmd)
+        {
+            var ev = new EventUzivatelUpdated()
+            {
+                EventId = Guid.NewGuid(),
+                UzivatelId = cmd.UzivatelId,
+                TitulPred = cmd.TitulPred,
+                Jmeno = cmd.Jmeno,
+                Prijmeni = cmd.Prijmeni,
+                TitulZa = cmd.TitulZa,
+                Pohlavi = cmd.Pohlavi,
+                DatumNarozeni = cmd.DatumNarozeni,
+                Email = cmd.Email,
+                Telefon = cmd.Telefon,
             };
-            //TODO: Uložení Event do EventStore;
-            cmd.UzivatelId = model.Guid;
-            var responseGuid = await _handler.PublishEvent(ev, cmd, MessageType.UzivatelCreated, null, model.Generation + 1, model.Guid);           
-            model.LastEvent = responseGuid;
-            model.Generation = model.Generation + 1;
-            await db.SaveChangesAsync();
+            var model =Modify(ev);            
+            if (model != null) {
+             
+                ev.Generation = model.Generation + 1;
+                await _handler.PublishEvent(ev, MessageType.UzivatelUpdated, ev.EventId, model.EventGuid, ev.Generation, model.UzivatelId);
+            }
         }
         public async Task Remove(CommandUzivatelRemove cmd)
         {
-            var remove = db.Uzivatele.Find(cmd.UzivatelId);
+            var remove = db.Uzivatele.FirstOrDefault(u => u.UzivatelId == cmd.UzivatelId);
             db.Uzivatele.Remove(remove);
             var ev = new EventUzivatelDeleted()
             {
+                Generation = remove.Generation + 1,
+                EventId = Guid.NewGuid(),
                 UzivatelId = cmd.UzivatelId,
             };
-            var responseGuid = await _handler.PublishEvent(ev, cmd, MessageType.UzivatelRemoved, remove.LastEvent, remove.Generation + 1, remove.Guid);
+            await _handler.PublishEvent(ev, MessageType.UzivatelRemoved, ev.EventId, remove.EventGuid, remove.Generation, remove.UzivatelId);
             await db.SaveChangesAsync();
-        }      
-        public async Task Update(CommandUzivatelUpdate cmd)
-        {
-                var model = db.Uzivatele.Find(cmd.UzivatelId);
-                model.TitulPred = cmd.TitulPred;
-                model.Jmeno = cmd.Jmeno;
-                model.Prijmeni = cmd.Prijmeni;
-                model.TitulZa = cmd.TitulZa;
-                model.Pohlavi = cmd.Pohlavi;
-                model.DatumNarozeni = cmd.DatumNarozeni;
-                model.Email = cmd.Email;
-                model.Telefon = cmd.Telefon;
-                model.Foto = cmd.Foto;
-                db.Uzivatele.Update(model);
-                await db.SaveChangesAsync();
-                
-                    var ev = new EventUzivatelUpdated()
-                    {
-                        UzivatelId = model.Guid,
-                        TitulPred = model.TitulPred,
-                        Jmeno = model.Jmeno,
-                        Prijmeni = model.Prijmeni,
-                        TitulZa = model.TitulZa,
-                        Pohlavi = model.Pohlavi,
-                        DatumNarozeni = model.DatumNarozeni,
-                        Email = model.Email,
-                        Telefon = model.Telefon,
-                        Foto = model.Foto,
-                    };
-                    var responseGuid = await _handler.PublishEvent(ev, cmd, MessageType.UzivatelUpdated, model.LastEvent, model.Generation + 1, model.Guid);
-                    model.LastEvent = responseGuid;
-                    model.Generation = model.Generation + 1;
-                    await db.SaveChangesAsync();
-                }
-
-            }
-
         }
 
+        private Uzivatel Create(EventUzivatelCreated evt)
+        {
+            var model = new Uzivatel()
+            {
+                UzivatelId = evt.UzivatelId,
+                TitulPred = evt.TitulPred,
+                Jmeno = evt.Jmeno,
+                Prijmeni = evt.Prijmeni,
+                TitulZa = evt.TitulZa,
+                Pohlavi = evt.Pohlavi,
+                DatumNarozeni = evt.DatumNarozeni,
+                Email = evt.Email,
+                Telefon = evt.Telefon,
+                Generation = evt.Generation
+            };
+            db.Uzivatele.Add(model);
+            db.SaveChanges();
+            return model;
+        }
+        private Uzivatel Modify(EventUzivatelUpdated evt)
+        {
+            var model = db.Uzivatele.FirstOrDefault(u => u.UzivatelId == evt.UzivatelId);
+            model.TitulPred = evt.TitulPred;
+            model.Jmeno = evt.Jmeno;
+            model.Prijmeni = evt.Prijmeni;
+            model.TitulZa = evt.TitulZa;
+            model.Pohlavi = evt.Pohlavi;
+            model.DatumNarozeni = evt.DatumNarozeni;
+            model.Email = evt.Email;
+            model.Telefon = evt.Telefon;
+            db.Uzivatele.Update(model);
+            db.SaveChanges();
+            return model;
+        }
+
+    }
+
+}
 
 
-  
+
+
 
 
 

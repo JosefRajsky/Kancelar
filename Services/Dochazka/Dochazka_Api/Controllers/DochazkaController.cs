@@ -1,6 +1,6 @@
 ﻿using Dochazka_Api.Models;
 using Dochazka_Api.Repositories;
-using EventLibrary;
+
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;

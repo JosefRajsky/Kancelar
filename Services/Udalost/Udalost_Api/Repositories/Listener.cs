@@ -1,7 +1,7 @@
 ﻿
 using CommandHandler;
 
-using EventLibrary;
+
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System;

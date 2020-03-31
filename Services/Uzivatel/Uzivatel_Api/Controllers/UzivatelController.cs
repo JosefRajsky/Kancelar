@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using System.Threading.Tasks;
 using CommandHandler;
-using EventLibrary;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Uzivatel_Api.Repositories;

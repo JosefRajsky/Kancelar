@@ -1,7 +1,7 @@
 ﻿
 using CommandHandler;
 
-using EventLibrary;
+
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System;
@@ -12,16 +12,18 @@ using System.Threading.Tasks;
 
 namespace Uzivatel_Api.Repositories
 {
-    public class Listener : IListener
+    public class Listener 
     {
         
         private readonly IUzivatelRepository _repository;
         public Listener(IUzivatelRepository repository)
         {
-            _repository = repository;          
-         
-      
-        
+            _repository = repository;
+            CheckOnStartUp();
+        }
+        public async void CheckOnStartUp()
+        {
+            await _repository.RequestReplay(Guid.Empty);
         }
         public void AddCommand(string message)
         {
@@ -30,32 +32,34 @@ namespace Uzivatel_Api.Repositories
             //-------------Description: Rozhodnutí o typu získazné zprávy. Typ vázaný na Enum z knihovny
             switch (envelope.MessageType)
             {
-                case MessageType.UzivatelCreated:
+                case MessageType.HealingStreamProvided:
                     //-------------Description: Deserializace zprávy do správného typu a odeslání k uložení do DB; 
-                    this.Restore(envelope);
+                    this.Replay(envelope);
+                    break;
+                case MessageType.UzivatelCreated:
+                   
+                    this.CCreate(envelope);
                     break;
                 case MessageType.UzivatelUpdated:
-                    //-------------Description: Deserializace zprávy do správného typu a odeslání k uložení do DB; 
-                    this.ReUpdate(envelope);
+           
+                    this.CUpdate(envelope);
                     break;
-                case MessageType.UzivatelRemoved:
-                    //-------------Description: Deserializace zprávy do správného typu a odeslání k uložení do DB; 
-                    this.Remove(envelope);
-                    break;       
+      
             }
         }
-        public void Restore(Message msg) {   
-         _repository.Restore(JsonConvert.DeserializeObject<CommandUzivatelCreate>(msg.Command), msg.EntityId);
+        public void CCreate(Message msg) {   
+         _repository.ConfirmAdd(JsonConvert.DeserializeObject<EventUzivatelCreated>(msg.Event), msg.EntityId);
         }
-        public void Remove(Message msg)
+        public void CUpdate(Message msg)
         {
-            _repository.Remove(JsonConvert.DeserializeObject<CommandUzivatelRemove>(msg.Command), msg.Guid);
+            _repository.ConfirmUpdate(JsonConvert.DeserializeObject<EventUzivatelUpdated>(msg.Event), msg.EntityId);
         }
-        public void ReUpdate(Message msg)
+        public void Replay(Message msg)
         {
-            _repository.ReUpdate(JsonConvert.DeserializeObject<CommandUzivatelUpdate>(msg.Command), msg.EntityId);
+           var ev = JsonConvert.DeserializeObject<HealingStreamProvided>(msg.Event);    
+            _repository.ReplayStream(ev.MessageList, msg.EntityId);
         }
 
-      
+
     }
 }

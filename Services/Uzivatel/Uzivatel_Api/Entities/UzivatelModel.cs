@@ -11,7 +11,7 @@ namespace Uzivatel_Api
     {
         public UzivatelModel(Uzivatel uzivatel)
         {
-            Id = uzivatel.Guid;
+            Id = uzivatel.UzivatelId;
             TitulPred = uzivatel.TitulPred;
             Jmeno = uzivatel.Jmeno;
             Prijmeni = uzivatel.Prijmeni;
@@ -20,7 +20,6 @@ namespace Uzivatel_Api
             DatumNarozeni = uzivatel.DatumNarozeni;
             Email = uzivatel.Email;
             Telefon = uzivatel.Telefon;
-            Foto = uzivatel.Foto;
         }
 
         [Key]

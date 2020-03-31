@@ -1,5 +1,6 @@
 ﻿
-using EventLibrary;
+
+using CommandHandler;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
@@ -27,26 +28,26 @@ namespace Dochazka_Api.Repositories
             var body = JsonConvert.DeserializeObject<string>(envelope.Event);
             switch (envelope.MessageType)
             {
-                case MessageType.DochazkaCreate:
+                //case MessageType.DochazkaCreate:
                    
                                     
-                        this.AddAsync(JsonConvert.DeserializeObject<CommandDochazkaCreate>(envelope.Command));
+                //        this.AddAsync(JsonConvert.DeserializeObject<CommandDochazkaCreate>(envelope.Command));
                  
-                    break;
-                case MessageType.DochazkaRemove:
+                //    break;
+                //case MessageType.DochazkaRemove:
                    
-                        this.Remove(JsonConvert.DeserializeObject<CommandDochazkaRemove>(envelope.Command));
+                //        this.Remove(JsonConvert.DeserializeObject<CommandDochazkaRemove>(envelope.Command));
                    
-                    break;
-                case MessageType.DochazkaUpdate:
+                //    break;
+                //case MessageType.DochazkaUpdate:
                     
-                        this.Update(JsonConvert.DeserializeObject<CommandDochazkaUpdate>(envelope.Command));
+                //        this.Update(JsonConvert.DeserializeObject<CommandDochazkaUpdate>(envelope.Command));
                    
-                    break;
+                //    break;
               
-                default:
+                //default:
                     
-                    break;
+                //    break;
             }
         }
 

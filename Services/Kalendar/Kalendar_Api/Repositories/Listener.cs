@@ -1,6 +1,7 @@
 ﻿
 
-using EventLibrary;
+
+using CommandHandler;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
@@ -47,20 +48,20 @@ namespace Kalendar_Api.Repositories
                         this.UpdateByUdalost(JsonConvert.DeserializeObject<EventUdalostCreated>(envelope.Event));
                  
                     break;
-                //case MessageType.UzivatelCreated:
-                                         
-                //        this.AddByUzivatel(JsonConvert.DeserializeObject<EventUzivatelCreated>(envelope.Event));
-                 
-                //    break;
+                case MessageType.UzivatelCreated:
+
+                    this.AddByUzivatel(JsonConvert.DeserializeObject<EventUzivatelCreated>(envelope.Event));
+
+                    break;
                 //case MessageType.UzivatelUpdated:
-                   
+
                 //        this.UpdateWithUzivatel(JsonConvert.DeserializeObject<EventUzivatelUpdated>(envelope.Event));
-                  
+
                 //    break;
                 //case MessageType.UzivatelRemoved:
-                   
+
                 //        this.DeleteWithUzivatel(JsonConvert.DeserializeObject<EventUzivatelDeleted>(envelope.Event));
-                  
+
                 //    break;
                 default:
                     
