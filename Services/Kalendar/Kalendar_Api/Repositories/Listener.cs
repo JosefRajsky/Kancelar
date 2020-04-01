@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Kalendar_Api.Repositories
 {
-    public class Listener : IListener
+    public class Listener 
     {
         //string _BaseUrl;
         private readonly IKalendarRepository _repository;
