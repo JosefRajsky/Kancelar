@@ -30,21 +30,13 @@ namespace Template
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
-            var factory = new ConnectionFactory() { HostName = Configuration["ConnectionString:RbConn"] };
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Template Api", Version = "v1" });
-            });
-            services.AddSwaggerDocument();
-
-          
-
+        {           
             var exchanges = new List<string>();
-            exchanges.Add("Template.ex");
+            exchanges.Add(Configuration["RbSetting:Exchange"]);
 
+            var factory = new ConnectionFactory() { HostName = Configuration["RbSetting:RbConn"] };
             services.AddTransient<IRepository, Repository>();
-            services.AddSingleton<Publisher>(s => new Publisher(factory, exchanges[0], "Template.q"));
+            services.AddSingleton<Publisher>(s => new Publisher(factory, Configuration["RbSetting:Exchange"], "Template.q"));
             services.AddDbContext<TemplateDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
             services.AddControllers();
 
@@ -77,6 +69,11 @@ namespace Template
             };
 
             //Description: Kontrola stavu služby
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Template Api", Version = "v1" });
+            });
+            services.AddSwaggerDocument();
             services.AddHealthChecks()
                 .AddCheck("Template API", () => HealthCheckResult.Healthy())
                 .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],

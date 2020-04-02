@@ -6,10 +6,10 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["Services/Template/Template.csproj", "Services/Template/"]
-RUN dotnet restore "Services/Template/Template.csproj"
+COPY ["Services/Template/Template/Template.csproj", "Services/Template/Template/"]
+RUN dotnet restore "Services/Template/Template/Template.csproj"
 COPY . .
-WORKDIR "/src/Services/Template"
+WORKDIR "/src/Services/Template/Template"
 RUN dotnet build "Template.csproj" -c Release -o /app/build
 
 FROM build AS publish

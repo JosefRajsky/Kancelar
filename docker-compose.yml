@@ -41,7 +41,7 @@ services:
       - "8092:80"
     build:
       context: .
-      dockerfile: Services/Template/Dockerfile
+      dockerfile: Services/Template/Template/Dockerfile
     depends_on:
       - sqlserver
       - rabbitmq
