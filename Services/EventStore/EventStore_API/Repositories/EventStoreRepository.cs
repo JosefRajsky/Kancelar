@@ -12,7 +12,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 
 
-namespace EventStore_Api.Repositories
+namespace EventStore.Repositories
 {
     public class EventStoreRepository : IEventStoreRepository
     {
@@ -34,11 +34,9 @@ namespace EventStore_Api.Repositories
             var origin = JsonConvert.DeserializeObject<Message>(msg);
             var message = new StoreMessage();
             message.Guid = Guid.NewGuid();
-            message.ParentGuid = origin.ParentGuid;
             message.MessageType = origin.MessageType;
             message.MessageTypeText = origin.MessageType.ToString();
             message.Created = origin.Created;
-            message.Generation = origin.Generation;
             message.EntityId = origin.EntityId;
             message.Message = msg;
             db.Messages.Add(message);
@@ -62,14 +60,14 @@ namespace EventStore_Api.Repositories
             {
                 foreach (var type in ev.MessageTypes)
                 {
-                    responseEvent.MessageList.AddRange(db.Messages.Where(m => m.MessageType == type & m.EntityId == ev.EntityId).OrderBy(g => g.Generation).Select(m => m.Message));
+                    responseEvent.MessageList.AddRange(db.Messages.Where(m => m.MessageType == type & m.EntityId == ev.EntityId).Select(m => m.Message));
                 }
             }
             else
             {
                 foreach (var type in ev.MessageTypes)
                 {
-                    responseEvent.MessageList.AddRange(db.Messages.Where(m => m.MessageType == type).OrderBy(g => g.Generation).Select(m => m.Message));
+                    responseEvent.MessageList.AddRange(db.Messages.Where(m => m.MessageType == type).Select(m => m.Message));
                 }
             }
             if (responseEvent.MessageList.Any()) {

@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dochazka", "Dochazka", "{97
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dochazka_Api", "Services\Dochazka\Dochazka_Api\Dochazka_Api.csproj", "{189BB438-64B2-4924-B858-8ABA775A526D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RabbitHandlers", "RabbitHandlers", "{17C6D484-1F80-4161-A899-259D2DAF4B9D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Communication", "Communication", "{17C6D484-1F80-4161-A899-259D2DAF4B9D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommandHandler", "RabbitHandlers\CommandHandler\CommandHandler.csproj", "{8C6EDD88-C53B-45B2-9BB0-D46C5C5A307E}"
 EndProject
@@ -48,7 +48,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kalendar", "Kalendar", "{DE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kalendar_Api", "Services\Kalendar\Kalendar_Api\Kalendar_Api.csproj", "{4184E10D-FFA5-4385-ACBE-2876129F839F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventStore_Api", "Services\EventStore\EventStore_Api\EventStore_Api.csproj", "{EF6ADCA9-337E-44A6-9A98-670520D19013}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventStore", "Services\EventStore\EventStore_Api\EventStore.csproj", "{EF6ADCA9-337E-44A6-9A98-670520D19013}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Template", "Services\Template\Template.csproj", "{F70185D5-1021-4A2E-9479-25A063E250F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -96,6 +98,10 @@ Global
 		{EF6ADCA9-337E-44A6-9A98-670520D19013}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF6ADCA9-337E-44A6-9A98-670520D19013}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF6ADCA9-337E-44A6-9A98-670520D19013}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F70185D5-1021-4A2E-9479-25A063E250F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F70185D5-1021-4A2E-9479-25A063E250F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F70185D5-1021-4A2E-9479-25A063E250F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F70185D5-1021-4A2E-9479-25A063E250F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -117,6 +123,7 @@ Global
 		{DEC902A5-34EE-427E-B7CD-0B8C1FD90DA3} = {91054B8F-6B80-49D5-B3F1-415C43CAD059}
 		{4184E10D-FFA5-4385-ACBE-2876129F839F} = {DEC902A5-34EE-427E-B7CD-0B8C1FD90DA3}
 		{EF6ADCA9-337E-44A6-9A98-670520D19013} = {FDF8CCB4-ED95-4EA9-9B70-4DAF530D7A2E}
+		{F70185D5-1021-4A2E-9479-25A063E250F6} = {91054B8F-6B80-49D5-B3F1-415C43CAD059}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FA02534C-DA03-44C8-9DAA-704670F31BEC}

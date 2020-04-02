@@ -41,6 +41,7 @@ namespace Monitor
          
             services.AddHealthChecksUI(setupSettings: setup =>
             {
+                setup.AddHealthCheckEndpoint("Template", "http://template/healthcheck");
                 setup.AddHealthCheckEndpoint("Monitor", "http://monitor/healthcheck");
                 setup.AddHealthCheckEndpoint("Dochazka", "http://dochazkaapi/healthcheck");           
                 setup.AddHealthCheckEndpoint("Udalost", "http://udalostapi/healthcheck");

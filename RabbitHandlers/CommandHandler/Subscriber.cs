@@ -26,20 +26,6 @@ namespace CommandHandler
                 args.Add("x-message-ttl", 432000);
                 _channel.ExchangeDeclare(exchange: ex, type: ExchangeType.Fanout,false,false,args);
             }
-            //_channel.BasicPublish(
-            // exchange: _exchange,
-            // routingKey: "",
-            // basicProperties: null,
-            // body: null);
-
-            //var queueName = _channel.QueueDeclare().QueueName;
-            //foreach (var ex in _exchange)
-            //{
-            //    _channel.QueueBind(queue: queueName,
-            //                  exchange: ex,
-            //                  routingKey: "");
-            //}
-
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += (model, ea) =>
             {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace EventStore_Api
+namespace EventStore
 {
 
     public class EventStoreDbContext : DbContext

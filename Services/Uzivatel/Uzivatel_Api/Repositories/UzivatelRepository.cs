@@ -1,10 +1,8 @@
 ﻿
 using CommandHandler;
 
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,33 +23,23 @@ namespace Uzivatel_Api.Repositories
             _handler = new MessageHandler(publisher);
 
         }
-        public async Task CheckLast(Guid eventId, Guid entityId)
+        public async Task LastEventCheck(Guid eventId, Guid entityId)
         {
             var item = db.Uzivatele.FirstOrDefault(u => u.UzivatelId == entityId);
             if (item != null)
             {
-                if (item.EventGuid != eventId) await RequestReplay(entityId);
+                if (item.EventGuid != eventId) await RequestEvents(entityId);
             }
         }
-        public async Task RequestReplay(Guid? entityId)
+        public async Task RequestEvents(Guid? entityId)
         {
             var msgTypes = new List<MessageType>();
             msgTypes.Add(MessageType.UzivatelCreated);
             msgTypes.Add(MessageType.UzivatelUpdated);
             msgTypes.Add(MessageType.UzivatelRemoved);
-            var evt = new ProvideHealingStream() { Exchange = "uzivatel.ex", MessageTypes = msgTypes, EntityId = entityId };
-            var msg = new Message()
-            {
-                Guid = Guid.NewGuid(),
-                MessageType = MessageType.ProvideHealingStream,
-                Created = DateTime.Now,
-                EntityId = (entityId == Guid.Empty) ? Guid.Empty : Guid.Parse(entityId.ToString()),
-                ParentGuid = null,
-                Event = await Task.Run(() => JsonConvert.SerializeObject(evt))
-            };
-            await _publisher.Push(JsonConvert.SerializeObject(msg));
+            await _handler.RequestReplay("uzivatel.ex", entityId, msgTypes);           
         }
-        public async Task Replay(List<string> stream, Guid? entityId)
+        public async Task ReplayEvents(List<string> stream, Guid? entityId)
         {
             var messages = new List<Message>();
             foreach (var item in stream)
@@ -93,12 +81,41 @@ namespace Uzivatel_Api.Repositories
                 }
             }
             await db.SaveChangesAsync();
-        }      
+        }
+        private Uzivatel Create(EventUzivatelCreated evt)
+        {
+            var model = new Uzivatel()
+            {
+                UzivatelId = evt.UzivatelId,
+                TitulPred = evt.TitulPred,
+                Jmeno = evt.Jmeno,
+                Prijmeni = evt.Prijmeni,
+                TitulZa = evt.TitulZa,
+                Pohlavi = evt.Pohlavi,
+                DatumNarozeni = evt.DatumNarozeni,
+                Email = evt.Email,
+                Telefon = evt.Telefon,
+                Generation = evt.Generation,
+                EventGuid = evt.EventId
+            };
+            return model;
+        }
+        private Uzivatel Modify(EventUzivatelUpdated evt, Uzivatel item)
+        {
+            item.TitulPred = evt.TitulPred;
+            item.Jmeno = evt.Jmeno;
+            item.Prijmeni = evt.Prijmeni;
+            item.TitulZa = evt.TitulZa;
+            item.Pohlavi = evt.Pohlavi;
+            item.DatumNarozeni = evt.DatumNarozeni;
+            item.Email = evt.Email;
+            item.Telefon = evt.Telefon;
+            item.EventGuid = evt.EventId;
+            return item;
+        }
 
         public async Task<Uzivatel> Get(Guid id) => await Task.Run(() => db.Uzivatele.FirstOrDefault(b => b.UzivatelId == id));
         public async Task<List<Uzivatel>> GetList() => await db.Uzivatele.ToListAsync();
-
-  
         public async Task Add(CommandUzivatelCreate cmd)
         {
             var ev = new EventUzivatelCreated()
@@ -158,39 +175,7 @@ namespace Uzivatel_Api.Repositories
             await _handler.PublishEvent(ev, MessageType.UzivatelRemoved, ev.EventId, remove.EventGuid, remove.Generation, remove.UzivatelId);
             await db.SaveChangesAsync();
         }
-        private Uzivatel Create(EventUzivatelCreated evt)
-        {
-            var model = new Uzivatel()
-            {
-                UzivatelId = evt.UzivatelId,
-                TitulPred = evt.TitulPred,
-                Jmeno = evt.Jmeno,
-                Prijmeni = evt.Prijmeni,
-                TitulZa = evt.TitulZa,
-                Pohlavi = evt.Pohlavi,
-                DatumNarozeni = evt.DatumNarozeni,
-                Email = evt.Email,
-                Telefon = evt.Telefon,
-                Generation = evt.Generation,
-                EventGuid = evt.EventId
-                
-            };
-            return model;
-        }
-        private Uzivatel Modify(EventUzivatelUpdated evt,Uzivatel item)
-        {
-           
-            item.TitulPred = evt.TitulPred;
-            item.Jmeno = evt.Jmeno;
-            item.Prijmeni = evt.Prijmeni;
-            item.TitulZa = evt.TitulZa;
-            item.Pohlavi = evt.Pohlavi;
-            item.DatumNarozeni = evt.DatumNarozeni;
-            item.Email = evt.Email;
-            item.Telefon = evt.Telefon;
-            item.EventGuid = evt.EventId;            
-            return item;
-        }
+
 
     }
 

@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace EventStore
+namespace Template
 {
     public class Program
     {
@@ -22,6 +22,5 @@ namespace EventStore
                 {
                     webBuilder.UseStartup<Startup>();
                 });
-
     }
 }

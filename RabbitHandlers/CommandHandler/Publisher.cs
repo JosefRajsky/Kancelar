@@ -51,8 +51,7 @@ namespace CommandHandler
                     _channel.TxCommit();
                 });         
            
-        }
-    
+        }    
         public Publisher(ConnectionFactory connectionFactory, string exchange,string queue)
         {
             this._exchange = exchange;
@@ -66,6 +65,7 @@ namespace CommandHandler
             }
             catch (BrokerUnreachableException e)
             {
+                var exception = e;
                 Thread.Sleep(5000);
                 this._connection = _factory.CreateConnection();
             }

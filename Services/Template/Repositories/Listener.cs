@@ -1,7 +1,5 @@
 ﻿
 using CommandHandler;
-
-
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System;
@@ -10,13 +8,12 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Uzivatel_Api.Repositories
+namespace Template.Repositories
 {
     public class Listener 
-    {
-        
-        private readonly IUzivatelRepository _repository;
-        public Listener(IUzivatelRepository repository)
+    {        
+        private readonly IRepository _repository;
+        public Listener(IRepository repository)
         {
             _repository = repository;
             CheckOnStartUp();
@@ -39,10 +36,10 @@ namespace Uzivatel_Api.Repositories
                     break;
                 case MessageType.UzivatelCreated:
 
-                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUzivatelCreated>(envelope.Event).EventId, envelope.EntityId);
+                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventTempCreated>(envelope.Event).EventId, envelope.EntityId);
                     break;
                 case MessageType.UzivatelUpdated:
-                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUzivatelCreated>(envelope.Event).EventId, envelope.EntityId);
+                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventTempCreated>(envelope.Event).EventId, envelope.EntityId);
                     break;      
             }
         }

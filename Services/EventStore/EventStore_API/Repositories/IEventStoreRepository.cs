@@ -1,12 +1,12 @@
 ﻿
 
 
-using EventStore_Api;
+using EventStore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace EventStore_Api.Repositories
+namespace EventStore.Repositories
 {
     public interface IEventStoreRepository
     {

@@ -3,7 +3,7 @@ using CommandHandler;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace EventStore_Api
+namespace EventStore
 {
     public class StoreMessage {
         [Key] 
@@ -11,11 +11,8 @@ namespace EventStore_Api
         public MessageType MessageType { get; set; }
         public string MessageTypeText { get; set; }
         public DateTime Created { get; set; }
-        public Guid? ParentGuid { get; set; }
         public Guid EntityId { get; set; }
-        public int Generation { get; set; }
         public string Message { get; set; }
-        public string Command { get; set; }
     
     }
 

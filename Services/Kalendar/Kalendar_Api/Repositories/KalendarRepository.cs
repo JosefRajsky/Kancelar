@@ -74,7 +74,7 @@ namespace Kalendar_Api.Repositories
 
         public async Task Update(CommandKalendarUpdate cmd, bool publish)
         {
-            var version = 1;
+          
             //var cmdGuid = await _handler.MakeCommand(cmd, MessageType.KalendarUpdate, null, version, publish);
             var update= db.Kalendare.Find(cmd.KalendarId);
             db.Kalendare.Remove(update);

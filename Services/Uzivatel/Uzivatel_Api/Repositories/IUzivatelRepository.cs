@@ -15,9 +15,9 @@ namespace Uzivatel_Api.Repositories
         Task Add(CommandUzivatelCreate cmd);
         Task Update(CommandUzivatelUpdate cmd);
         Task Remove(CommandUzivatelRemove cmd);       
-        Task CheckLast(Guid eventId, Guid entityId);
-        Task Replay(List<string> msgstream,Guid? entityId);
-        Task RequestReplay(Guid? entityId);
+        Task LastEventCheck(Guid eventId, Guid entityId);
+        Task ReplayEvents(List<string> msgstream,Guid? entityId);
+        Task RequestEvents(Guid? entityId);
 
 
 

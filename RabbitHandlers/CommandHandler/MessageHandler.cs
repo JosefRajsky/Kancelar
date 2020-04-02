@@ -13,19 +13,6 @@ namespace CommandHandler
         public MessageHandler(Publisher publisher) {
             _publisher = publisher;
         }
-        //public async Task<Message> MakeCommand<T>(T message, MessageType typ, Guid? parentGuid, int version, bool send)
-        //{
-        //    //var cmd = new Message() {
-        //    //    Guid = Guid.NewGuid(),
-        //    //    MessageType =typ,               
-        //    //    Created = DateTime.Now,
-        //    //    ParentGuid = parentGuid,
-        //    //    Command = await Task.Run(() => JsonConvert.SerializeObject(message))
-        //    //};
-        //    //if (send) await _publisher.Push(await Task.Run(() => JsonConvert.SerializeObject(cmd)));
-        //    //return cmd;
-        //}
-
         public async Task PublishEvent<E>(E evt, MessageType typ,Guid guid, Guid? parentGuid, int generation, Guid entityId)
         {
             var ev = new Message()
@@ -40,12 +27,6 @@ namespace CommandHandler
             };
             await _publisher.Push(await Task.Run(() => JsonConvert.SerializeObject(ev)));          
         }
-
-        public Task PublishEvent<E>(E evt, MessageType typ, Guid? parentGuid, int generation, Guid entityId)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task PublishEventToExchange<E>(E evt, MessageType typ, Guid guid, Guid? parentGuid, int generation, Guid entityId, string exchange)
         {
             var ev = new Message()
@@ -61,7 +42,19 @@ namespace CommandHandler
             var msg = JsonConvert.SerializeObject(ev);
             await _publisher.PushToExchange(exchange, msg);
         }
-
+        public async Task RequestReplay(string exhange,Guid? entityId, List<MessageType> msgTypes) {
+            var evt = new ProvideHealingStream() { Exchange = "uzivatel.ex", MessageTypes = msgTypes, EntityId = entityId };
+            var msg = new Message()
+            {
+                Guid = Guid.NewGuid(),
+                MessageType = MessageType.ProvideHealingStream,
+                Created = DateTime.Now,
+                EntityId = (entityId == Guid.Empty) ? Guid.Empty : Guid.Parse(entityId.ToString()),
+                ParentGuid = null,
+                Event = await Task.Run(() => JsonConvert.SerializeObject(evt))
+            };
+            await _publisher.Push(JsonConvert.SerializeObject(msg));
+        }
       
     }
 }

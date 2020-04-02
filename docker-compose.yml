@@ -33,6 +33,21 @@ services:
     depends_on:
       - sqlserver
 
+  template:
+    image: ${DOCKER_REGISTRY-}template
+    hostname: "template"
+    container_name: 'Template'
+    ports:
+      - "8092:80"
+    build:
+      context: .
+      dockerfile: Services/Template/Dockerfile
+    depends_on:
+      - sqlserver
+      - rabbitmq
+      - eventstore
+      - monitor
+
   monitor:
     image: ${DOCKER_REGISTRY-}monitor
     hostname: "monitor"

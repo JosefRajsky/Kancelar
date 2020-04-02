@@ -48,14 +48,7 @@ namespace Kalendar_Api
             services.AddSwaggerDocument();
             var factory = new ConnectionFactory() { HostName = "rabbitmq" };
 
-            //Description: Kontrola stavu služby
-            services.AddHealthChecks()
-                .AddCheck("API Kalendar", () => HealthCheckResult.Healthy())
-                .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
-                        healthQuery: "SELECT 1;",
-                        name: "DB",
-                        failureStatus: HealthStatus.Degraded)
-                 .AddRabbitMQ(sp => factory);
+
 
             services.AddControllers();
 
@@ -108,7 +101,15 @@ namespace Kalendar_Api
                 //-------------Description: Odeslání zprávy do smìrovaèe
                 repository.AddCommand(message);
             };
-           
+            //Description: Kontrola stavu služby
+            services.AddHealthChecks()
+                .AddCheck("API Kalendar", () => HealthCheckResult.Healthy())
+                .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
+                        healthQuery: "SELECT 1;",
+                        name: "DB",
+                        failureStatus: HealthStatus.Degraded)
+                 .AddRabbitMQ(sp => _connection);
+
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

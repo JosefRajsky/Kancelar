@@ -11,7 +11,6 @@ namespace CommandHandler
     public interface IPublisher
     {
         Task Push(string message);
-
-        
+        Task PushToExchange(string exchange, string message);
     }
 }

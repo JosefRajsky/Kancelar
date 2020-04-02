@@ -33,27 +33,15 @@ namespace Uzivatel_Api
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public async void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
-            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Uzivatel Api", Version = "v1" });
-            });
-            services.AddSwaggerDocument();
-
-            //Description: Kontrola stavu služby
-            services.AddHealthChecks()
-                .AddCheck("Uzivatel API", () => HealthCheckResult.Healthy())
-                .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
-                        healthQuery: "SELECT 1;",
-                        name: "DB",
-                        failureStatus: HealthStatus.Degraded)
-                 .AddRabbitMQ(sp => factory);
+            
+          
            
             var exchanges = new List<string>();
             exchanges.Add("uzivatel.ex");
 
+            var factory = new ConnectionFactory() { HostName = Configuration["ConnectionString:RbConn"] };
             services.AddTransient<IUzivatelRepository, UzivatelRepository>();
             services.AddSingleton<Publisher>(s => new Publisher(factory, exchanges[0], "uzivatel.q"));
             services.AddDbContext<UzivatelDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
@@ -89,30 +77,20 @@ namespace Uzivatel_Api
                 
                 listener.AddCommand(message);
             };
-
-            //await HealOnStart(services.BuildServiceProvider().GetService<Publisher>(), exchanges[0]);
-        }
-        //public async Task HealOnStart(Publisher publisher,  string willRecoverOn)
-        //{
-        //    var _handler = new MessageHandler(publisher);
-
-        //    var msgTypes = new List<MessageType>();
-        //    msgTypes.Add(MessageType.UzivatelCreated);
-        //    msgTypes.Add(MessageType.UzivatelUpdated);
-        //    msgTypes.Add(MessageType.UzivatelRemoved);
-        //    var evt = new ProvideHealingStream() { Exchange = willRecoverOn, MessageTypes = msgTypes };
-        //    var msg = new Message()
-        //    {
-        //        Guid = Guid.NewGuid(),
-        //        MessageType = MessageType.ProvideHealingStream,                  
-        //        Created = DateTime.Now,
-        //        ParentGuid = null,
-        //        Event = await Task.Run(() => JsonConvert.SerializeObject(evt))
-        //    };
-        //    await publisher.Push(JsonConvert.SerializeObject(msg));
-        //}
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+            //Description: Kontrola stavu služby
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Uzivatel Api", Version = "v1" });
+            });
+            services.AddSwaggerDocument();
+            services.AddHealthChecks()
+                .AddCheck("Uzivatel API", () => HealthCheckResult.Healthy())
+                .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
+                        healthQuery: "SELECT 1;",
+                        name: "DB",
+                        failureStatus: HealthStatus.Degraded)
+                .AddRabbitMQ(sp => _connection);            
+        }        
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

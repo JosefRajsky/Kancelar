@@ -7,10 +7,24 @@ namespace CommandHandler
 {
     public enum MessageType
     {
+
+        #region Template     
+
+        [Description("Event: Temp byl vytvořen")]
+        TempCreated = 1504,
+
+        [Description("Event: Temp byl odstraněn")]
+        TempRemoved = 1505,
+
+        [Description("Event: Temp byl upraven")]
+        TempUpdated = 1506,
+        #endregion
+
         [Description("Prikaz k obnove entity")]
         ProvideHealingStream = 1000,
         [Description("Event k obnove entity")]
         HealingStreamProvided = 1001,
+
         #region Dochazka
         [Description("Command: Vytvoření nové docházky")]
         DochazkaCreate = 0,
@@ -51,14 +65,14 @@ namespace CommandHandler
         UdalostUpdated = 11,
         #endregion
         #region Uzivatel
-        [Description("Command: Vytvoření nového uživatele")]
-        UzivatelCreate = 12,
+        //[Description("Command: Vytvoření nového uživatele")]
+        //UzivatelCreate = 12,
 
-        [Description("Command: Odstranění uživatele")]
-        UzivatelRemove = 13,
+        //[Description("Command: Odstranění uživatele")]
+        //UzivatelRemove = 13,
 
-        [Description("Command: Update uživatele")]
-        UzivatelUpdate = 14,
+        //[Description("Command: Update uživatele")]
+        //UzivatelUpdate = 14,
 
         [Description("Command: Uživatel byl vytvořen")]
         UzivatelCreated = 15,
@@ -82,6 +96,7 @@ namespace CommandHandler
         [Description("Event: kalendář byl upraven")]
         KalendarUpdated = 21,
         #endregion
+      
 
 
     }

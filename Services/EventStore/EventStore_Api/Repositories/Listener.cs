@@ -10,7 +10,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 
 
-namespace EventStore_Api.Repositories
+namespace EventStore.Repositories
 {
     public class Listener 
     {
@@ -20,17 +20,14 @@ namespace EventStore_Api.Repositories
         {
             _repository = repository;
         }
-
         public void AddCommand(string message)
-        {
-         
+        {         
             var envelope = JsonConvert.DeserializeObject<Message>(message);
             switch (envelope.MessageType)
             {
                 case MessageType.ProvideHealingStream:                   
                     _repository.ProvideHealingStream(message);
-                    break;             
-              
+                    break;  
                 default:
                     _repository.AddMessageAsync(message);
                     break;

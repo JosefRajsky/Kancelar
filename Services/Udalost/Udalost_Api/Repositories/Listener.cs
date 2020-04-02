@@ -20,24 +20,9 @@ namespace Udalost_Api.Repositories
         public Listener(IUdalostRepository repository)
         {
             _repository = repository;
-            //CheckState();
+           
         }
-        public async void CheckState()
-        {
-            var _BaseUrl = "http://eventstore/eventstore/";
-            var client = new HttpClient();
-            client.BaseAddress = new Uri(_BaseUrl);
-            var result = new HttpResponseMessage();
-            result = await client.GetAsync("GetList");
-            if (result.IsSuccessStatusCode)
-            {
-                var items = result.Content.ReadAsAsync<List<Message>>().Result;
-                foreach (var item in items)
-                {
-                    AddCommand(JsonConvert.SerializeObject(item));
-                }
-            }
-        }
+        
        
         public void AddCommand(string message)
         {

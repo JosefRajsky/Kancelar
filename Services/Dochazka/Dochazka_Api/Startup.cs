@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommandHandler;
-using Consul;
 using Dochazka_Api.Repositories;
 
 using HealthChecks.RabbitMQ;
@@ -48,14 +47,7 @@ namespace Dochazka_Api
             services.AddSwaggerDocument();
             var factory = new ConnectionFactory() { HostName = "rabbitmq" };
 
-            //Description: Kontrola stavu služby
-            services.AddHealthChecks()
-                .AddCheck("API Dochazka", () => HealthCheckResult.Healthy())
-                .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
-                        healthQuery: "SELECT 1;",
-                        name: "DB",
-                        failureStatus: Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Degraded)
-                 .AddRabbitMQ(sp => factory);
+          
             #endregion
             services.AddControllers();
 
@@ -107,9 +99,16 @@ namespace Dochazka_Api
                 //-------------Description: Odeslání zprávy do smìrovaèe
                 repository.AddCommand(message);
             };
-            //HealOnStart(services.BuildServiceProvider().GetService<Publisher>(), exchanges[1],exchanges[0]);
+            //Description: Kontrola stavu služby
+            services.AddHealthChecks()
+                .AddCheck("API Dochazka", () => HealthCheckResult.Healthy())
+                .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
+                        healthQuery: "SELECT 1;",
+                        name: "DB",
+                        failureStatus: Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Degraded)
+                 .AddRabbitMQ(sp => _connection);
 
-          
+
         }
       
 

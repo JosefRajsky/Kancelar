@@ -1,6 +1,18 @@
 {
   "ReRoutes": [
     {
+      "DownstreamPathTemplate": "/template/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "template/"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/template/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "SwaggerKey": "template"
+    },
+    {
       "DownstreamPathTemplate": "/dochazka/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -10,10 +22,7 @@
       ],
       "UpstreamPathTemplate": "/api/dochazka/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-      "SwaggerKey": "dochazka",
-      "LoadBalancerOptions": {
-        "Type": "LeastConnection"
-      }
+      "SwaggerKey": "dochazka"
     },
     {
       "DownstreamPathTemplate": "/udalost/{everything}",
@@ -25,10 +34,7 @@
       ],
       "UpstreamPathTemplate": "/api/udalost/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-      "SwaggerKey": "udalost",
-      "LoadBalancerOptions": {
-        "Type": "LeastConnection"
-      }
+      "SwaggerKey": "udalost"
     },
     {
       "DownstreamPathTemplate": "/uzivatel/{everything}",
@@ -40,10 +46,7 @@
       ],
       "UpstreamPathTemplate": "/api/uzivatel/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-      "SwaggerKey": "uzivatel",
-      "LoadBalancerOptions": {
-        "Type": "LeastConnection"
-      }
+      "SwaggerKey": "uzivatel"
     },
     {
       "DownstreamPathTemplate": "/kalendar/{everything}",
@@ -55,13 +58,20 @@
       ],
       "UpstreamPathTemplate": "/api/kalendar/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-      "SwaggerKey": "kalendar",
-      "LoadBalancerOptions": {
-        "Type": "LeastConnection"
-      }
+      "SwaggerKey": "kalendar"
     }
-  ],  
+  ],
   "SwaggerEndPoints": [
+    {
+      "Key": "template",
+      "Config": [
+        {
+          "Name": "Template API",
+          "Version": "v1",
+          "Url": "http://template/swagger/v1/swagger.json"
+        }
+      ]
+    },
     {
       "Key": "dochazka",
       "Config": [

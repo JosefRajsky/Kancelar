@@ -6,19 +6,8 @@ namespace Uzivatel_Api
     public class UzivatelDbContext : DbContext
     {
          public UzivatelDbContext(DbContextOptions options) : base(options) {
-            this.Database.EnsureCreated();
+         this.Database.EnsureCreated();
         }  
-       
         public  DbSet<Uzivatel> Uzivatele { get; set; }
-
-
-     
-
-
-
     }
-
-
-
-
 }

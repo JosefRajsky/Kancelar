@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using CommandHandler;
 
-using EventStore_Api;
-using EventStore_Api.Repositories;
+using EventStore;
+using EventStore.Repositories;
 using HealthChecks.RabbitMQ;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
@@ -26,7 +26,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using RabbitMQ.Client;
 
-namespace EventStore_Api
+namespace EventStore
 {
     public class Startup
     {

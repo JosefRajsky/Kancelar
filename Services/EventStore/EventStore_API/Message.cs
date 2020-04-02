@@ -2,7 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace EventStore_Api
+namespace EventStore
 {
     //public class Message {
     //    [Key]
