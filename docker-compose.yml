@@ -62,13 +62,13 @@ services:
       - rabbitmq
 
   eventstore:
-    image: ${DOCKER_REGISTRY-}eventstore_api
+    image: ${DOCKER_REGISTRY-}eventstore
     hostname: "eventstore"    
     ports:
       - "8070:80"
     build:
       context: .
-      dockerfile: Services/EventStore/EventStore_Api/Dockerfile
+      dockerfile: Services/EventStore/EventStore/Dockerfile
     depends_on:
       - sqlserver
       - rabbitmq

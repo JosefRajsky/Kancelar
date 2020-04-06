@@ -2,11 +2,12 @@
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
 WORKDIR /app
-EXPOSE 85
+EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["Gui/KancelarWeb/KancelarWeb.csproj", "Gui/KancelarWeb/"]
+COPY ["RabbitHandlers/CommandHandler/CommandHandler.csproj", "RabbitHandlers/CommandHandler/"]
 RUN dotnet restore "Gui/KancelarWeb/KancelarWeb.csproj"
 COPY . .
 WORKDIR "/src/Gui/KancelarWeb"

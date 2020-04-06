@@ -34,7 +34,9 @@ namespace Template
             var exchanges = new List<string>();
             exchanges.Add(Configuration["RbSetting:Exchange"]);
 
-            var factory = new ConnectionFactory() { HostName = Configuration["RbSetting:RbConn"] };
+            //var factory = new ConnectionFactory() { HostName = Configuration["RbSetting:RbConn"] };
+            //var factory = new ConnectionFactory() { HostName = "localhost:5672" };
+            var factory = new ConnectionFactory() { HostName = "amqps://[guest]:[guest]@localhost:5672" };
             services.AddTransient<IRepository, Repository>();
             services.AddSingleton<Publisher>(s => new Publisher(factory, Configuration["RbSetting:Exchange"], "Template.q"));
             services.AddDbContext<TemplateDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));

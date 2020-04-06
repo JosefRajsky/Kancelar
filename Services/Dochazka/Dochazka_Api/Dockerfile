@@ -3,13 +3,15 @@
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
 WORKDIR /app
 EXPOSE 80
+EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["Services/Dochazka_Api/Dochazka_Api.csproj", "Services/Dochazka_Api/"]
-RUN dotnet restore "Services/Dochazka_Api/Dochazka_Api.csproj"
+COPY ["Services/Dochazka/Dochazka_Api/Dochazka_Api.csproj", "Services/Dochazka/Dochazka_Api/"]
+COPY ["RabbitHandlers/CommandHandler/CommandHandler.csproj", "RabbitHandlers/CommandHandler/"]
+RUN dotnet restore "Services/Dochazka/Dochazka_Api/Dochazka_Api.csproj"
 COPY . .
-WORKDIR "/src/Services/Dochazka_Api"
+WORKDIR "/src/Services/Dochazka/Dochazka_Api"
 RUN dotnet build "Dochazka_Api.csproj" -c Release -o /app/build
 
 FROM build AS publish

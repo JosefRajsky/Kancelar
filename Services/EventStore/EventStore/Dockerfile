@@ -6,17 +6,17 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["Services/Template/Template.csproj", "Services/Template/"]
+COPY ["Services/EventStore/EventStore/EventStore.csproj", "Services/EventStore/EventStore/"]
 COPY ["RabbitHandlers/CommandHandler/CommandHandler.csproj", "RabbitHandlers/CommandHandler/"]
-RUN dotnet restore "Services/Template/Template.csproj"
+RUN dotnet restore "Services/EventStore/EventStore/EventStore.csproj"
 COPY . .
-WORKDIR "/src/Services/Template"
-RUN dotnet build "Template.csproj" -c Release -o /app/build
+WORKDIR "/src/Services/EventStore/EventStore"
+RUN dotnet build "EventStore.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Template.csproj" -c Release -o /app/publish
+RUN dotnet publish "EventStore.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Template.dll"]
+ENTRYPOINT ["dotnet", "EventStore.dll"]
