@@ -35,7 +35,7 @@ namespace KancelarWeb.Controllers
         }
         public async Task<IActionResult> Edit(Guid? id)
         {
-            var model = new UzivatelModel();
+            var model = new Uzivatel();
             model.DatumNarozeni = DateTime.Today;
             if (id != null) {
                 model = await client.GetAsync(new Guid(id.ToString()));
@@ -50,7 +50,7 @@ namespace KancelarWeb.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Add([FromForm]UzivatelModel model)
+        public async Task<IActionResult> Add([FromForm]Uzivatel model)
         {
             if (!ModelState.IsValid)
             {
@@ -62,7 +62,6 @@ namespace KancelarWeb.Controllers
 
                     DatumNarozeni = model.DatumNarozeni,
                     Email = model.Email,
-                    Foto = model.Foto,
                     Jmeno = model.Jmeno,
                     Pohlavi = model.Pohlavi,
                     Prijmeni = model.Prijmeni,
@@ -77,7 +76,6 @@ namespace KancelarWeb.Controllers
             {
                 DatumNarozeni = (model.DatumNarozeni == null)? DateTime.MinValue: model.DatumNarozeni,
                 Email = model.Email,
-                Foto = model.Foto,
                 Jmeno = model.Jmeno,
                 Pohlavi = model.Pohlavi,
                 Prijmeni = model.Prijmeni,
@@ -90,13 +88,12 @@ namespace KancelarWeb.Controllers
             }
             return RedirectToAction("Index");
         }
-        public async Task<IActionResult> Update([FromForm]UzivatelModel model)
+        public async Task<IActionResult> Update([FromForm]Uzivatel model)
         {
             var command = new CommandUzivatelUpdate()
             {
                 DatumNarozeni = (model.DatumNarozeni == null) ? DateTime.MinValue : model.DatumNarozeni,
                 Email = model.Email,
-                Foto = model.Foto,
                 Jmeno = model.Jmeno,
                 Pohlavi = model.Pohlavi,
                 Prijmeni = model.Prijmeni,

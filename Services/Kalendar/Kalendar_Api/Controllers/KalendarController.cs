@@ -28,7 +28,7 @@ namespace Kalendar_Api.Controllers
 
         [HttpGet]
         [Route("GetList")]
-        public async Task<IEnumerable<KalendarModel>> GetList()
+        public async Task<List<Kalendar>> GetList()
         {
             var response = await _repository.GetList(); 
             return response;

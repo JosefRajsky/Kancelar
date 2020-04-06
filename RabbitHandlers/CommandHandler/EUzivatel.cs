@@ -5,7 +5,6 @@ namespace CommandHandler
     public class CommandUzivatelCreate 
     {     
 
-        public Guid UzivatelId { get; set; }
         public string TitulPred { get; set; }
         public string Jmeno { get; set; }
         public string Prijmeni { get; set; }
@@ -14,7 +13,6 @@ namespace CommandHandler
         public DateTime DatumNarozeni { get; set; }
         public string Email { get; set; }
         public string Telefon { get; set; }
-        public string Foto { get; set; }
 
 
     }
@@ -30,7 +28,6 @@ namespace CommandHandler
         public DateTime DatumNarozeni { get; set; }
         public string Email { get; set; }
         public string Telefon { get; set; }
-        public string Foto { get; set; }
 
 
     }

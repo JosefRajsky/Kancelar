@@ -20,6 +20,7 @@ namespace Kalendar_Api.Functions
         public int Id { get; set; }
         public List<Day> Days {get;set;}
         public int DayCount { get; set; }
+        public virtual string MonthName { get { return System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Id); } }
     }
     public class Year
     {

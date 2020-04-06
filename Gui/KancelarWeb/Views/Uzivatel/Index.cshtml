@@ -1,4 +1,4 @@
-﻿@model IEnumerable<KancelarWeb.ViewModels.UzivatelModel>
+﻿@model IEnumerable<KancelarWeb.ViewModels.Uzivatel>
 
 @{
     ViewData["Title"] = "Uživatel - Přehled";
@@ -40,9 +40,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Telefon)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Foto)
-            </th>
+            
             <th></th>
         </tr>
     </thead>
@@ -76,13 +74,11 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Telefon)
             </td>
+            
             <td>
-                @Html.DisplayFor(modelItem => item.Foto)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-controller="Uzivatel" asp-route-id="@item.Id" class="btn btn-xs btn-outline-primary" title="Upravit">upravit</a>
-                <a asp-action="Detail" asp-controller="Uzivatel" asp-route-id="@item.Id" class="btn btn-xs btn-outline-info" title="Detail">detail</a>
-                <a asp-action="Remove" asp-controller="Uzivatel" asp-route-id="@item.Id" class="btn btn-xs btn-outline-danger" title="Odstranit">odstranit</a>
+                <a asp-action="Edit" asp-controller="Uzivatel" asp-route-id="@item.UzivatelId" class="btn btn-xs btn-outline-primary" title="Upravit">upravit</a>
+                <a asp-action="Detail" asp-controller="Uzivatel" asp-route-id="@item.UzivatelId" class="btn btn-xs btn-outline-info" title="Detail">detail</a>
+                <a asp-action="Remove" asp-controller="Uzivatel" asp-route-id="@item.UzivatelId" class="btn btn-xs btn-outline-danger" title="Odstranit">odstranit</a>
           
             </td>
         </tr>

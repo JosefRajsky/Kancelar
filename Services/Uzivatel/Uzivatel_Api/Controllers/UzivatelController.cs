@@ -24,26 +24,26 @@ namespace Uzivatel_Api.Controllers
         }
         [HttpGet]
         [Route("Get/{id?}")]
-        public async Task<ActionResult<UzivatelModel>> Get(Guid id)
+        public async Task<ActionResult<Uzivatel>> Get(Guid id)
         {
             var item = await _repository.Get(id);
-            var response = new UzivatelModel(item);      
-            return Ok(response);
+            //var response = new UzivatelModel(item);      
+            return item;
         }
 
         [HttpGet]
         [Route("GetList")]
-        public async Task<List<UzivatelModel>> GetList() {
+        public async Task<List<Uzivatel>> GetList() {
 
             var model = await _repository.GetList();          
-            var response = new List<UzivatelModel>();
-            foreach (var item in model)
-            {
-                var d = new UzivatelModel(item);
+            //var response = new List<UzivatelModel>();
+            //foreach (var item in model)
+            //{
+            //    var d = new UzivatelModel(item);
                 
-                response.Add(d);
-            }    
-            return response;
+            //    response.Add(d);
+            //}    
+            return model;
         }
 
         [HttpPost]

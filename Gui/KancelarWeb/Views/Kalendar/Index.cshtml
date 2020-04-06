@@ -1,4 +1,4 @@
-﻿@model List<KancelarWeb.ViewModels.KalendarModel>
+﻿@model List<KancelarWeb.Kalendar>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -8,14 +8,14 @@
 @foreach (var item in Model)
 {
     <div class="panel panel-default">
-        <div class="panel-heading"><h5>@item.Rok - @item.CeleJmeno</h5></div>
+        <div class="panel-heading"><h5>@item.Rok - @item.UzivatelCeleJmeno</h5></div>
         <div class="panel-body">
             <table style="border: 1px solid lightgray;">
-                @foreach (var mesic in item.Kalendar.Months)
+                @foreach (var mesic in item.KalendarBody.Months)
                 {
                 <tr style="border-bottom:1px solid lightgray">
                     <td rowspan="2">@mesic.MonthName</td>
-                    @for (int i = 1; i < mesic.Days[0].TypId; i++)
+                    @for (int i = 1; i < mesic.Days.First().TypId; i++)
                     {
                         <td class="bg-light">&nbsp;</td>
                     }
@@ -23,13 +23,13 @@
                     {
                         <td style="width:35px; border: 1px solid lightGray;" class="@(den.IsSvatek ? "bg-danger" : (den.TypId == 6 | den.TypId == 7)?"bg-info": ""  )">@den.Id</td>
                     }
-                    @for (int i = 1; i <= (38-(mesic.Days.Count()+(mesic.Days[0].TypId))); i++)
+                    @for (int i = 1; i <= (38-(mesic.Days.Count()+(mesic.Days.First().TypId))); i++)
                     {
                         <td class="bg-light">&nbsp;</td>
                     }
                 </tr>
                 <tr style="border-bottom:1px solid lightgray">
-                    @for (int i = 1; i < mesic.Days[0].TypId; i++)
+                    @for (int i = 1; i < mesic.Days.First().TypId; i++)
                     {
                         <td class="bg-light">&nbsp;</td>
                     }
@@ -42,7 +42,7 @@
                             }
                         </td>
                     }
-                    @for (int i = 1; i <= (38 - (mesic.Days.Count() + (mesic.Days[0].TypId))); i++)
+                    @for (int i = 1; i <= (38 - (mesic.Days.Count() + (mesic.Days.First().TypId))); i++)
                     {
                         <td class="bg-light">&nbsp;</td>
                     }

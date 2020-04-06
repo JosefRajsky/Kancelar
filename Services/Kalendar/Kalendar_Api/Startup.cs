@@ -117,27 +117,23 @@ namespace Kalendar_Api
             {
                 app.UseDeveloperExceptionPage();
             }
-            var supportedCultures = new[] { new CultureInfo("cs-CS") };
-            app.UseRequestLocalization(new RequestLocalizationOptions
-            {
-                DefaultRequestCulture = new RequestCulture("cs-CS"),
-                SupportedCultures = supportedCultures,
-                SupportedUICultures = supportedCultures
-            });
-
+            app.UseHealthChecks("/hc");
             app.UseStaticFiles();
-
+            //Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseOpenApi();
-
             app.UseSwaggerUi3();
-
+            //Enable middleware to serve swagger - ui(HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Dochazka Api v1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Kalendar Api v1");
             });
 
             app.UseHttpsRedirection();
+
             app.UseRouting();
+
+            app.UseAuthorization();
 
             app.UseHealthChecks("/healthcheck", new HealthCheckOptions
             {
@@ -145,18 +141,12 @@ namespace Kalendar_Api
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
             });
 
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-
-                //Description: Cesta pro Stav služby
-
-
-
                 endpoints.MapControllerRoute(
-                name: "default",
-                pattern: "{controller}/{action}/{id?}");
+     name: "default",
+     pattern: "{controller}/{action}/{id?}");
             });
         }
     }

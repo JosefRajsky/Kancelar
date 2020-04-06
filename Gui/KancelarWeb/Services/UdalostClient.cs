@@ -19,7 +19,7 @@ namespace KancelarWeb.Services
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.2.3.0 (NJsonSchema v10.1.5.0 (Newtonsoft.Json v12.0.0.0))")]
     public partial class UdalostClient
     {
-        private string _baseUrl = "http://webapiocelot/api";
+        private string _baseUrl = "http://gateway/api";
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
         public UdalostClient()

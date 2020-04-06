@@ -11,7 +11,7 @@ namespace Kalendar_Api.Repositories
 {
     public interface IKalendarRepository
     {
-        Task<IEnumerable<KalendarModel>> GetList();
+        Task<List<Kalendar>> GetList();
         Task<Kalendar> Get(Guid id);
         DateTime GetLast();
         Task Add(CommandKalendarCreate cmd, bool publish);

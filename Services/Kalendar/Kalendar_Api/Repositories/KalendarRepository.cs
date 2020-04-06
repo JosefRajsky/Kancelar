@@ -39,20 +39,20 @@ namespace Kalendar_Api.Repositories
             return DateTime.MinValue;
         }
         public async Task<Kalendar> Get(Guid id) => await Task.Run(() => db.Kalendare.FirstOrDefault(b => b.KalendarId == id));
-        public async Task<IEnumerable<KalendarModel>> GetList()
+        public async Task<List<Kalendar>> GetList()
         {
-            var model =new List<KalendarModel>();
-            var list = await db.Kalendare.ToListAsync();
-            foreach (var item in list)
-            {
-                var kalendar = new KalendarModel();
-                kalendar.Id = item.KalendarId;
-                kalendar.Rok = item.Rok;
-                kalendar.UzivatelId = item.UzivatelId;
-                kalendar.Kalendar = JsonConvert.DeserializeObject<Year>(item.Body);
-                model.Add(kalendar);
-            }
-            return model;
+            //var model =new List<KalendarModel>();
+            //var list = await db.Kalendare.ToListAsync();
+            //foreach (var item in list)
+            //{
+            //    var kalendar = new KalendarModel();
+            //    kalendar.Id = item.KalendarId;
+            //    kalendar.Rok = item.Rok;
+            //    kalendar.UzivatelId = item.UzivatelId;
+            //    kalendar.Kalendar = JsonConvert.DeserializeObject<Year>(item.Body);
+            //    model.Add(kalendar);
+            //}
+            return await db.Kalendare.ToListAsync(); 
         }
 
 

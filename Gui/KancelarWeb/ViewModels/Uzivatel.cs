@@ -8,11 +8,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KancelarWeb.ViewModels
 {
-    
-    public partial class UzivatelModel
+
+    public partial class Uzivatel
     {
-      
+
         public Guid Id { get; set; }
+        [Display(Name = "Uživatel Id")]
+        public Guid UzivatelId { get; set; }
         [Display(Name = "Titul")]
         public string TitulPred { get; set; }
         [Required]
@@ -36,8 +38,8 @@ namespace KancelarWeb.ViewModels
         [Required]
         [Display(Name = "Telefon")]
         public string Telefon { get; set; }
-        [Display(Name = "Fotka")]
-        public string Foto { get; set; }
+        public Guid? EventGuid { get; set; }
+        public int Generation { get; set; }
 
 
     }

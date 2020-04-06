@@ -20,7 +20,7 @@ namespace KancelarWeb.Services
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.2.3.0 (NJsonSchema v10.1.5.0 (Newtonsoft.Json v12.0.0.0))")]
     public partial class UzivatelClient
     {
-        private string _baseUrl = "http://webapiocelot/api";
+        private string _baseUrl = "http://gateway/api";
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
         public UzivatelClient()
@@ -49,14 +49,14 @@ namespace KancelarWeb.Services
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<UzivatelModel> GetAsync(Guid id)
+        public System.Threading.Tasks.Task<Uzivatel> GetAsync(Guid id)
         {
             return GetAsync(id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<UzivatelModel> GetAsync(Guid id, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<Uzivatel> GetAsync(Guid id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -93,7 +93,7 @@ namespace KancelarWeb.Services
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200")
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<UzivatelModel>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Uzivatel>(response_, headers_).ConfigureAwait(false);
                             return objectResponse_.Object;
                         }
                         else
@@ -103,7 +103,7 @@ namespace KancelarWeb.Services
                             throw new ApiException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
                         }
 
-                        return default(UzivatelModel);
+                        return default(Uzivatel);
                     }
                     finally
                     {
@@ -118,14 +118,14 @@ namespace KancelarWeb.Services
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<UzivatelModel>> GetListAsync()
+        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Uzivatel>> GetListAsync()
         {
             return GetListAsync(System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<UzivatelModel>> GetListAsync(System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Uzivatel>> GetListAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Uzivatel/GetList");
@@ -158,7 +158,7 @@ namespace KancelarWeb.Services
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200")
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<UzivatelModel>>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<Uzivatel>>(response_, headers_).ConfigureAwait(false);
                             return objectResponse_.Object;
                         }
                         else
@@ -168,7 +168,7 @@ namespace KancelarWeb.Services
                             throw new ApiException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
                         }
 
-                        return default(System.Collections.Generic.ICollection<UzivatelModel>);
+                        return default(System.Collections.Generic.ICollection<Uzivatel>);
                     }
                     finally
                     {
