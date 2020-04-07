@@ -41,6 +41,7 @@ namespace CommandHandler
     public class EventUzivatelCreated 
     {
         public Guid EventId { get; set; }
+        public DateTime EventCreated { get; set; }
         public int Generation { get; set; }
         public Guid UzivatelId { get; set; }
         public string TitulPred { get; set; }
@@ -58,7 +59,9 @@ namespace CommandHandler
     public class EventUzivatelUpdated 
     {
         public Guid EventId { get; set; }
+        public DateTime EventCreated { get; set; }
         public int Generation { get; set; }
+        
         public Guid UzivatelId { get; set; }
         public string TitulPred { get; set; }
         public string Jmeno { get; set; }

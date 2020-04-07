@@ -11,17 +11,14 @@ using System.Threading.Tasks;
 
 namespace Uzivatel_Api.Repositories
 {
-    public class UzivatelRepository : IUzivatelRepository
+    public class Repository : IRepository
     {
-        private readonly UzivatelDbContext db;
-        private Publisher _publisher;
+        private readonly UzivatelDbContext db; 
         private MessageHandler _handler;
-        public UzivatelRepository(UzivatelDbContext dbContext, Publisher publisher)
+        public Repository(UzivatelDbContext dbContext, Publisher publisher)
         {
-            db = dbContext;
-            _publisher = publisher;
+            db = dbContext;           
             _handler = new MessageHandler(publisher);
-
         }
         public async Task LastEventCheck(Guid eventId, Guid entityId)
         {
@@ -58,8 +55,7 @@ namespace Uzivatel_Api.Repositories
                         {
                             forCreate = Create(create);
                             db.Uzivatele.Add(forCreate);
-                            db.SaveChanges();
-        
+                            db.SaveChanges();        
                         }
                         break;
                     case MessageType.UzivatelRemoved:
@@ -122,6 +118,7 @@ namespace Uzivatel_Api.Repositories
             {
                 EventId = Guid.NewGuid(),
                 UzivatelId = Guid.NewGuid(),
+                EventCreated = DateTime.Now,
                 TitulPred = cmd.TitulPred,
                 Jmeno = cmd.Jmeno,
                 Prijmeni = cmd.Prijmeni,
@@ -144,6 +141,7 @@ namespace Uzivatel_Api.Repositories
             var ev = new EventUzivatelUpdated()
             {
                 EventId = Guid.NewGuid(),
+                EventCreated = DateTime.Now,
                 UzivatelId = cmd.UzivatelId,
                 TitulPred = cmd.TitulPred,
                 Jmeno = cmd.Jmeno,

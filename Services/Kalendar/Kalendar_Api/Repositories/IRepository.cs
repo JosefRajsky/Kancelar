@@ -9,16 +9,18 @@ using System.Threading.Tasks;
 
 namespace Kalendar_Api.Repositories
 {
-    public interface IKalendarRepository
+    public interface IRepository
     {
         Task<List<Kalendar>> GetList();
         Task<Kalendar> Get(Guid id);
-        DateTime GetLast();
+        Task LastEventCheck<T>(T evt, Guid entityId);
+        Task ReplayEvents(List<string> msgstream, Guid? entityId);
+        Task RequestEvents(Guid? entityId);
         Task Add(CommandKalendarCreate cmd, bool publish);
 
         Task Update(CommandKalendarUpdate cmd, bool publish);
         Task UpdateByUdalost(EventUdalostCreated evt);
-        Task AddByUzivatel(EventUzivatelCreated evt);
+        Task CreateByUzivatel(EventUzivatelCreated evt);
        
         Task UpdateByUzivatel(EventUzivatelUpdated evt);        
         Task DeleteByUzivatel(EventUzivatelDeleted evt);

@@ -16,12 +16,10 @@ namespace Template.Repositories
     public class Repository : IRepository
     {
         private readonly TemplateDbContext db;
-        private Publisher _publisher;
         private MessageHandler _handler;
         public Repository(TemplateDbContext dbContext, Publisher publisher)
         {
-            db = dbContext;
-            _publisher = publisher;
+            db = dbContext;          
             _handler = new MessageHandler(publisher);
 
         }
@@ -37,9 +35,9 @@ namespace Template.Repositories
         {
             var msgTypes = new List<MessageType>();
             msgTypes.Add(MessageType.TempCreated);
-            msgTypes.Add(MessageType.UzivatelUpdated);
-            msgTypes.Add(MessageType.UzivatelRemoved);
-            await _handler.RequestReplay("uzivatel.ex", entityId, msgTypes);           
+            msgTypes.Add(MessageType.TempUpdated);
+            msgTypes.Add(MessageType.TempRemoved);
+            await _handler.RequestReplay("template.ex", entityId, msgTypes);           
         }
         public async Task ReplayEvents(List<string> stream, Guid? entityId)
         {
@@ -61,8 +59,8 @@ namespace Template.Repositories
                             forCreate = Create(create);
                             db.Temps.Add(forCreate);
                             db.SaveChanges();
-        
                         }
+                        
                         break;
                     case MessageType.UzivatelRemoved:
                         var remove = JsonConvert.DeserializeObject<EventTempDeleted>(msg.Event);

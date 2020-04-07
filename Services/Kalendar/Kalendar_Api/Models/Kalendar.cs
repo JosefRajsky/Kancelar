@@ -22,5 +22,7 @@ namespace Kalendar_Api.Models
         public virtual Year KalendarBody { get {
                 return JsonConvert.DeserializeObject<Year>(this.Body);
             } }
+        public Guid? EventGuid { get; set; }
+        public int Generation { get; set; }
     }
 }

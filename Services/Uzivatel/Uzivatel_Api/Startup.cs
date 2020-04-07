@@ -42,20 +42,17 @@ namespace Uzivatel_Api
             exchanges.Add("uzivatel.ex");
 
             var factory = new ConnectionFactory() { HostName = Configuration["ConnectionString:RbConn"] };
-            services.AddTransient<IUzivatelRepository, UzivatelRepository>();
+            services.AddTransient<IRepository, Repository>();
             services.AddSingleton<Publisher>(s => new Publisher(factory, exchanges[0], "uzivatel.q"));
             services.AddDbContext<UzivatelDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
-            services.AddControllers();
-
-            //Description: Pøihlášení k odbìru zpráv z RabbitMQ
+            services.AddControllers();            
             factory.AutomaticRecoveryEnabled = true;
             factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(5);
-
-            var _connection = factory.CreateConnection();
-            //Descripiton: vytvoøení komunikaèního kanálu, pøipojení a definice fronty pro práci se správami
+            var _connection = factory.CreateConnection();           
             var _channel = _connection.CreateModel();
             var queueName = _channel.QueueDeclare().QueueName;
             var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, _connection, _channel, queueName)).BuildServiceProvider().GetService<ISubscriber>().Start();
+           
             //Description: Propojení exchange a fronty
             foreach (var ex in exchanges)
             {
@@ -64,7 +61,7 @@ namespace Uzivatel_Api
                               routingKey: "");
             }
             //Description: vytvoøení smìrovaèe pøijatých zpráv ke kterým je služba pøihlášena
-            var listener = new Listener(services.BuildServiceProvider().GetService<IUzivatelRepository>());
+            var listener = new Listener(services.BuildServiceProvider().GetService<IRepository>());
            
             //Description: Zpracování a odeslání zprávy do smìrovaèe
             consumer.Received += (model, ea) =>

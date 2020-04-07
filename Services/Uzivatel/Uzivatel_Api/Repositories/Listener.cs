@@ -15,8 +15,8 @@ namespace Uzivatel_Api.Repositories
     public class Listener 
     {
         
-        private readonly IUzivatelRepository _repository;
-        public Listener(IUzivatelRepository repository)
+        private readonly IRepository _repository;
+        public Listener(IRepository repository)
         {
             _repository = repository;
             CheckOnStartUp();

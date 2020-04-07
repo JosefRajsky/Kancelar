@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Uzivatel_Api.Repositories
 {
-    public interface IUzivatelRepository
+    public interface IRepository
     {
         Task<List<Uzivatel>> GetList();
         Task<Uzivatel> Get(Guid id);

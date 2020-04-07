@@ -13,8 +13,8 @@ namespace Kalendar_Api.Controllers
     [Route("[controller]")]
     public class KalendarController : ControllerBase
     {
-        private readonly IKalendarRepository _repository;
-        public KalendarController(IKalendarRepository repository)
+        private readonly IRepository _repository;
+        public KalendarController(IRepository repository)
         {
             _repository = repository;
         }

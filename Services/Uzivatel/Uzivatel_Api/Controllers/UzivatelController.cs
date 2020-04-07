@@ -15,9 +15,9 @@ namespace Uzivatel_Api.Controllers
     [Route("[controller]")]
     public class UzivatelController : ControllerBase
     {
-        private readonly IUzivatelRepository _repository;
+        private readonly IRepository _repository;
        
-        public UzivatelController(IUzivatelRepository repository)
+        public UzivatelController(IRepository repository)
         {
             _repository = repository;
           
