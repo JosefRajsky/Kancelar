@@ -30,6 +30,8 @@ namespace Kalendar_Api.Repositories
         }
         public async Task LastEventCheck<T>(T msg, Guid entityId)
         {
+         
+
             if (typeof(EventUzivatelCreated).IsAssignableFrom(typeof(T))){
                 var evt = msg as EventUzivatelCreated;
                 var item = db.Kalendare.FirstOrDefault(u => u.UzivatelId == evt.UzivatelId);
@@ -53,8 +55,23 @@ namespace Kalendar_Api.Repositories
                     }
                     else {
                         await UpdateByUzivatel(evt);
+                    }                    
+                }
+            }
+            if (typeof(EventUzivatelDeleted).IsAssignableFrom(typeof(T)))
+            {
+                var evt = msg as EventUzivatelDeleted;
+                var item = db.Kalendare.FirstOrDefault(u => u.UzivatelId == evt.UzivatelId);
+                if (item != null)
+                {
+                    if (item.EventGuid != evt.EventId)
+                    {
+                        await RequestEvents(entityId);
                     }
-                    
+                    else
+                    {
+                        await DeleteByUzivatel(evt);
+                    }
                 }
             }
 
@@ -84,7 +101,7 @@ namespace Kalendar_Api.Repositories
                         var forCreate = db.Kalendare.FirstOrDefault(u => u.UzivatelId == created.UzivatelId & u.Rok == created.EventCreated.Year);
                         if (forCreate != null)
                         {
-                            var forAdd = Create(created);
+                            var forAdd = await Create(created);
                             db.Kalendare.Add(forAdd);
                             db.SaveChanges();
                         }
@@ -102,17 +119,18 @@ namespace Kalendar_Api.Repositories
             }
             await db.SaveChangesAsync();
         }
-        private Kalendar Create(EventUzivatelCreated evt)
+        private async Task<Kalendar> Create(EventUzivatelCreated evt)
         {
-            var body = new KalendarGenerator().KalendarNew();
+            var body = JsonConvert.SerializeObject(await new KalendarGenerator().KalendarNew());
             var model = new Kalendar()
             {
+                KalendarId = Guid.NewGuid(),
                 UzivatelId = evt.UzivatelId,
                 Rok = evt.EventCreated.Year,
                 Generation = evt.Generation,
-                EventGuid = evt.EventId,KalendarId = new Guid(),
+                EventGuid = evt.EventId,
                 UzivatelCeleJmeno = $"{evt.Prijmeni} {evt.Jmeno}",
-                Body = JsonConvert.SerializeObject(body),
+                Body = body,
                 DatumAktualizace = DateTime.Now
             };
             return model;
@@ -126,40 +144,8 @@ namespace Kalendar_Api.Repositories
             item.UzivatelCeleJmeno = $"{evt.Prijmeni} {evt.Jmeno}";
             item.DatumAktualizace = DateTime.Now;          
             return item;
-        }
-
-        public async Task<Kalendar> Get(Guid id) => await Task.Run(() => db.Kalendare.FirstOrDefault(b => b.KalendarId == id));
-        public async Task<List<Kalendar>> GetList()=> await db.Kalendare.ToListAsync();   
-        public async Task Add(CommandKalendarCreate cmd,bool publish)
-        {
-
-            var body = await new KalendarGenerator().KalendarNew();
-            var kalendar = new Kalendar()
-            {
-                UzivatelId = cmd.UzivatelId,
-                UzivatelCeleJmeno = cmd.CeleJmeno,
-                Rok = cmd.Rok,
-                Body = JsonConvert.SerializeObject(body),
-                DatumAktualizace = DateTime.Now                
-            };
-            db.Kalendare.Add(kalendar);
-            db.Dispose();           
-        } 
-
-        public async Task Update(CommandKalendarUpdate cmd, bool publish)
-        {
-          
-            //var cmdGuid = await _handler.MakeCommand(cmd, MessageType.KalendarUpdate, null, version, publish);
-            var update= db.Kalendare.Find(cmd.KalendarId);
-            db.Kalendare.Update(update);
-            await db.SaveChangesAsync();
-            var ev = new EventKalendarUpdated()
-                {        
-                    UzivatelId = cmd.UzivatelId, 
-                } ;
-            update.DatumAktualizace = DateTime.Now;
-        }
-        public async Task UpdateByUdalost(EventUdalostCreated evt)
+        }                     
+        public async Task CreateByUdalost(EventUdalostCreated evt)
         {           
                 var model = db.Kalendare.FirstOrDefault(k => k.UzivatelId == evt.UzivatelId && k.Rok == evt.DatumOd.Year);
                 var kalendar = JsonConvert.DeserializeObject<Year>(model.Body);
@@ -185,13 +171,45 @@ namespace Kalendar_Api.Repositories
                     await db.SaveChangesAsync();
                 }            
         }
+        public async Task UpdateByUdalost(EventUdalostUpdated evt)
+        {
+            var model = db.Kalendare.FirstOrDefault(k => k.UzivatelId == evt.UzivatelId && k.Rok == evt.DatumOd.Year);
+            var kalendar = JsonConvert.DeserializeObject<Year>(model.Body);
+            var interval = (evt.DatumDo - evt.DatumOd).TotalDays;
+            for (int i = 0; i <= interval; i++)
+            {
+                var focus = evt.DatumOd.AddDays(i);
+                var mesic = kalendar.Months[focus.Month - 1];
+                var den = mesic.Days[focus.Day - 1];
+                var polozka = new Polozka()
+                {
+                    Id = evt.UdalostTypId,
+                    DatumDo = evt.DatumOd,
+                    DatumOd = evt.DatumDo,
+                    Nazev = evt.Nazev,
+                    UzivatelId = evt.UzivatelId,
+                    CeleJmeno = evt.UzivatelCeleJmeno
+                };
+                den.Polozky.Add(polozka);
+                var result = JsonConvert.SerializeObject(kalendar);
+                model.DatumAktualizace = DateTime.Now;
+                model.Body = result;
+                await db.SaveChangesAsync();
+            }
+        }
+        public async Task DeleteByUdalost(EventUdalostRemoved evt)
+        {
+         
+                await db.SaveChangesAsync();
+            
+        }
 
         public async Task CreateByUzivatel(EventUzivatelCreated evt)
         {
             var kalendar = db.Kalendare.Where(k => k.UzivatelId == evt.UzivatelId && k.Rok == evt.EventCreated.Year).FirstOrDefault();
             if (kalendar == null)
             {
-                kalendar = Create(evt);
+                kalendar = await Create(evt);
                 db.Kalendare.Add(kalendar);
             }            
          await db.SaveChangesAsync();
@@ -216,6 +234,11 @@ namespace Kalendar_Api.Repositories
             await db.SaveChangesAsync();
         }
 
-       
+        public async Task<List<Kalendar>> GetList()
+        {
+          return await db.Kalendare.ToListAsync();
+        }
+
+        public async Task<Kalendar> Get(Guid id) => await Task.Run(() => db.Kalendare.FirstOrDefault(b => b.KalendarId == id));
     }
 }

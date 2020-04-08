@@ -38,14 +38,9 @@ namespace Kalendar_Api
          
         public void ConfigureServices(IServiceCollection services)
         {
-           
-
-
-            //Description: Vytvoøení factory pro RabbitMQ
+         
 
             var exchanges = new List<string>();
-
-            //Description: Seznam zájmových exchage       
             exchanges.Add("kalendar.ex");
             exchanges.Add("dochazka.ex");
             exchanges.Add("udalost.ex");
@@ -61,9 +56,7 @@ namespace Kalendar_Api
             var _connection = factory.CreateConnection();
             var _channel = _connection.CreateModel();
             var queueName = _channel.QueueDeclare().QueueName;
-            var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, _connection, _channel, queueName)).BuildServiceProvider().GetService<ISubscriber>().Start();
-                                 
-           
+            var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, _connection, _channel, queueName)).BuildServiceProvider().GetService<ISubscriber>().Start();    
             foreach (var ex in exchanges)
             {
                 _channel.QueueBind(queue: queueName,
@@ -76,7 +69,8 @@ namespace Kalendar_Api
                 var body = ea.Body;
                 var message = Encoding.UTF8.GetString(body);               
                 repository.AddCommand(message);
-            };          
+            };        
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Kalendar Api", Version = "v1" });
@@ -100,22 +94,15 @@ namespace Kalendar_Api
             }
             app.UseHealthChecks("/hc");
             app.UseStaticFiles();
-            //Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseOpenApi();
             app.UseSwaggerUi3();
-            //Enable middleware to serve swagger - ui(HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Kalendar Api v1");
             });
-
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
             app.UseAuthorization();
-
             app.UseHealthChecks("/healthcheck", new HealthCheckOptions
             {
                 Predicate = _ => true,
@@ -126,8 +113,8 @@ namespace Kalendar_Api
             {
                 endpoints.MapControllers();
                 endpoints.MapControllerRoute(
-     name: "default",
-     pattern: "{controller}/{action}/{id?}");
+                name: "default",
+                pattern: "{controller}/{action}/{id?}");
             });
         }
     }

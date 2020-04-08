@@ -16,12 +16,11 @@ namespace Kalendar_Api.Repositories
         Task LastEventCheck<T>(T evt, Guid entityId);
         Task ReplayEvents(List<string> msgstream, Guid? entityId);
         Task RequestEvents(Guid? entityId);
-        Task Add(CommandKalendarCreate cmd, bool publish);
+        Task CreateByUdalost(EventUdalostCreated evt);
+        Task UpdateByUdalost(EventUdalostUpdated evt);
+        Task DeleteByUdalost(EventUdalostRemoved evt);
 
-        Task Update(CommandKalendarUpdate cmd, bool publish);
-        Task UpdateByUdalost(EventUdalostCreated evt);
-        Task CreateByUzivatel(EventUzivatelCreated evt);
-       
+        Task CreateByUzivatel(EventUzivatelCreated evt);       
         Task UpdateByUzivatel(EventUzivatelUpdated evt);        
         Task DeleteByUzivatel(EventUzivatelDeleted evt);
     }

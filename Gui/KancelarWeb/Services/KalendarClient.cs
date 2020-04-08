@@ -126,7 +126,7 @@ namespace KancelarWeb
         public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Kalendar>> GetListAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/kalendar/GetList");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/kalendar/GetList");
 
             var client_ = new System.Net.Http.HttpClient();
             try

@@ -28,11 +28,10 @@ namespace Udalost_Api.Repositories
 
         public async Task Add(CommandUdalostCreate cmd)
         {
-            //var version = 1;
-            //var cmdGuid = await _handler.MakeCommand(cmd, MessageType.UdalostCreate, null, version, publish);
+
             var model = new Udalost()
             {
-                Id = new Guid(),
+                Id = Guid.NewGuid(),
                 DatumOd = cmd.DatumOd,
                 DatumDo = cmd.DatumDo,
                 DatumZadal = DateTime.Now,
@@ -43,7 +42,7 @@ namespace Udalost_Api.Repositories
                 UzivatelId = cmd.UzivatelId,
             };
             db.Udalosti.Add(model);
-            //await AcceptCommand(cmd.Guid);
+           
             await db.SaveChangesAsync();
 
             var ev = new EventUdalostCreated()
@@ -58,7 +57,7 @@ namespace Udalost_Api.Repositories
                     UzivatelId = model.UzivatelId,
                 };
 
-            //var responseGuid = await _handler.PublishEvent(ev, cmd, MessageType.UdalostCreated, null, 1, true);
+          
         }
 
         public async Task<Udalost> Get(Guid id) => await Task.Run(() => db.Udalosti.FirstOrDefault(b => b.Id == id));
@@ -66,24 +65,18 @@ namespace Udalost_Api.Repositories
         public async Task<List<Udalost>> GetList() => await db.Udalosti.ToListAsync();
 
         public async Task Remove(CommandUdalostRemove cmd)
-        {
-            
-            //var cmdGuid = await _handler.MakeCommand(cmd, MessageType.UdalostRemove, null, version, true);
+        {           
             var remove = db.Udalosti.Find(cmd.UdalostId);
             db.Udalosti.Remove(remove);
             await db.SaveChangesAsync();
-
             var ev = new EventUdalostRemoved()
             {               
                 UdalostId = cmd.UdalostId,
-            };
-            //var responseGuid = await _handler.PublishEvent(ev, cmd, MessageType.UdalostRemove, null, version, publish);
+            };   
         }
-
         public async Task Update(CommandUdalostUpdate cmd)
         {
-            //var version = 1;
-            //var cmdGuid = await _handler.MakeCommand(cmd, MessageType.UdalostUpdate, null, version, publish);
+           
             var udalost = new Udalost()
             {
                 Id = cmd.UdalostId,
@@ -100,10 +93,10 @@ namespace Udalost_Api.Repositories
             model = udalost;
             await db.SaveChangesAsync();
 
-            var ev = 
+            var ev =
                 new EventUdalostUpdated()
                 {
-                   
+
                     UdalostId = model.Id,
                     DatumOd = model.DatumOd,
                     DatumDo = model.DatumDo,
@@ -113,9 +106,8 @@ namespace Udalost_Api.Repositories
                     Popis = model.Popis,
                     UdalostTypId = model.UdalostTypId,
                     UzivatelId = model.UzivatelId,
-                }
-                 ;
-            //var responseGuid = await _handler.PublishEvent(ev, cmd, MessageType.UdalostUpdated, null, version, publish);
+                };
+              
         }
 
 

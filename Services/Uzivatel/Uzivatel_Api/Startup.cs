@@ -36,11 +36,8 @@ namespace Uzivatel_Api
         public void ConfigureServices(IServiceCollection services)
         {
             
-          
-           
             var exchanges = new List<string>();
             exchanges.Add("uzivatel.ex");
-
             var factory = new ConnectionFactory() { HostName = Configuration["ConnectionString:RbConn"] };
             services.AddTransient<IRepository, Repository>();
             services.AddSingleton<Publisher>(s => new Publisher(factory, exchanges[0], "uzivatel.q"));
@@ -51,30 +48,22 @@ namespace Uzivatel_Api
             var _connection = factory.CreateConnection();           
             var _channel = _connection.CreateModel();
             var queueName = _channel.QueueDeclare().QueueName;
-            var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, _connection, _channel, queueName)).BuildServiceProvider().GetService<ISubscriber>().Start();
+            var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, _connection, _channel, queueName)).BuildServiceProvider().GetService<ISubscriber>().Start();           
            
-            //Description: Propojení exchange a fronty
             foreach (var ex in exchanges)
             {
                 _channel.QueueBind(queue: queueName,
                               exchange: ex,
                               routingKey: "");
             }
-            //Description: vytvoøení smìrovaèe pøijatých zpráv ke kterým je služba pøihlášena
-            var listener = new Listener(services.BuildServiceProvider().GetService<IRepository>());
-           
-            //Description: Zpracování a odeslání zprávy do smìrovaèe
+          
+            var listener = new Listener(services.BuildServiceProvider().GetService<IRepository>());    
             consumer.Received += (model, ea) =>
-            {
-                //-------------Description: Formátování pøijaté zprávy
+            { 
                 var body = ea.Body;
-                var message = Encoding.UTF8.GetString(body);
-
-                //-------------Description: Odeslání zprávy do smìrovaèe
-                
+                var message = Encoding.UTF8.GetString(body);   
                 listener.AddCommand(message);
-            };
-            //Description: Kontrola stavu služby
+            };            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Uzivatel Api", Version = "v1" });
@@ -95,23 +84,16 @@ namespace Uzivatel_Api
                 app.UseDeveloperExceptionPage();
             }
             app.UseHealthChecks("/hc");
-            app.UseStaticFiles();
-            //Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseStaticFiles();          
             app.UseOpenApi();
             app.UseSwaggerUi3();
-            //Enable middleware to serve swagger - ui(HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Uzivatel Api v1");
             });
-
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
-            app.UseAuthorization();
-            
+            app.UseAuthorization();            
             app.UseHealthChecks("/healthcheck", new HealthCheckOptions
             {
                 Predicate = _ => true,
@@ -122,8 +104,8 @@ namespace Uzivatel_Api
             {
                 endpoints.MapControllers();
                 endpoints.MapControllerRoute(
-     name: "default",
-     pattern: "{controller}/{action}/{id?}");
+                name: "default",
+                pattern: "{controller}/{action}/{id?}");
             });
         }
     }

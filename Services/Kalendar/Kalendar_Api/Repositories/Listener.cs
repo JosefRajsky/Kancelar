@@ -36,48 +36,25 @@ namespace Kalendar_Api.Repositories
                     _repository.ReplayEvents(ev.MessageList, envelope.EntityId);
                     break;
                 case MessageType.UzivatelCreated:
-                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUzivatelCreated>(envelope.Event), envelope.EntityId);
+                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUzivatelCreated>(envelope.Event), envelope.EntityId,);
                     break;
                 case MessageType.UzivatelUpdated:
-                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUzivatelCreated>(envelope.Event), envelope.EntityId);
+                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUzivatelUpdated>(envelope.Event), envelope.EntityId);
+                    break;
+                case MessageType.UzivatelRemoved:
+                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUzivatelDeleted>(envelope.Event), envelope.EntityId);
+                    break;
+
+                case MessageType.UdalostCreated:
+                      _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUdalostCreated>(envelope.Event), envelope.EntityId);
+                    break;
+                case MessageType.UdalostUpdated:
+                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUdalostUpdated>(envelope.Event), envelope.EntityId);
+                    break;
+                case MessageType.UdalostRemoved:
+                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUdalostRemoved>(envelope.Event), envelope.EntityId);
                     break;
             }
-
-            //var envelope = JsonConvert.DeserializeObject<Message>(message);
-            //switch (envelope.MessageType)
-            //{
-            //    case MessageType.KalendarCreate:
-            //            this.AddAsync(JsonConvert.DeserializeObject<CommandKalendarCreate>(envelope.Event));                  
-            //        break;              
-            //    case MessageType.KalendarUpdate:            
-            //            this.Update(JsonConvert.DeserializeObject<CommandKalendarUpdate>(envelope.Event));                 
-            //        break;
-            //    case MessageType.UdalostCreated:                    
-            //            this.UpdateByUdalost(JsonConvert.DeserializeObject<EventUdalostCreated>(envelope.Event));                 
-            //        break;
-            //    case MessageType.UzivatelCreated:
-            //        this.AddByUzivatel(JsonConvert.DeserializeObject<EventUzivatelCreated>(envelope.Event));
-            //        break;              
-            //    default:
-                    
-            //        break;
-            //}
-        }
-
-        public void UpdateByUdalost(EventUdalostCreated evt)
-        {
-            _repository.UpdateByUdalost(evt);
-        }
-        public void AddByUzivatel(EventUzivatelCreated evt)
-        {
-            _repository.CreateByUzivatel(evt);
-        }
-        public void UpdateWithUzivatel(EventUzivatelUpdated evt)
-        {
-            _repository.UpdateByUzivatel(evt);
-        }
-        public void DeleteWithUzivatel(EventUzivatelDeleted evt) {
-            _repository.DeleteByUzivatel(evt);
         }
 
 
