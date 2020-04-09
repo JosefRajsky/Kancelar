@@ -41,8 +41,7 @@ namespace Kalendar_Api.Repositories
                 case MessageType.KalendarUpdated:
 
                     _repository.LastEventCheck(JsonConvert.DeserializeObject<EventKalendarUpdated>(envelope.Event).EventId, envelope.EntityId);
-                    break;
-               
+                    break;              
 
                 case MessageType.UzivatelCreated:
                     CreateByUzivatel(JsonConvert.DeserializeObject<EventUzivatelCreated>(envelope.Event));
@@ -55,15 +54,15 @@ namespace Kalendar_Api.Repositories
                     RemoveByUzivatel(JsonConvert.DeserializeObject<EventUzivatelDeleted>(envelope.Event));
                     break;
 
-                //case MessageType.UdalostCreated:
-                //      _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUdalostCreated>(envelope.Event), envelope.EntityId);
-                //    break;
-                //case MessageType.UdalostUpdated:
-                //    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUdalostUpdated>(envelope.Event), envelope.EntityId);
-                //    break;
-                //case MessageType.UdalostRemoved:
-                //    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUdalostRemoved>(envelope.Event), envelope.EntityId);
-                //    break;
+                case MessageType.UdalostCreated:
+                    UpdateByUdalost(JsonConvert.DeserializeObject<EventUdalostUpdated>(envelope.Event));
+                    break;
+                case MessageType.UdalostUpdated:
+                    UpdateByUdalost(JsonConvert.DeserializeObject<EventUdalostUpdated>(envelope.Event));
+                    break;
+                case MessageType.UdalostRemoved:
+                    RemoveByUdalost(JsonConvert.DeserializeObject<EventUdalostRemoved>(envelope.Event));
+                    break;
             }
         }
 
@@ -78,7 +77,19 @@ namespace Kalendar_Api.Repositories
         {
             _repository.DeleteByUzivatel(evt);
         }
-        public void ReplayEvents(List<string> stream, Guid? entityId)
+        private void CreateByUdalost(EventUdalostCreated evt)
+        {
+            _repository.CreateByUdalost(evt);
+        }
+        private void UpdateByUdalost(EventUdalostUpdated evt)
+        {
+            _repository.UpdateByUdalost(evt);
+        }
+        private void RemoveByUdalost(EventUdalostRemoved evt)
+        {
+            _repository.DeleteByUdalost(evt);
+        }
+        private void ReplayEvents(List<string> stream, Guid? entityId)
         {
             var messages = new List<Message>();
             foreach (var item in stream)

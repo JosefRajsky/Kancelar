@@ -29,7 +29,8 @@ namespace Kalendar_Api.Functions
     }
 
     public class Polozka { 
-    public int Id { get; set; }
+    public Guid Id { get; set; }
+    public int UdalostTypId { get; set; }
     public string Nazev { get; set; }
     public Guid UzivatelId { get; set; }
     public string CeleJmeno { get; set; }

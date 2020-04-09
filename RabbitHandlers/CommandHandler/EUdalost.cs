@@ -33,6 +33,10 @@ namespace CommandHandler
     }
     public class EventUdalostCreated
     {
+        public Guid EventId { get; set; }
+        public DateTime EventCreated { get; set; }
+        public int Generation { get; set; }
+        public Guid UdalostId { get; set; }
         public int UdalostTypId { get; set; }
         public string Popis { get; set; }
         public Guid UzivatelId { get; set; }
@@ -44,6 +48,9 @@ namespace CommandHandler
     }
     public class EventUdalostUpdated
     {
+        public Guid EventId { get; set; }
+        public DateTime EventCreated { get; set; }
+        public int Generation { get; set; }
         public Guid UdalostId { get; set; }
         public int UdalostTypId { get; set; }
         public string Popis { get; set; }
@@ -56,8 +63,13 @@ namespace CommandHandler
     }
     public class EventUdalostRemoved 
     {
-        
+        public Guid EventId { get; set; }
+        public DateTime EventCreated { get; set; }
+        public int Generation { get; set; }
         public Guid UdalostId { get; set; }
+        public Guid UzivatelId { get; set; }
+        public DateTime DatumOd { get; set; }
+        public DateTime DatumDo { get; set; }
 
 
     }
