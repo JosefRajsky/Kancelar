@@ -34,19 +34,19 @@ namespace Kalendar_Api.Controllers
             return response;
         }
 
-        [HttpPut]
-        [Route("Add")]
-        public async Task Add(CommandKalendarCreate cmd)      
-        {         
-         await _repository.Add(cmd,true);            
-        }
+        //[HttpPut]
+        //[Route("Add")]
+        //public async Task Add(CommandKalendarCreate cmd)      
+        //{         
+        // await _repository.Add(cmd,true);            
+        //}
 
        
-        [HttpPost]
-        [Route("Update")]
-        public async Task Update(CommandKalendarUpdate cmd)
-        {
-            await _repository.Update(cmd, true);        
-        }
+        //[HttpPost]
+        //[Route("Update")]
+        //public async Task Update(CommandKalendarUpdate cmd)
+        //{
+        //    await _repository.Update(cmd, true);        
+        //}
     }
 }

@@ -13,8 +13,8 @@ namespace Kalendar_Api.Repositories
     {
         Task<List<Kalendar>> GetList();
         Task<Kalendar> Get(Guid id);
-        Task LastEventCheck<T>(T evt, Guid entityId);
-        Task ReplayEvents(List<string> msgstream, Guid? entityId);
+        Task LastEventCheck(Guid eventId, Guid entityId);
+   
         Task RequestEvents(Guid? entityId);
         Task CreateByUdalost(EventUdalostCreated evt);
         Task UpdateByUdalost(EventUdalostUpdated evt);

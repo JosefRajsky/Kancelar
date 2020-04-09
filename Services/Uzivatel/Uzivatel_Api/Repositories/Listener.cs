@@ -38,11 +38,10 @@ namespace Uzivatel_Api.Repositories
                     _repository.ReplayEvents(ev.MessageList, envelope.EntityId);
                     break;
                 case MessageType.UzivatelCreated:
-
                     _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUzivatelCreated>(envelope.Event).EventId, envelope.EntityId);
                     break;
                 case MessageType.UzivatelUpdated:
-                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUzivatelCreated>(envelope.Event).EventId, envelope.EntityId);
+                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUzivatelUpdated>(envelope.Event).EventId, envelope.EntityId);
                     break;      
             }
         }

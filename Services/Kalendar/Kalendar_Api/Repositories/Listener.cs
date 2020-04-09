@@ -33,32 +33,64 @@ namespace Kalendar_Api.Repositories
                 case MessageType.HealingStreamProvided:
                     //-------------Description: Deserializace zprávy do správného typu a odeslání k uložení do DB; 
                     var ev = JsonConvert.DeserializeObject<HealingStreamProvided>(envelope.Event);
-                    _repository.ReplayEvents(ev.MessageList, envelope.EntityId);
+                    ReplayEvents(ev.MessageList, envelope.EntityId);
                     break;
+                case MessageType.KalendarCreated:
+                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventKalendarCreated>(envelope.Event).EventId, envelope.EntityId);
+                    break;
+                case MessageType.KalendarUpdated:
+
+                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventKalendarUpdated>(envelope.Event).EventId, envelope.EntityId);
+                    break;
+               
+
                 case MessageType.UzivatelCreated:
-                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUzivatelCreated>(envelope.Event), envelope.EntityId,);
+                    CreateByUzivatel(JsonConvert.DeserializeObject<EventUzivatelCreated>(envelope.Event));
                     break;
                 case MessageType.UzivatelUpdated:
-                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUzivatelUpdated>(envelope.Event), envelope.EntityId);
+                   
+                    UpdateByUzivatel(JsonConvert.DeserializeObject<EventUzivatelUpdated>(envelope.Event));
                     break;
                 case MessageType.UzivatelRemoved:
-                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUzivatelDeleted>(envelope.Event), envelope.EntityId);
+                    RemoveByUzivatel(JsonConvert.DeserializeObject<EventUzivatelDeleted>(envelope.Event));
                     break;
 
-                case MessageType.UdalostCreated:
-                      _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUdalostCreated>(envelope.Event), envelope.EntityId);
-                    break;
-                case MessageType.UdalostUpdated:
-                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUdalostUpdated>(envelope.Event), envelope.EntityId);
-                    break;
-                case MessageType.UdalostRemoved:
-                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUdalostRemoved>(envelope.Event), envelope.EntityId);
-                    break;
+                //case MessageType.UdalostCreated:
+                //      _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUdalostCreated>(envelope.Event), envelope.EntityId);
+                //    break;
+                //case MessageType.UdalostUpdated:
+                //    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUdalostUpdated>(envelope.Event), envelope.EntityId);
+                //    break;
+                //case MessageType.UdalostRemoved:
+                //    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUdalostRemoved>(envelope.Event), envelope.EntityId);
+                //    break;
             }
         }
 
-
-
+        private void CreateByUzivatel(EventUzivatelCreated evt) {
+            _repository.CreateByUzivatel(evt);
+        }
+        private void UpdateByUzivatel(EventUzivatelUpdated evt)
+        {
+            _repository.UpdateByUzivatel(evt);
+        }
+        private void RemoveByUzivatel(EventUzivatelDeleted evt)
+        {
+            _repository.DeleteByUzivatel(evt);
+        }
+        public void ReplayEvents(List<string> stream, Guid? entityId)
+        {
+            var messages = new List<Message>();
+            foreach (var item in stream)
+            {
+                messages.Add(JsonConvert.DeserializeObject<Message>(item));
+            }
+            var replayOrderedStream = messages.OrderBy(d => d.Created);
+            foreach (var msg in replayOrderedStream)
+            {
+                AddCommand(JsonConvert.SerializeObject(msg));
+            }           
+        }
 
 
 

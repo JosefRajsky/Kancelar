@@ -56,7 +56,7 @@ namespace KancelarWeb.Controllers
             {
                 return RedirectToAction("Edit");
             }
-            if (model.Id != Guid.Empty) {
+            if (model.UzivatelId != Guid.Empty) {
                 var command = new CommandUzivatelUpdate()
                 {
 
@@ -68,7 +68,7 @@ namespace KancelarWeb.Controllers
                     Telefon = model.Telefon,
                     TitulPred = model.TitulPred,
                     TitulZa = model.TitulZa,
-                    UzivatelId = model.Id
+                    UzivatelId = model.UzivatelId
                 };
                 await client.UpdateAsync(command);
             } else { 
@@ -82,7 +82,7 @@ namespace KancelarWeb.Controllers
                 Telefon = model.Telefon,
                 TitulPred = model.TitulPred,
                 TitulZa = model.TitulZa,
-                UzivatelId = model.Id
+                UzivatelId = model.UzivatelId
             };
             await client.AddAsync(command);
             }

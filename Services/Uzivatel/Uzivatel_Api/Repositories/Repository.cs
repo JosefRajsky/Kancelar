@@ -25,7 +25,14 @@ namespace Uzivatel_Api.Repositories
             var item = db.Uzivatele.FirstOrDefault(u => u.UzivatelId == entityId);
             if (item != null)
             {
-                if (item.EventGuid != eventId) await RequestEvents(entityId);
+                if (item.EventGuid != eventId)
+                {
+                    await RequestEvents(entityId);
+                }
+                else {
+                    item.Generation = item.Generation + 1;
+                   await db.SaveChangesAsync();
+                }
             }
         }
         public async Task RequestEvents(Guid? entityId)
@@ -130,33 +137,35 @@ namespace Uzivatel_Api.Repositories
                 Generation = 0,
             };              
                 var item = Create(ev);
-                db.Uzivatele.Add(item);
-                await db.SaveChangesAsync();                
-                await _handler.PublishEvent(ev, MessageType.UzivatelCreated, ev.EventId, null, ev.Generation, item.UzivatelId);
+                db.Uzivatele.Add(item);                
+                await db.SaveChangesAsync();
+                ev.UzivatelId = item.UzivatelId;
+                ev.Generation = ev.Generation + 1;
+                await _handler.PublishEvent(ev, MessageType.UzivatelCreated, ev.EventId, null, ev.Generation, ev.UzivatelId);
             
         }
         public async Task Update(CommandUzivatelUpdate cmd)
         {
-            var item = db.Uzivatele.FirstOrDefault(u => u.UzivatelId == cmd.UzivatelId);
-            var ev = new EventUzivatelUpdated()
-            {
-                EventId = Guid.NewGuid(),
-                EventCreated = DateTime.Now,
-                UzivatelId = cmd.UzivatelId,
-                TitulPred = cmd.TitulPred,
-                Jmeno = cmd.Jmeno,
-                Prijmeni = cmd.Prijmeni,
-                TitulZa = cmd.TitulZa,
-                Pohlavi = cmd.Pohlavi,
-                DatumNarozeni = cmd.DatumNarozeni,
-                Email = cmd.Email,
-                Telefon = cmd.Telefon,                
-            };                    
+            var item = db.Uzivatele.FirstOrDefault(u => u.UzivatelId == cmd.UzivatelId);                  
             if (item != null) {
-                ev.Generation = item.Generation + 1;
+                var ev = new EventUzivatelUpdated()
+                {
+                    EventId = Guid.NewGuid(),
+                    EventCreated = DateTime.Now,
+                    UzivatelId = item.UzivatelId,
+                    TitulPred = cmd.TitulPred,
+                    Jmeno = cmd.Jmeno,
+                    Prijmeni = cmd.Prijmeni,
+                    TitulZa = cmd.TitulZa,
+                    Pohlavi = cmd.Pohlavi,
+                    DatumNarozeni = cmd.DatumNarozeni,
+                    Email = cmd.Email,
+                    Telefon = cmd.Telefon,
+                };
                 item = Modify(ev, item);
-                await _handler.PublishEvent(ev, MessageType.UzivatelUpdated, ev.EventId, item.EventGuid, ev.Generation, cmd.UzivatelId);
-                db.Uzivatele.Update(item);
+                db.Uzivatele.Update(item);                
+                ev.Generation = item.Generation + 1;
+                await _handler.PublishEvent(ev, MessageType.UzivatelUpdated, ev.EventId, item.EventGuid, ev.Generation, item.UzivatelId);             
                 await db.SaveChangesAsync();
             }
         }
