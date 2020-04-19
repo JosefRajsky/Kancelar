@@ -17,11 +17,11 @@
 <body>
     @await Component.InvokeAsync("Menu")
     <div class="row">
-        <div class="col-xl-2 bg-light">
+        @*<div class="col-xl-2 bg-light">
             @await Component.InvokeAsync("Strom")
 
 
-        </div>
+        </div>*@
         <div class="col-xl-10"> @RenderBody()</div>
     </div>
     </body>

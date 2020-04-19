@@ -129,6 +129,16 @@ services:
     build:
       context: .
       dockerfile: Services/Uzivatel/Uzivatel_Api/Dockerfile
+
+
+  pritomnostapi:
+    image: ${DOCKER_REGISTRY-}pritomnost_api
+    hostname: "pritomnostapi"       
+    ports:
+      - "8087:80"
+    build:
+      context: .
+      dockerfile: Services/Pritomnost/Pritomnost_Api/Dockerfile
     depends_on:
       - sqlserver
       - rabbitmq

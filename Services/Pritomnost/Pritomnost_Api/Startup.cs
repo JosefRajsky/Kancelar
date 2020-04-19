@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using CommandHandler;
 using HealthChecks.UI.Client;
@@ -16,30 +15,36 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Pritomnost_Api.Repositories;
 using RabbitMQ.Client;
-using RabbitMQ.Client.Exceptions;
-using Udalost_Api.Repositories;
 
-namespace Udalost_Api
+namespace Pritomnost_Api
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
         public IConfiguration Configuration { get; }
+
+
+
+
         public void ConfigureServices(IServiceCollection services)
         {
 
+
             var exchanges = new List<string>();
+            exchanges.Add("pritomnost.ex");
+            exchanges.Add("dochazka.ex");
             exchanges.Add("udalost.ex");
+            exchanges.Add("uzivatel.ex");
+
             var factory = new ConnectionFactory() { HostName = Configuration["ConnectionString:RbConn"] };
             services.AddTransient<IRepository, Repository>();
-            services.AddSingleton<Publisher>(s => new Publisher(factory, exchanges[0], "udalost.q"));
-            services.AddDbContext<UdalostDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
+            services.AddSingleton<Publisher>(s => new Publisher(factory, exchanges[0], "pritomnost.q"));
+            services.AddDbContext<PritomnostDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
             services.AddControllers();
             factory.AutomaticRecoveryEnabled = true;
             factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(5);
@@ -47,33 +52,34 @@ namespace Udalost_Api
             var _channel = _connection.CreateModel();
             var queueName = _channel.QueueDeclare().QueueName;
             var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, _connection, _channel, queueName)).BuildServiceProvider().GetService<ISubscriber>().Start();
-
             foreach (var ex in exchanges)
             {
                 _channel.QueueBind(queue: queueName,
                               exchange: ex,
                               routingKey: "");
             }
-
-            var listener = new Listener(services.BuildServiceProvider().GetService<IRepository>());
+            var repository = new Listener(services.BuildServiceProvider().GetService<IRepository>());
             consumer.Received += (model, ea) =>
             {
                 var body = ea.Body;
                 var message = Encoding.UTF8.GetString(body);
-                listener.AddCommand(message);
+                repository.AddCommand(message);
             };
+
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Udalost Api", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Pritomnost Api", Version = "v1" });
             });
             services.AddSwaggerDocument();
+            services.AddControllers();
             services.AddHealthChecks()
-                .AddCheck("Udalost API", () => HealthCheckResult.Healthy())
+                .AddCheck("API Pritomnost", () => HealthCheckResult.Healthy())
                 .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
                         healthQuery: "SELECT 1;",
                         name: "DB",
                         failureStatus: HealthStatus.Degraded)
-                .AddRabbitMQ(sp => _connection);
+                 .AddRabbitMQ(sp => _connection);
+
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -87,7 +93,7 @@ namespace Udalost_Api
             app.UseSwaggerUi3();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Udalost Api v1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Pritomnost Api v1");
             });
             app.UseHttpsRedirection();
             app.UseRouting();

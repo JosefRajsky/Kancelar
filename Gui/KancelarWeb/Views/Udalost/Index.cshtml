@@ -1,4 +1,4 @@
-﻿@model IEnumerable<KancelarWeb.ViewModels.UdalostModel>
+﻿@model IEnumerable<KancelarWeb.ViewModels.Udalost>
 
 @{
     ViewData["Title"] = "Index";
@@ -14,18 +14,8 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            @*<th>
-                @Html.DisplayNameFor(model => model.UzivatelId)
-            </th>*@
-            <th>
                 @Html.DisplayNameFor(model => model.UzivatelCeleJmeno)
-            </th>
-            @*<th>
-                @Html.DisplayNameFor(model => model.UdalostTypId)
-            </th>*@
-
+            </th>  
             <th>
                 @Html.DisplayNameFor(model => model.Nazev)
             </th>
@@ -40,7 +30,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.Popis)
             </th>
-
             <th></th>
         </tr>
     </thead>
@@ -49,10 +38,7 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            @*<td>
-                @Html.DisplayFor(modelItem => item.UzivatelId)
-            </td>*@
+            </td>           
             <td>
                @Html.DisplayFor(modelItem => item.UzivatelCeleJmeno)       
             </td>
@@ -67,12 +53,11 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DatumDo)
-            </td>
-           
+            </td>           
             <td>
-                <a asp-action="Edit" asp-controller="Udalost" asp-route-id="@item.Id" class="btn btn-xs btn-outline-primary" title="Upravit">upravit</a>
-                <a asp-action="Detail" asp-controller="Udalost" asp-route-id="@item.Id" class="btn btn-xs btn-outline-info" title="Detail">detail</a>
-                <a asp-action="Remove" asp-controller="Udalost" asp-route-id="@item.Id" class="btn btn-xs btn-outline-danger" title="Odstranit">odstranit</a>
+                <a asp-action="Edit" asp-controller="Udalost" asp-route-id="@item.UdalostId" class="btn btn-xs btn-outline-primary" title="Upravit">upravit</a>
+                <a asp-action="Detail" asp-controller="Udalost" asp-route-id="@item.UdalostId" class="btn btn-xs btn-outline-info" title="Detail">detail</a>
+                <a asp-action="Remove" asp-controller="Udalost" asp-route-id="@item.UdalostId" class="btn btn-xs btn-outline-danger" title="Odstranit">odstranit</a>
                               
             </td>
         </tr>

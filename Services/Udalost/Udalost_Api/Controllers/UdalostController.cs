@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Udalost_Api.Entities;
-using Udalost_Api.Models;
 using Udalost_Api.Repositories;
 
 namespace Udalost_Api.Controllers
@@ -17,39 +16,20 @@ namespace Udalost_Api.Controllers
     [Route("[controller]")]
     public class UdalostController : ControllerBase
     {
-        private readonly IUdalostRepository _udalostRepository;
-        public UdalostController(IUdalostRepository udalostService)
+        private readonly IRepository _udalostRepository;
+        public UdalostController(IRepository udalostService)
         {
             _udalostRepository = udalostService;
         }
         [HttpGet]
         [Route("Get/{id?}")]
-        public async Task<ActionResult<UdalostModel>> Get(Guid id) => Ok(await _udalostRepository.Get(id));
+        public async Task<Udalost> Get(Guid udalostId) =>await _udalostRepository.Get(udalostId);
 
         [HttpGet]
         [Route("GetList")]
-        public async Task<List<UdalostModel>> GetList() {
-            var model =await _udalostRepository.GetList();
-
-            //TODO: Dodělat derivát z entity Model a vyčítat z něj.
-            var response = new List<UdalostModel>();
-            foreach (var item in model)
-            {
-                var u = new UdalostModel();
-                u.Id = item.Id ;
-                u.UdalostTypId = item.UdalostTypId;
-                u.Popis = item.Popis ;
-                u.Nazev = item.Nazev;
-                u.UzivatelCeleJmeno = item.UzivatelCeleJmeno;
-                u.DatumOd = item.DatumOd ;
-                u.DatumDo = item.DatumDo ;
-                u.UzivatelId = item.UzivatelId ;
-
-                response.Add(u);
-            }
-            return response;
+        public async Task<List<Udalost>> GetList() {
+           return await _udalostRepository.GetList();
         }
-
         [HttpPut]
         [Route("Add")]
         public async Task Add(CommandUdalostCreate cmd)

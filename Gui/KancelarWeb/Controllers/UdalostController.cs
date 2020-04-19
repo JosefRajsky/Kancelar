@@ -9,6 +9,7 @@ using System.Net.Http;
 using KancelarWeb.Services;
 using KancelarWeb.CommandsModels;
 using System.Linq;
+using System.Security.Cryptography.Xml;
 
 namespace KancelarWeb.Controllers
 {
@@ -16,40 +17,31 @@ namespace KancelarWeb.Controllers
     {
 
         UdalostClient client;
-        UzivatelClient UzivatelServis;
+        UzivatelClient uzivatelService;
         public UdalostController()
         {
             client = new UdalostClient();
-            UzivatelServis = new UzivatelClient();
+            uzivatelService = new UzivatelClient();
         }
 
         public async Task<IActionResult> Index()
         {
             var model = await client.GetListAsync();
-            foreach (var item in model)
-            {
-                var uzivatel = await UzivatelServis.GetAsync(item.UzivatelId);
-                if (uzivatel != null)
-                {
-                    item.UzivatelCeleJmeno = $"{uzivatel.Prijmeni} {uzivatel.Jmeno}";
-                }
-
-            }
+           
             return View(model);
         }
-        public async Task<IActionResult> Detail(int id)
+        public async Task<IActionResult> Detail(Guid id)
         {
             var model = await client.GetAsync(id);
 
           
-                var uzivatel = await UzivatelServis.GetAsync(model.UzivatelId);
-                model.UzivatelCeleJmeno = $"{uzivatel.Prijmeni} {uzivatel.Jmeno}";
+              
            
 
             return View(model);
         }
         [HttpPost]
-        public async Task<IActionResult> Add([FromForm]UdalostModel model)
+        public async Task<IActionResult> Add([FromForm]Udalost model)
         {
             var command = new CommandUdalostCreate() {
                 UzivatelId = model.UzivatelId,  
@@ -65,7 +57,7 @@ namespace KancelarWeb.Controllers
 
             return RedirectToAction("Index");
         }
-        public async Task<IActionResult> Update(UdalostModel model)
+        public async Task<IActionResult> Update(Udalost model)
         {
             var command = new CommandUdalostUpdate()
             {
@@ -83,7 +75,7 @@ namespace KancelarWeb.Controllers
 
             return RedirectToAction("Index");
         }
-        public async Task<IActionResult> Remove(int id)
+        public async Task<IActionResult> Remove(Guid id)
         {
             var command = new CommandUdalostRemove() { UdalostId = id };
             await client.RemoveAsync(command);
@@ -91,7 +83,7 @@ namespace KancelarWeb.Controllers
         }
         public async Task<IActionResult> EditAsync()
         {
-            var model = new UdalostModel();
+            var model = new Udalost();
             model.DatumDo = DateTime.Today;
             model.DatumOd = DateTime.Today;
 
@@ -102,7 +94,7 @@ namespace KancelarWeb.Controllers
             }).ToList(), "Value", "Text");
 
             ViewBag.UzivatelList = new List<SelectListItem>();
-            foreach (var item in await UzivatelServis.GetListAsync())
+            foreach (var item in await uzivatelService.GetListAsync())
             {
                 ViewBag.UzivatelList.Add(new SelectListItem { Value = item.Id.ToString(), Text = $"{item.Prijmeni} {item.Jmeno}" });
             }           

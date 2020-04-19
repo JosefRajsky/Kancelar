@@ -44,6 +44,7 @@ namespace CommandHandler
         [Description("Command: Update docházky")]
         DochazkaUpdated = 5,
         #endregion
+
         #region Udalost
 
         [Description("Command: Založení nové události")]
@@ -64,6 +65,7 @@ namespace CommandHandler
         [Description("Command: Update události")]
         UdalostUpdated = 11,
         #endregion
+
         #region Uzivatel
         //[Description("Command: Vytvoření nového uživatele")]
         //UzivatelCreate = 12,
@@ -83,6 +85,7 @@ namespace CommandHandler
         [Description("Command: Uživatel byl upraven")]
         UzivatelUpdated = 17,
         #endregion
+
         #region Kalendar
         [Description("Command: Vytvoření nového kalendáře")]
         KalendarCreate = 18,       
@@ -96,7 +99,20 @@ namespace CommandHandler
         [Description("Event: kalendář byl upraven")]
         KalendarUpdated = 21,
         #endregion
-      
+
+        #region Pritomnost
+        [Description("Command: Vytvoření nového kalendáře")]
+        PritomnostCreate = 22,
+
+        [Description("Command: Update kalendáře")]
+        PritomnostUpdate = 23,
+
+        [Description("Event: Kalendář byl vytvořen")]
+        PritomnostCreated = 24,
+
+        [Description("Event: kalendář byl upraven")]
+        PritomnostUpdated = 25,
+        #endregion
 
 
     }

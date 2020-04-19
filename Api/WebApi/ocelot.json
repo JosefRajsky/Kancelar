@@ -59,6 +59,18 @@
       "UpstreamPathTemplate": "/api/kalendar/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "SwaggerKey": "kalendar"
+    },
+    {
+      "DownstreamPathTemplate": "/pritomnost/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "pritomnostapi/"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/pritomnost/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "SwaggerKey": "pritomnost"
     }
   ],
   "SwaggerEndPoints": [
@@ -109,6 +121,16 @@
           "Name": "Kalendar API",
           "Version": "v1",
           "Url": "http://kalendarapi/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "pritomnost",
+      "Config": [
+        {
+          "Name": "Pritomnost API",
+          "Version": "v1",
+          "Url": "http://pritomnostapi/swagger/v1/swagger.json"
         }
       ]
     }

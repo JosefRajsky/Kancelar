@@ -16,7 +16,7 @@ namespace Uzivatel_Api.Controllers
     public class UzivatelController : ControllerBase
     {
         private readonly IRepository _repository;
-       
+        
         public UzivatelController(IRepository repository)
         {
             _repository = repository;
@@ -33,17 +33,8 @@ namespace Uzivatel_Api.Controllers
 
         [HttpGet]
         [Route("GetList")]
-        public async Task<List<Uzivatel>> GetList() {
-
-            var model = await _repository.GetList();          
-            //var response = new List<UzivatelModel>();
-            //foreach (var item in model)
-            //{
-            //    var d = new UzivatelModel(item);
-                
-            //    response.Add(d);
-            //}    
-            return model;
+        public async Task<List<Uzivatel>> GetList() {  
+            return await _repository.GetList();
         }
 
         [HttpPost]
@@ -59,6 +50,7 @@ namespace Uzivatel_Api.Controllers
         {
            await _repository.Remove(cmd);   
         }
+
         [HttpPost]
         [Route("Update")]
         public async Task Update(CommandUzivatelUpdate cmd)

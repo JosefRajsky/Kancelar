@@ -15,7 +15,7 @@ namespace KancelarWeb.Data
         {
         }
 
-        public DbSet<KancelarWeb.ViewModels.UdalostModel> UdalostModel { get; set; }
+        public DbSet<KancelarWeb.ViewModels.Udalost> Udalost { get; set; }
 
         public DbSet<KancelarWeb.Kalendar> Kalendar { get; set; }
 

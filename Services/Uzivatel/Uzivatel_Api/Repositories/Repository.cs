@@ -1,6 +1,5 @@
 ﻿
 using CommandHandler;
-
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
@@ -116,7 +115,6 @@ namespace Uzivatel_Api.Repositories
             item.EventGuid = evt.EventId;
             return item;
         }
-
         public async Task<Uzivatel> Get(Guid id) => await Task.Run(() => db.Uzivatele.FirstOrDefault(b => b.UzivatelId == id));
         public async Task<List<Uzivatel>> GetList() => await db.Uzivatele.ToListAsync();
         public async Task Add(CommandUzivatelCreate cmd)

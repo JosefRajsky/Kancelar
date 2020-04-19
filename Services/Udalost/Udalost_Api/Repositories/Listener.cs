@@ -1,64 +1,44 @@
 ﻿
 using CommandHandler;
-
-
 using Newtonsoft.Json;
-using RabbitMQ.Client;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Udalost_Api.Models;
-using UdalostLibrary;
 
 namespace Udalost_Api.Repositories
 {
-    public class Listener : IListener
+    public class Listener
     {
-        private readonly IUdalostRepository _repository;
-        public Listener(IUdalostRepository repository)
+
+        private readonly IRepository _repository;
+        public Listener(IRepository repository)
         {
             _repository = repository;
-           
+            CheckOnStartUp();
         }
-        
-       
-        public void AddCommand(string message)
+        public async void CheckOnStartUp()
         {
-           
+            await _repository.RequestEvents(Guid.Empty);
+        }
+        public void AddCommand(string message) { 
+
             //-------------Description: Deserializace Json objektu na základní typ zprávy
-            var envelope = JsonConvert.DeserializeObject<Message>(message);
+        var envelope = JsonConvert.DeserializeObject<Message>(message);
             //-------------Description: Rozhodnutí o typu získazné zprávy. Typ vázaný na Enum z knihovny
 
             switch (envelope.MessageType)
             {
-
-                case MessageType.UdalostRemove:
-                   
-                        this.Remove(JsonConvert.DeserializeObject<CommandUdalostRemove>(envelope.Event));
-                   
+                case MessageType.UdalostCreated:
+                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUdalostCreated>(envelope.Event).EventId, envelope.EntityId);
                     break;
-                case MessageType.UdalostUpdate:
-                    
-                        this.Update(JsonConvert.DeserializeObject<CommandUdalostUpdate>(envelope.Event));
-                   
+                case MessageType.UdalostUpdated:
+                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUdalostUpdated>(envelope.Event).EventId, envelope.EntityId);
                     break;
-                case MessageType.DochazkaCreated:
-
-                        this.AddByDochazka(JsonConvert.DeserializeObject<EventDochazkaCreated>(envelope.Event));
-                   
+                case MessageType.UdalostRemoved:
+                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUdalostRemoved>(envelope.Event).EventId, envelope.EntityId);
                     break;
-
-
             }
         }
   
-        public void Add(CommandUdalostCreate cmd)
-        {
-            _repository.Add(cmd);
-      
-        }
+       
         public void AddByDochazka(EventDochazkaCreated evt)
         {
             var cmd = new CommandUdalostCreate()
@@ -72,14 +52,7 @@ namespace Udalost_Api.Repositories
             };
             _repository.Add(cmd);
         }
-        public void Remove(CommandUdalostRemove cmd)
-        {
-            _repository.Remove(cmd);
-        }
-        public void Update(CommandUdalostUpdate cmd)
-        {
-            _repository.Update(cmd);
-        }
+       
 
     }
 }

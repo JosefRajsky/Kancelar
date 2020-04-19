@@ -9,7 +9,6 @@ using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using Udalost_Api.Entities;
-using Udalost_Api.Models;
 
 namespace Udalost_Api
 {
@@ -21,13 +20,6 @@ namespace Udalost_Api
         }  
        
         public  DbSet<Udalost> Udalosti { get; set; }
-        //public DbSet<ReadLog> ReadLog { get; set; }
-
-
-     
-
-
-
     }
 
 
