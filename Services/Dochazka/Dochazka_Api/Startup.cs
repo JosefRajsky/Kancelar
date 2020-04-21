@@ -44,15 +44,15 @@ namespace Dochazka_Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Dochazka Api", Version = "v1" });
             });
-            services.AddSwaggerDocument();
-            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
-
-          
+            services.AddSwaggerDocument();  
+            
             #endregion
+               
+         
             services.AddControllers();
 
             //Description: Vytvoøení factory pro RabbitMQ
-
+            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
             var exchanges = new List<string>();
 
             //exchanges.Add(Configuration.GetValue<string>("Setting:Exchange"));

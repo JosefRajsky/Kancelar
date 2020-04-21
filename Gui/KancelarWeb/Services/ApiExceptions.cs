@@ -5,8 +5,7 @@ using System.Threading.Tasks;
 
 namespace KancelarWeb.Services
 {
-
-    [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.2.3.0 (NJsonSchema v10.1.5.0 (Newtonsoft.Json v12.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.4.2.0 (NJsonSchema v10.1.11.0 (Newtonsoft.Json v12.0.0.0))")]
     public partial class ApiException : System.Exception
     {
         public int StatusCode { get; private set; }
@@ -29,7 +28,7 @@ namespace KancelarWeb.Services
         }
     }
 
-    [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.2.3.0 (NJsonSchema v10.1.5.0 (Newtonsoft.Json v12.0.0.0))")]
+    [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.4.2.0 (NJsonSchema v10.1.11.0 (Newtonsoft.Json v12.0.0.0))")]
     public partial class ApiException<TResult> : ApiException
     {
         public TResult Result { get; private set; }
@@ -40,4 +39,5 @@ namespace KancelarWeb.Services
             Result = result;
         }
     }
+
 }

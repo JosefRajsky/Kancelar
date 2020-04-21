@@ -71,18 +71,14 @@ services:
       - rabbitmq
       - eventstore
       - monitor
-
   importapi:
     image: ${DOCKER_REGISTRY-}import_api
     hostname: "importapi"
-    container_name: 'importapi'
     ports:
       - "8053:80"
     build:
       context: .
       dockerfile: Services/Import/Import_Api/Dockerfile
-
-
 
   eventstore:
     image: ${DOCKER_REGISTRY-}eventstore
@@ -95,7 +91,6 @@ services:
     depends_on:
       - sqlserver
       - rabbitmq
-
 
   kalendarapi:
     image: ${DOCKER_REGISTRY-}kalendar_api

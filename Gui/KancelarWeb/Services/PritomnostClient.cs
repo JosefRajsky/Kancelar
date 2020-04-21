@@ -16,12 +16,12 @@ namespace KancelarWeb
     using System = global::System;
     
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.4.2.0 (NJsonSchema v10.1.11.0 (Newtonsoft.Json v12.0.0.0))")]
-    public partial class KalendarClient 
+    public partial class PritomnostClient 
     {
         private string _baseUrl = "localhost:8050";
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
     
-        public KalendarClient()
+        public PritomnostClient()
         {
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(CreateSerializerSettings);
         }
@@ -47,20 +47,20 @@ namespace KancelarWeb
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<Kalendar> GetAsync(System.Guid id)
+        public System.Threading.Tasks.Task<Pritomnost> GetAsync(System.Guid id)
         {
             return GetAsync(id, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<Kalendar> GetAsync(System.Guid id, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<Pritomnost> GetAsync(System.Guid id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/kalendar/Get/{id}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/pritomnost/Get/{id}");
             urlBuilder_.Replace("{id}", System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = new System.Net.Http.HttpClient();
@@ -91,7 +91,7 @@ namespace KancelarWeb
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200") 
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Kalendar>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Pritomnost>(response_, headers_).ConfigureAwait(false);
                             return objectResponse_.Object;
                         }
                         else
@@ -101,7 +101,7 @@ namespace KancelarWeb
                             throw new ApiException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
                         }
             
-                        return default(Kalendar);
+                        return default(Pritomnost);
                     }
                     finally
                     {
@@ -116,17 +116,17 @@ namespace KancelarWeb
         }
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Kalendar>> GetListAsync()
+        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Pritomnost>> GetListAsync()
         {
             return GetListAsync(System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Kalendar>> GetListAsync(System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Pritomnost>> GetListAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/kalendar/GetList");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/pritomnost/GetList");
     
             var client_ = new System.Net.Http.HttpClient();
             try
@@ -156,7 +156,7 @@ namespace KancelarWeb
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200") 
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<Kalendar>>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<Pritomnost>>(response_, headers_).ConfigureAwait(false);
                             return objectResponse_.Object;
                         }
                         else
@@ -166,7 +166,7 @@ namespace KancelarWeb
                             throw new ApiException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
                         }
             
-                        return default(System.Collections.Generic.ICollection<Kalendar>);
+                        return default(System.Collections.Generic.ICollection<Pritomnost>);
                     }
                     finally
                     {
@@ -277,15 +277,15 @@ namespace KancelarWeb
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.11.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class Kalendar 
+    public partial class Pritomnost 
     {
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public System.Guid Id { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("kalendarId", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonProperty("pritomnostId", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.Guid KalendarId { get; set; }
+        public System.Guid PritomnostId { get; set; }
     
         [Newtonsoft.Json.JsonProperty("uzivatelId", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
@@ -293,19 +293,6 @@ namespace KancelarWeb
     
         [Newtonsoft.Json.JsonProperty("uzivatelCeleJmeno", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string UzivatelCeleJmeno { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("rok", Required = Newtonsoft.Json.Required.Always)]
-        public int Rok { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("body", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Body { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("datumAktualizace", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.DateTimeOffset DatumAktualizace { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("kalendarBody", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Year KalendarBody { get; set; }
     
         [Newtonsoft.Json.JsonProperty("eventGuid", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Guid? EventGuid { get; set; }
@@ -315,92 +302,8 @@ namespace KancelarWeb
     
     
     }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.11.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class Year 
-    {
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
-        public int Id { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("months", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<Month> Months { get; set; }
-    
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.11.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class Month 
-    {
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
-        public int Id { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("days", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<Day> Days { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("dayCount", Required = Newtonsoft.Json.Required.Always)]
-        public int DayCount { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("monthName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string MonthName { get; set; }
-    
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.11.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class Day 
-    {
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
-        public int Id { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("typId", Required = Newtonsoft.Json.Required.Always)]
-        public int TypId { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("nazev", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Nazev { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("isSvatek", Required = Newtonsoft.Json.Required.Always)]
-        public bool IsSvatek { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("udalostCount", Required = Newtonsoft.Json.Required.Always)]
-        public int UdalostCount { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("polozky", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<Polozka> Polozky { get; set; }
-    
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.11.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class Polozka 
-    {
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.Guid Id { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("udalostTypId", Required = Newtonsoft.Json.Required.Always)]
-        public int UdalostTypId { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("nazev", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Nazev { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("uzivatelId", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.Guid UzivatelId { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("celeJmeno", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string CeleJmeno { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("datumOd", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.DateTimeOffset DatumOd { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("datumDo", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.DateTimeOffset DatumDo { get; set; }
-    
-    
-    }
 
+  
 }
 
 #pragma warning restore 1591

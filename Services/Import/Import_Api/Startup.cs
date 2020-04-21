@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommandHandler;
 using HealthChecks.UI.Client;
+using Import_Api.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -31,13 +32,13 @@ namespace Import_Api
         {
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Import Servis", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Imp Api", Version = "v1" });
             });
             services.AddSwaggerDocument();
 
             services.AddControllers();
-            services.AddHealthChecks().AddCheck("Import Servis", () => HealthCheckResult.Healthy());
-            
+            services.AddHealthChecks().AddCheck("Import Api", () => HealthCheckResult.Healthy());
+            services.AddTransient<IRepository, Repository>();
             ConnectMessageBroker(services);
 
 
@@ -55,15 +56,15 @@ namespace Import_Api
                 services.AddSingleton<Publisher>(s => new Publisher(factory, exchanges[0], "import.q"));
                 var _connection = factory.CreateConnection();
                 var _channel = _connection.CreateModel();
-                //_channel.ExchangeDeclare(exchange: exchanges[0], type: ExchangeType.Fanout, false, false, args);
+               
                 var queueName = _channel.QueueDeclare().QueueName;
 
-                //foreach (var ex in exchanges)
-                //{
-                //    _channel.QueueBind(queue: queueName,
-                //                  exchange: ex,
-                //                  routingKey: "");
-                //}
+                foreach (var ex in exchanges)
+                {
+                    _channel.QueueBind(queue: queueName,
+                                  exchange: ex,
+                                  routingKey: "");
+                }
                 services.AddHealthChecks().AddRabbitMQ(sp => _connection);
             });
 

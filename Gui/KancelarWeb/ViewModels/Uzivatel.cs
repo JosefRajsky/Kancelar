@@ -11,11 +11,12 @@ namespace KancelarWeb.ViewModels
 
     public partial class Uzivatel
     {
-
         public Guid Id { get; set; }
         [Display(Name = "Uživatel Id")]
         public Guid UzivatelId { get; set; }
         [Display(Name = "Titul")]
+          public  string ImportedId { get; set; }
+
         public string TitulPred { get; set; }
         [Required]
         [Display(Name = "Jméno")]
