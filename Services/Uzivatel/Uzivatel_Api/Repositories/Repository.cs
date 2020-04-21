@@ -88,6 +88,7 @@ namespace Uzivatel_Api.Repositories
         {
             var model = new Uzivatel()
             {
+                ImportedId = evt.ImportedId,
                 UzivatelId = evt.UzivatelId,
                 TitulPred = evt.TitulPred,
                 Jmeno = evt.Jmeno,
@@ -122,8 +123,9 @@ namespace Uzivatel_Api.Repositories
             var ev = new EventUzivatelCreated()
             {
                 EventId = Guid.NewGuid(),
-                UzivatelId = Guid.NewGuid(),
+                UzivatelId = Guid.NewGuid(),                
                 EventCreated = DateTime.Now,
+                ImportedId = cmd.ImportedId,
                 TitulPred = cmd.TitulPred,
                 Jmeno = cmd.Jmeno,
                 Prijmeni = cmd.Prijmeni,

@@ -71,6 +71,18 @@
       "UpstreamPathTemplate": "/api/pritomnost/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "SwaggerKey": "pritomnost"
+    },
+    {
+      "DownstreamPathTemplate": "/import/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "importapi/"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/import/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "SwaggerKey": "import"
     }
   ],
   "SwaggerEndPoints": [
@@ -131,6 +143,16 @@
           "Name": "Pritomnost API",
           "Version": "v1",
           "Url": "http://pritomnostapi/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "import",
+      "Config": [
+        {
+          "Name": "Import API",
+          "Version": "v1",
+          "Url": "http://importapi/swagger/v1/swagger.json"
         }
       ]
     }

@@ -49,6 +49,7 @@ namespace Monitor
                 setup.AddHealthCheckEndpoint("Eventstore", "http://eventstore/healthcheck");
                 setup.AddHealthCheckEndpoint("Kalendar", "http://kalendarapi/healthcheck");
                 setup.AddHealthCheckEndpoint("Pritomnost", "http://pritomnostapi/healthcheck");
+                setup.AddHealthCheckEndpoint("Import", "http://importapi/healthcheck");
             });    
         }
 

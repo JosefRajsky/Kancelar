@@ -55,9 +55,6 @@ namespace WebApi
                 app.UseDeveloperExceptionPage();
             }
             app.UseStaticFiles();
-
-
-            
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerForOcelotUI(_config, opt =>
             {

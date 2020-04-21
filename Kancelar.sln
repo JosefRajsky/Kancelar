@@ -54,9 +54,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Template", "Services\Templa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventStore", "Services\EventStore\EventStore\EventStore.csproj", "{2EF11C7C-73DE-49AF-854B-E81BAC329D13}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TemplateTests", "Services\Template\TemplateTests\TemplateTests.csproj", "{A00C3CD0-DA92-4BA3-B03B-1217BFDEEA81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TemplateTests", "Services\Template\TemplateTests\TemplateTests.csproj", "{A00C3CD0-DA92-4BA3-B03B-1217BFDEEA81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pritomnost_Api", "Services\Pritomnost\Pritomnost_Api\Pritomnost_Api.csproj", "{42F628CA-9849-40A7-B874-8B2D84A84AAB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pritomnost_Api", "Services\Pritomnost\Pritomnost_Api\Pritomnost_Api.csproj", "{42F628CA-9849-40A7-B874-8B2D84A84AAB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Import", "Import", "{5767EEEE-6CA1-4C52-85D9-526E72163BB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Import_Api", "Services\Import\Import_Api\Import_Api.csproj", "{321D7DE3-5033-47E5-8D39-BD331289A6BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -116,6 +120,10 @@ Global
 		{42F628CA-9849-40A7-B874-8B2D84A84AAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42F628CA-9849-40A7-B874-8B2D84A84AAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42F628CA-9849-40A7-B874-8B2D84A84AAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{321D7DE3-5033-47E5-8D39-BD331289A6BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{321D7DE3-5033-47E5-8D39-BD331289A6BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{321D7DE3-5033-47E5-8D39-BD331289A6BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{321D7DE3-5033-47E5-8D39-BD331289A6BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -141,6 +149,8 @@ Global
 		{2EF11C7C-73DE-49AF-854B-E81BAC329D13} = {FDF8CCB4-ED95-4EA9-9B70-4DAF530D7A2E}
 		{A00C3CD0-DA92-4BA3-B03B-1217BFDEEA81} = {44B5E574-18F3-4479-AAC7-D006A3717C76}
 		{42F628CA-9849-40A7-B874-8B2D84A84AAB} = {5C84E47F-5084-450E-B405-80D9AC44CFCB}
+		{5767EEEE-6CA1-4C52-85D9-526E72163BB9} = {91054B8F-6B80-49D5-B3F1-415C43CAD059}
+		{321D7DE3-5033-47E5-8D39-BD331289A6BE} = {5767EEEE-6CA1-4C52-85D9-526E72163BB9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FA02534C-DA03-44C8-9DAA-704670F31BEC}

@@ -4,7 +4,7 @@ namespace CommandHandler
 {
     public class CommandUzivatelCreate 
     {     
-
+        public string ImportedId { get; set; }
         public string TitulPred { get; set; }
         public string Jmeno { get; set; }
         public string Prijmeni { get; set; }
@@ -43,6 +43,7 @@ namespace CommandHandler
         public Guid EventId { get; set; }
         public DateTime EventCreated { get; set; }
         public int Generation { get; set; }
+        public string ImportedId { get; set; }
         public Guid UzivatelId { get; set; }
         public string TitulPred { get; set; }
         public string Jmeno { get; set; }

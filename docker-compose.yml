@@ -33,12 +33,36 @@ services:
     depends_on:
       - sqlserver
 
+  gateway:
+    image: ${DOCKER_REGISTRY-}webapi
+    hostname: "gateway"       
+    ports:
+      - "8050:80"
+    build:
+      context: .
+      dockerfile: Api/WebApi/Dockerfile
+    depends_on:
+      - sqlserver
+      - rabbitmq
+  monitor:
+    image: ${DOCKER_REGISTRY-}monitor
+    hostname: "monitor"
+    container_name: 'HealtMonitor'
+    ports:
+      - "8051:80"
+    build:
+      context: .
+      dockerfile: Services/Monitor/Monitor/Dockerfile
+    depends_on:
+      - sqlserver
+      - rabbitmq
+
   template:
     image: ${DOCKER_REGISTRY-}template
     hostname: "template"
     container_name: 'Template'
     ports:
-      - "8092:80"
+      - "8052:80"
     build:
       context: .
       dockerfile: Services/Template/Template/Dockerfile
@@ -48,24 +72,23 @@ services:
       - eventstore
       - monitor
 
-  monitor:
-    image: ${DOCKER_REGISTRY-}monitor
-    hostname: "monitor"
-    container_name: 'HealtMonitor'
+  importapi:
+    image: ${DOCKER_REGISTRY-}import_api
+    hostname: "importapi"
+    container_name: 'importapi'
     ports:
-      - "8091:80"
+      - "8053:80"
     build:
       context: .
-      dockerfile: Services/Monitor/Monitor/Dockerfile
-    depends_on:
-      - sqlserver
-      - rabbitmq
+      dockerfile: Services/Import/Import_Api/Dockerfile
+
+
 
   eventstore:
     image: ${DOCKER_REGISTRY-}eventstore
     hostname: "eventstore"    
     ports:
-      - "8070:80"
+      - "8054:80"
     build:
       context: .
       dockerfile: Services/EventStore/EventStore/Dockerfile
@@ -73,23 +96,12 @@ services:
       - sqlserver
       - rabbitmq
 
-  gateway:
-    image: ${DOCKER_REGISTRY-}webapi
-    hostname: "gateway"       
-    ports:
-      - "8090:80"
-    build:
-      context: .
-      dockerfile: Api/WebApi/Dockerfile
-    depends_on:
-      - sqlserver
-      - rabbitmq
 
   kalendarapi:
     image: ${DOCKER_REGISTRY-}kalendar_api
     hostname: "kalendarapi"       
     ports:
-      - "8086:80"
+      - "8055:80"
     build:
       context: .
       dockerfile: Services/Kalendar/Kalendar_Api/Dockerfile
@@ -101,7 +113,7 @@ services:
     image: ${DOCKER_REGISTRY-}udalost_api
     hostname: "udalostapi"       
     ports:
-      - "8083:80"
+      - "8056:80"
     build:
       context: .
       dockerfile: Services/Udalost/Udalost_Api/Dockerfile
@@ -113,7 +125,7 @@ services:
     image: ${DOCKER_REGISTRY-}dochazka_api
     hostname: "dochazkaapi"       
     ports:
-      - "8084:80"
+      - "8057:80"
     build:
       context: .
       dockerfile: Services/Dochazka/Dochazka_Api/Dockerfile
@@ -125,7 +137,7 @@ services:
     image: ${DOCKER_REGISTRY-}uzivatel_api
     hostname: "uzivatelapi"       
     ports:
-      - "8085:80"
+      - "8058:80"
     build:
       context: .
       dockerfile: Services/Uzivatel/Uzivatel_Api/Dockerfile
@@ -135,7 +147,7 @@ services:
     image: ${DOCKER_REGISTRY-}pritomnost_api
     hostname: "pritomnostapi"       
     ports:
-      - "8087:80"
+      - "8059:80"
     build:
       context: .
       dockerfile: Services/Pritomnost/Pritomnost_Api/Dockerfile

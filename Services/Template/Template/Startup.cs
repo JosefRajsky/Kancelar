@@ -30,61 +30,63 @@ namespace Template
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {           
-            var exchanges = new List<string>();
-            exchanges.Add(Configuration["RbSetting:Exchange"]);
-
-            //var factory = new ConnectionFactory() { HostName = Configuration["RbSetting:RbConn"] };
-            //var factory = new ConnectionFactory() { HostName = "localhost:5672" };
-            var factory = new ConnectionFactory() { HostName = Configuration["RbSetting:RbConn"] };
+        {
             services.AddTransient<IRepository, Repository>();
-            services.AddSingleton<Publisher>(s => new Publisher(factory, Configuration["RbSetting:Exchange"], "Template.q"));
             services.AddDbContext<TemplateDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
             services.AddControllers();
-
-            //Description: Pøihlášení k odbìru zpráv z RabbitMQ
-            factory.AutomaticRecoveryEnabled = true;
-            factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(5);
-
-            var _connection = factory.CreateConnection();
-            //Descripiton: vytvoøení komunikaèního kanálu, pøipojení a definice fronty pro práci se správami
-            var _channel = _connection.CreateModel();
-            var queueName = _channel.QueueDeclare().QueueName;
-            var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, _connection, _channel, queueName)).BuildServiceProvider().GetService<ISubscriber>().Start();
-            //Description: Propojení exchange a fronty
-            foreach (var ex in exchanges)
-            {
-                _channel.QueueBind(queue: queueName,
-                              exchange: ex,
-                              routingKey: "");
-            }
-            //Description: vytvoøení smìrovaèe pøijatých zpráv ke kterým je služba pøihlášena
-            var listener = new Listener(services.BuildServiceProvider().GetService<IRepository>());
-            //Description: Zpracování a odeslání zprávy do smìrovaèe
-            consumer.Received += (model, ea) =>
-            {
-                //-------------Description: Formátování pøijaté zprávy
-                var body = ea.Body;
-                var message = Encoding.UTF8.GetString(body);
-                //-------------Description: Odeslání zprávy do smìrovaèe
-                listener.AddCommand(message);
-            };
-
             //Description: Kontrola stavu služby
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Template Api", Version = "v1" });
             });
+          
             services.AddSwaggerDocument();
             services.AddHealthChecks()
                 .AddCheck("Template API", () => HealthCheckResult.Healthy())
                 .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
                         healthQuery: "SELECT 1;",
                         name: "DB",
-                        failureStatus: HealthStatus.Degraded)
-                 .AddRabbitMQ(sp => _connection); 
+                        failureStatus: HealthStatus.Degraded);
+            ConnectMessageBroker(services);
         }
-    
+        public async void ConnectMessageBroker(IServiceCollection services)
+        {
+            await Task.Run(() =>
+            {
+                var exchanges = new List<string>();
+                exchanges.Add(Configuration["RbSetting:Exchange"]);
+                var factory = new ConnectionFactory() { HostName = Configuration["RbSetting:RbConn"] };          
+                services.AddSingleton<Publisher>(s => new Publisher(factory, Configuration["RbSetting:Exchange"], "Template.q"));               
+                //Description: Pøihlášení k odbìru zpráv z RabbitMQ
+                factory.AutomaticRecoveryEnabled = true;
+                factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(5);
+                var _connection = factory.CreateConnection();
+                //Descripiton: vytvoøení komunikaèního kanálu, pøipojení a definice fronty pro práci se správami
+                var _channel = _connection.CreateModel();
+                var queueName = _channel.QueueDeclare().QueueName;
+                var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, _connection, _channel, queueName)).BuildServiceProvider().GetService<ISubscriber>().Start();
+                //Description: Propojení exchange a fronty
+                foreach (var ex in exchanges)
+                {
+                    _channel.QueueBind(queue: queueName,
+                                  exchange: ex,
+                                  routingKey: "");
+                }
+                //Description: vytvoøení smìrovaèe pøijatých zpráv ke kterým je služba pøihlášena
+                var listener = new Listener(services.BuildServiceProvider().GetService<IRepository>());
+                //Description: Zpracování a odeslání zprávy do smìrovaèe
+                consumer.Received += (model, ea) =>
+                {
+                    //-------------Description: Formátování pøijaté zprávy
+                    var body = ea.Body;
+                    var message = Encoding.UTF8.GetString(body);
+                    //-------------Description: Odeslání zprávy do smìrovaèe
+                    listener.AddCommand(message);
+                };
+                services.AddHealthChecks().AddRabbitMQ(sp => _connection);
+            });            
+        }
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
