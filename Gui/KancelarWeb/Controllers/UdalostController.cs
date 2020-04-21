@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using KancelarWeb.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Net.Http;
 using KancelarWeb.Services;
@@ -30,9 +29,9 @@ namespace KancelarWeb.Controllers
            
             return View(model);
         }
-        public async Task<IActionResult> Detail(Guid id)
+        public async Task<IActionResult> Detail(Guid udalostId, Guid id)
         {
-            var model = await client.GetAsync(id);
+            var model = await client.GetAsync(udalostId,id.ToString());
 
           
               

@@ -6,17 +6,17 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["Services/Import/Import_Api/Import_Api.csproj", "Services/Import/Import_Api/"]
+COPY ["Services/ImportExport/ImportExport_Api/ImportExport_Api.csproj", "Services/ImportExport/ImportExport_Api/"]
 COPY ["RabbitHandlers/CommandHandler/CommandHandler.csproj", "RabbitHandlers/CommandHandler/"]
-RUN dotnet restore "Services/Import/Import_Api/Import_Api.csproj"
+RUN dotnet restore "Services/ImportExport/ImportExport_Api/ImportExport_Api.csproj"
 COPY . .
-WORKDIR "/src/Services/Import/Import_Api"
-RUN dotnet build "Import_Api.csproj" -c Release -o /app/build
+WORKDIR "/src/Services/ImportExport/ImportExport_Api"
+RUN dotnet build "ImportExport_Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Import_Api.csproj" -c Release -o /app/publish
+RUN dotnet publish "ImportExport_Api.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Import_Api.dll"]
+ENTRYPOINT ["dotnet", "ImportExport_Api.dll"]

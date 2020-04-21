@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-
 namespace Uzivatel_Api
 {
     public class UzivatelDbContext : DbContext

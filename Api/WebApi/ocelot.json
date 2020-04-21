@@ -73,16 +73,16 @@
       "SwaggerKey": "pritomnost"
     },
     {
-      "DownstreamPathTemplate": "/import/{everything}",
+      "DownstreamPathTemplate": "/importexport/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "importapi/"
+          "Host": "importexportapi/"
         }
       ],
-      "UpstreamPathTemplate": "/api/import/{everything}",
+      "UpstreamPathTemplate": "/api/importexport/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-      "SwaggerKey": "import"
+      "SwaggerKey": "importexport"
     }
   ],
   "SwaggerEndPoints": [
@@ -147,10 +147,10 @@
       ]
     },
     {
-      "Key": "import",
+      "Key": "importexport",
       "Config": [
         {
-          "Name": "Import API",
+          "Name": "ImportExport API",
           "Version": "v1",
           "Url": "http://importapi/swagger/v1/swagger.json"
         }

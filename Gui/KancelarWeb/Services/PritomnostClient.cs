@@ -18,7 +18,7 @@ namespace KancelarWeb
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.4.2.0 (NJsonSchema v10.1.11.0 (Newtonsoft.Json v12.0.0.0))")]
     public partial class PritomnostClient 
     {
-        private string _baseUrl = "localhost:8050";
+        private string _baseUrl = "http://gateway/";
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
     
         public PritomnostClient()

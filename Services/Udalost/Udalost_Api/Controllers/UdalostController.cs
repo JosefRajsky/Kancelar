@@ -16,38 +16,38 @@ namespace Udalost_Api.Controllers
     [Route("[controller]")]
     public class UdalostController : ControllerBase
     {
-        private readonly IRepository _udalostRepository;
+        private readonly IRepository _repository;
         public UdalostController(IRepository udalostService)
         {
-            _udalostRepository = udalostService;
+            _repository = udalostService;
         }
         [HttpGet]
         [Route("Get/{id?}")]
-        public async Task<Udalost> Get(Guid udalostId) =>await _udalostRepository.Get(udalostId);
+        public async Task<Udalost> Get(Guid udalostId) =>await _repository.Get(udalostId);
 
         [HttpGet]
         [Route("GetList")]
         public async Task<List<Udalost>> GetList() {
-           return await _udalostRepository.GetList();
+           return await _repository.GetList();
         }
         [HttpPut]
         [Route("Add")]
         public async Task Add(CommandUdalostCreate cmd)
         {
-            await _udalostRepository.Add(cmd);
+            await _repository.Add(cmd);
         }
 
         [HttpPost]
         [Route("Remove")]
         public async Task Remove(CommandUdalostRemove cmd)
         {
-            await _udalostRepository.Remove(cmd);
+            await _repository.Remove(cmd);
         }
         [HttpPost]
         [Route("Update")]
         public async Task Update(CommandUdalostUpdate cmd)
         {
-            await _udalostRepository.Update(cmd);
+            await _repository.Update(cmd);
         }
     }
 }

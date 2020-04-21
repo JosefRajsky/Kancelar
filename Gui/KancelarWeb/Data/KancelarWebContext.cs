@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using KancelarWeb.ViewModels;
+
 
 namespace KancelarWeb.Data
 {
@@ -15,10 +15,10 @@ namespace KancelarWeb.Data
         {
         }
 
-        public DbSet<KancelarWeb.ViewModels.Udalost> Udalost { get; set; }
+        public DbSet<Udalost> Udalost { get; set; }
 
-        public DbSet<KancelarWeb.Kalendar> Kalendar { get; set; }
+        public DbSet<Kalendar> Kalendar { get; set; }
 
-        public DbSet<KancelarWeb.ViewModels.Uzivatel> Uzivatel { get; set; }
+        public DbSet<Uzivatel> Uzivatel { get; set; }
     }
 }
