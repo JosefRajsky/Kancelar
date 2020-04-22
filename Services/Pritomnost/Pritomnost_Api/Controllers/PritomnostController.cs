@@ -20,10 +20,10 @@ namespace Pritomnost_Api.Controllers
         }
         [HttpGet]
         [Route("Get/{id?}")]
-        public async Task<ActionResult<Pritomnost>> Get(Guid id)
+        public async Task<Pritomnost> Get(Guid id)
         {
             var response = await _repository.Get(id);     
-            return Ok(response);
+            return response;
         }
 
         [HttpGet]

@@ -22,10 +22,10 @@ namespace MailSender_Api.Controllers
         }
         [HttpGet]
         [Route("Get/{id?}")]
-        public async Task<ActionResult<Mail>> Get(Guid id)
+        public async Task<Mail> Get(Guid id)
         {
             var response = await _repository.Get(id);            
-            return Ok(response);
+            return response;
         }
 
         [HttpGet]

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CommandHandler;
-using ImportExport_Api.Repositories;
+using Transfer_Api.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace ImportExport_Api.Controllers
+namespace Transfer_Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]

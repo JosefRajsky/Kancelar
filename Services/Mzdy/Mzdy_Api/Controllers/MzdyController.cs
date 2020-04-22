@@ -22,10 +22,10 @@ namespace Mzdy_Api.Controllers
         }
         [HttpGet]
         [Route("Get/{id?}")]
-        public async Task<ActionResult<Mzda>> Get(Guid id)
+        public async Task<Mzda> Get(Guid id)
         {
             var response = await _repository.Get(id);            
-            return Ok(response);
+            return response;
         }
 
         [HttpGet]

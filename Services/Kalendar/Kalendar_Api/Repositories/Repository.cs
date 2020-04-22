@@ -123,35 +123,39 @@ namespace Kalendar_Api.Repositories
             var interval = (evt.DatumDo - evt.DatumOd).TotalDays;
             var _tmpYear = evt.DatumOd.Year;
             var model = db.Kalendare.FirstOrDefault(k => k.UzivatelId == evt.UzivatelId && k.Rok == _tmpYear);
-            var kalendar = JsonConvert.DeserializeObject<Year>(model.Body);
-            for (int i = 0; i <= interval; i++)
+            if (model != null)
             {
-                var focus = evt.DatumOd.AddDays(i);
-                if (_tmpYear != focus.Year)
+
+                var kalendar = JsonConvert.DeserializeObject<Year>(model.Body);
+                for (int i = 0; i <= interval; i++)
                 {
-                    _tmpYear = focus.Year;
-                    model = db.Kalendare.FirstOrDefault(k => k.UzivatelId == evt.UzivatelId && k.Rok == _tmpYear);
-                    kalendar = JsonConvert.DeserializeObject<Year>(model.Body);
-                }
-                var mesic = kalendar.Months[focus.Month - 1];
-                var den = mesic.Days[focus.Day - 1];
-                var polozka = den.Polozky.Where(p => p.Id == evt.UdalostId).FirstOrDefault();
-                if (polozka !=null)
-                {
-                    polozka.Id = evt.UdalostId;
-                    polozka.DatumDo = evt.DatumOd;
-                    polozka.UdalostTypId = evt.UdalostTypId;
-                    polozka.DatumOd = evt.DatumDo;
-                    polozka.Nazev = evt.Nazev;
-                    polozka.UzivatelId = evt.UzivatelId;
-                    polozka.CeleJmeno = evt.UzivatelCeleJmeno;
-                    var result = JsonConvert.SerializeObject(kalendar);
-                    model.DatumAktualizace = evt.EventCreated;
-                    model.Body = result;
-                    model.EventGuid = evt.EventId;
-                    model.Generation = evt.Generation;                    
-                    db.Kalendare.Update(model);
-                    await db.SaveChangesAsync();
+                    var focus = evt.DatumOd.AddDays(i);
+                    if (_tmpYear != focus.Year)
+                    {
+                        _tmpYear = focus.Year;
+                        model = db.Kalendare.FirstOrDefault(k => k.UzivatelId == evt.UzivatelId && k.Rok == _tmpYear);
+                        kalendar = JsonConvert.DeserializeObject<Year>(model.Body);
+                    }
+                    var mesic = kalendar.Months[focus.Month - 1];
+                    var den = mesic.Days[focus.Day - 1];
+                    var polozka = den.Polozky.Where(p => p.Id == evt.UdalostId).FirstOrDefault();
+                    if (polozka != null)
+                    {
+                        polozka.Id = evt.UdalostId;
+                        polozka.DatumDo = evt.DatumOd;
+                        polozka.UdalostTypId = evt.UdalostTypId;
+                        polozka.DatumOd = evt.DatumDo;
+                        polozka.Nazev = evt.Nazev;
+                        polozka.UzivatelId = evt.UzivatelId;
+                        polozka.CeleJmeno = evt.UzivatelCeleJmeno;
+                        var result = JsonConvert.SerializeObject(kalendar);
+                        model.DatumAktualizace = evt.EventCreated;
+                        model.Body = result;
+                        model.EventGuid = evt.EventId;
+                        model.Generation = evt.Generation;
+                        db.Kalendare.Update(model);
+                        await db.SaveChangesAsync();
+                    }
                 }
             }
         }

@@ -24,11 +24,6 @@ namespace CommandHandler
         ProvideHealingStream = 1000,
         [Description("Event k obnove entity")]
         HealingStreamProvided = 1001,
-        [Description("Provedení exportu přítomnosti")]
-        ExportPritomnost = 1002,
-        [Description("Import seznamu uživatelských účtů")]
-        ImportUzivatel = 1003,
-
         #region Dochazka
         [Description("Command: Vytvoření nové docházky")]
         DochazkaCreate = 0,
@@ -43,12 +38,11 @@ namespace CommandHandler
         DochazkaCreated = 3,
 
         [Description("Event docházka byla odstraněna")]
-        DochazkaRemoved = 4,
+        DochazkaDeleted = 4,
 
         [Description("Event")]
         DochazkaUpdated = 5,
         #endregion
-
         #region Udalost
 
         [Description("Command: Založení nové události")]
@@ -69,7 +63,6 @@ namespace CommandHandler
         [Description("Command: Update události")]
         UdalostUpdated = 11,
         #endregion
-
         #region Uzivatel
         [Description("Command: Vytvoření nového uživatele")]
         UzivatelCreate = 12,
@@ -89,7 +82,6 @@ namespace CommandHandler
         [Description("Command: Uživatel byl upraven")]
         UzivatelUpdated = 17,
         #endregion
-
         #region Kalendar
         [Description("Command: Vytvoření nového kalendáře")]
         KalendarCreate = 18,       
@@ -103,7 +95,6 @@ namespace CommandHandler
         [Description("Event: kalendář byl upraven")]
         KalendarUpdated = 21,
         #endregion
-
         #region Pritomnost
         [Description("Command: Vytvoření nového kalendáře")]
         PritomnostCreate = 22,
@@ -117,7 +108,6 @@ namespace CommandHandler
         [Description("Event: kalendář byl upraven")]
         PritomnostUpdated = 25,
         #endregion
-
         #region Aktivita
         AktivitaCreate = 26,     
         AktivitaRemove = 27,
@@ -197,6 +187,14 @@ namespace CommandHandler
         VykazCreated = 83,
         VykazRemoved = 84,
         VykazUpdated = 85,
+        #endregion
+        #region Transfer
+        TransferCreate = 100,
+        TransferRemove = 101,
+        TransferUpdate = 102,
+        TransferCreated = 103,
+        TransferRemoved = 104,
+        TransferUpdated = 105,
         #endregion
 
 

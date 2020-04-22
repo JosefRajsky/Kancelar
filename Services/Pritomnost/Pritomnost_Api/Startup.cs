@@ -60,7 +60,18 @@ namespace Pritomnost_Api
             var retryPolicy = Policy.Handle<BrokerUnreachableException>().WaitAndRetryAsync(5, i => TimeSpan.FromSeconds(10));
             await retryPolicy.ExecuteAsync(async () =>
             {
-                await Task.Run(() => { Connection = factory.CreateConnection(); });
+                await Task.Run(() => {
+                    try
+                    {
+                        Connection = factory.CreateConnection();
+                    }
+                    catch (Exception)
+                    {
+
+                        throw;
+                    }
+
+                });
             });
             var _channel = Connection.CreateModel();
             var queueName = _channel.QueueDeclare().QueueName;

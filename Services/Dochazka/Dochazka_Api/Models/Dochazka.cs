@@ -10,6 +10,9 @@ namespace Dochazka_Api.Models
     {
         [Key]
         public Guid Id { get; set; }
+        public Guid? EventGuid { get; set; }
+        public int Generation { get; set; }
+        public Guid DochazkaId { get; set; }
         public Guid UzivatelId { get; set; }
         public int Rok { get; set; }
         public int Den { get; set; }

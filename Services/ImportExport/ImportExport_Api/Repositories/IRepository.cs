@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ImportExport_Api.Repositories
+namespace Transfer_Api.Repositories
 {
     public interface IRepository
     {

@@ -24,27 +24,21 @@ namespace Nastaveni_Api.Repositories
         }
         public void AddCommand(string message)
         {
-            //-------------Description: Deserializace Json objektu na základní typ zprávy
             var envelope = JsonConvert.DeserializeObject<Message>(message);
-            //-------------Description: Rozhodnutí o typu získazné zprávy. Typ vázaný na Enum z knihovny
             switch (envelope.MessageType)
             {
                 case MessageType.HealingStreamProvided:
-                    //-------------Description: Deserializace zprávy do správného typu a odeslání k uložení do DB; 
                     var ev = JsonConvert.DeserializeObject<HealingStreamProvided>(envelope.Event);
                     _repository.ReplayEvents(ev.MessageList, envelope.EntityId);
                     break;
-                case MessageType.UzivatelCreated:
+                case MessageType.NastaveniCreated:
 
                     _repository.LastEventCheck(JsonConvert.DeserializeObject<EventNastaveniCreated>(envelope.Event).EventId, envelope.EntityId);
                     break;
-                case MessageType.UzivatelUpdated:
+                case MessageType.NastaveniUpdated:
                     _repository.LastEventCheck(JsonConvert.DeserializeObject<EventNastaveniCreated>(envelope.Event).EventId, envelope.EntityId);
                     break;      
             }
         }
-
-
-
     }
 }

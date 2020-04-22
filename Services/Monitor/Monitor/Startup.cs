@@ -44,8 +44,7 @@ namespace Monitor
                 setup.AddHealthCheckEndpoint("Uzivatel", "http://uzivatelapi/healthcheck");
                 setup.AddHealthCheckEndpoint("Eventstore", "http://eventstore/healthcheck");
                 setup.AddHealthCheckEndpoint("Kalendar", "http://kalendarapi/healthcheck");
-                setup.AddHealthCheckEndpoint("Pritomnost", "http://pritomnostapi/healthcheck");
-                setup.AddHealthCheckEndpoint("ImportExport", "http://importexportapi/healthcheck");
+                setup.AddHealthCheckEndpoint("Pritomnost", "http://pritomnostapi/healthcheck");               
                 setup.AddHealthCheckEndpoint("Aktivita", "http://aktivitaapi/healthcheck");
                 setup.AddHealthCheckEndpoint("Cinnost", "http://cinnostapi/healthcheck");
                 setup.AddHealthCheckEndpoint("MailSender", "http://mailsenderapi/healthcheck");
@@ -56,6 +55,7 @@ namespace Monitor
                 setup.AddHealthCheckEndpoint("Struktura", "http://strukturaapi/healthcheck");
                 setup.AddHealthCheckEndpoint("Ukol", "http://ukolapi/healthcheck");
                 setup.AddHealthCheckEndpoint("Vykaz", "http://vykazapi/healthcheck");
+                setup.AddHealthCheckEndpoint("Transfer", "http://transferapi/healthcheck");
             });
             MessageBrokerConnection(services);
         services.AddHealthChecks().AddRabbitMQ(sp => Connection);
@@ -75,7 +75,18 @@ namespace Monitor
             var retryPolicy = Policy.Handle<BrokerUnreachableException>().WaitAndRetryAsync(5, i => TimeSpan.FromSeconds(10));
             await retryPolicy.ExecuteAsync(async () =>
             {
-                await Task.Run(() => { Connection = factory.CreateConnection(); });
+                await Task.Run(() => {
+                    try
+                    {
+                        Connection = factory.CreateConnection();
+                    }
+                    catch (Exception)
+                    {
+
+                        
+                    }
+                    
+                });
             });
           
         }

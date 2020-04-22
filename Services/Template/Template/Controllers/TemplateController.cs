@@ -22,10 +22,10 @@ namespace Template.Controllers
         }
         [HttpGet]
         [Route("Get/{id?}")]
-        public async Task<ActionResult<Temp>> Get(Guid id)
+        public async Task<Temp> Get(Guid id)
         {
             var response = await _repository.Get(id);            
-            return Ok(response);
+            return response;
         }
 
         [HttpGet]

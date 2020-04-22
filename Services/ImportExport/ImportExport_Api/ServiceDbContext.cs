@@ -2,7 +2,7 @@
 
 using Microsoft.EntityFrameworkCore;
 
-namespace ImportExport_Api
+namespace Transfer_Api
 {
     public class ServiceDbContext : DbContext
     {
@@ -10,7 +10,7 @@ namespace ImportExport_Api
          this.Database.EnsureCreated();
         }  
        
-        public  DbSet<ImportExport> ImportExports { get; set; }
+        public  DbSet<Transfer> Transfers { get; set; }
     }
 
 

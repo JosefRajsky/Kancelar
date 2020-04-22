@@ -7,8 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommandHandler;
 using HealthChecks.UI.Client;
-using ImportExport_Api;
-using ImportExport_Api.Repositories;
+using Transfer_Api;
+using Transfer_Api.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -24,7 +24,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Exceptions;
 
 
-namespace ImportExport_Api
+namespace Transfer_Api
 {
     public class Startup
     {
@@ -64,7 +64,18 @@ namespace ImportExport_Api
             var retryPolicy = Policy.Handle<BrokerUnreachableException>().WaitAndRetryAsync(5, i => TimeSpan.FromSeconds(10));
             await retryPolicy.ExecuteAsync(async () =>
             {
-                await Task.Run(() => { Connection = factory.CreateConnection(); });
+                await Task.Run(() => {
+                    try
+                    {
+                        Connection = factory.CreateConnection();
+                    }
+                    catch (Exception)
+                    {
+
+                        throw;
+                    }
+
+                });
             });
             var _channel = Connection.CreateModel();
             var queueName = _channel.QueueDeclare().QueueName;

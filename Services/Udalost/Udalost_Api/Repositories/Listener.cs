@@ -49,6 +49,7 @@ namespace Udalost_Api.Repositories
                 UdalostTypId = 1,
                 Nazev = "Přítomnost",
                 UzivatelId = evt.UzivatelId,
+                DatumZadal = evt.EventCreated
             };
             _repository.Add(cmd);
         }

@@ -14,59 +14,36 @@ namespace Dochazka_Api.Repositories
 {
     public class Listener
     {
-        //string _BaseUrl;
         private readonly IRepository _repository;
         public Listener(IRepository repository)
         {
             _repository = repository;
-
-            //CheckState();
+            CheckOnStartUp();
         }
-        
+        public async void CheckOnStartUp()
+        {
+            await _repository.RequestEvents(Guid.Empty);
+        }
         public void AddCommand(string message)
         {
             var envelope = JsonConvert.DeserializeObject<Message>(message);
             switch (envelope.MessageType)
             {
-                
-                case MessageType.DochazkaCreate:
-                                   
-                        this.AddAsync(JsonConvert.DeserializeObject<CommandDochazkaCreate>(envelope.Event));
-                  
+                case MessageType.HealingStreamProvided:
+                    var ev = JsonConvert.DeserializeObject<HealingStreamProvided>(envelope.Event);
+                    _repository.ReplayEvents(ev.MessageList, envelope.EntityId);
                     break;
-                case MessageType.DochazkaRemove:
-                  
-                        this.Remove(JsonConvert.DeserializeObject<CommandDochazkaRemove>(envelope.Event));
-                   
+                case MessageType.DochazkaCreated:
+
+                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventDochazkaCreated>(envelope.Event).EventId, envelope.EntityId);
                     break;
-                case MessageType.DochazkaUpdate:
-                    
-                        this.Update(JsonConvert.DeserializeObject<CommandDochazkaUpdate>(envelope.Event));
-                  
+                case MessageType.DochazkaUpdated:
+                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventDochazkaCreated>(envelope.Event).EventId, envelope.EntityId);
                     break;
-              
-                default:
-                    
+                case MessageType.DochazkaDeleted:
+                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventDochazkaDeleted>(envelope.Event).EventId, envelope.EntityId);
                     break;
             }
         }
-        public void AddAsync(CommandDochazkaCreate cmd)
-        {                                
-            _repository.Add(cmd,false);
-        }      
-        public void Remove(CommandDochazkaRemove cmd)
-        {                      
-            _repository.Remove(cmd, false);          
-        }
-        public void Update(CommandDochazkaUpdate cmd)
-        {
-            _repository.Update(cmd, false);             
-        }
-        
-
-
-
-
-
     }
 }

@@ -17,8 +17,7 @@ namespace CommandHandler
 
     }
     public class CommandUzivatelUpdate 
-    {
-    
+    {    
         public Guid UzivatelId { get; set; }
         public string TitulPred { get; set; }
         public string Jmeno { get; set; }
@@ -28,16 +27,11 @@ namespace CommandHandler
         public DateTime DatumNarozeni { get; set; }
         public string Email { get; set; }
         public string Telefon { get; set; }
-
-
     }
     public class CommandUzivatelRemove
     {
       public Guid UzivatelId { get; set; }
-
-
     }
-
     public class EventUzivatelCreated 
     {
         public Guid EventId { get; set; }

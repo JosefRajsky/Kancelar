@@ -22,10 +22,10 @@ namespace Opravneni_Api.Controllers
         }
         [HttpGet]
         [Route("Get/{id?}")]
-        public async Task<ActionResult<Pravo>> Get(Guid id)
+        public async Task<Pravo> Get(Guid id)
         {
             var response = await _repository.Get(id);            
-            return Ok(response);
+            return response;
         }
 
         [HttpGet]

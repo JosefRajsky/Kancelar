@@ -73,16 +73,136 @@
       "SwaggerKey": "pritomnost"
     },
     {
-      "DownstreamPathTemplate": "/importexport/{everything}",
+      "DownstreamPathTemplate": "/transfer/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "importexportapi/"
+          "Host": "transferapi/"
         }
       ],
-      "UpstreamPathTemplate": "/api/importexport/{everything}",
+      "UpstreamPathTemplate": "/api/transfer/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-      "SwaggerKey": "importexport"
+      "SwaggerKey": "transfer"
+    },
+    {
+      "DownstreamPathTemplate": "/aktivita/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "aktivitaapi/"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/aktivita/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "SwaggerKey": "aktivita"
+    },
+    {
+      "DownstreamPathTemplate": "/cinnosg/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "cinnostaapi/"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/cinnost/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "SwaggerKey": "cinnost"
+    },
+    {
+      "DownstreamPathTemplate": "/mailsender/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "mailsenderapi/"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/mailsender/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "SwaggerKey": "mailsender"
+    },
+    {
+      "DownstreamPathTemplate": "/mzdy/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "mzdyapi/"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/mzdy/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "SwaggerKey": "mzdy"
+    },
+    {
+      "DownstreamPathTemplate": "/nastaveni/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "nastaveniapi/"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/nastaveni/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "SwaggerKey": "nastaveni"
+    },
+    {
+      "DownstreamPathTemplate": "/opravneni/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "opravneniapi/"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/opravneni/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "SwaggerKey": "opravneni"
+    },
+    {
+      "DownstreamPathTemplate": "/soucast/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "soucastapi/"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/soucast/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "SwaggerKey": "soucast"
+    },
+    {
+      "DownstreamPathTemplate": "/struktura/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "strukturaapi/"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/struktura/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "SwaggerKey": "struktura"
+    },
+    {
+      "DownstreamPathTemplate": "/ukol/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "ukolapi/"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/ukol/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "SwaggerKey": "ukol"
+    },
+    {
+      "DownstreamPathTemplate": "/vykaz/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "vykazapi/"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/vykaz/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "SwaggerKey": "vykaz"
     }
   ],
   "SwaggerEndPoints": [
@@ -147,12 +267,112 @@
       ]
     },
     {
-      "Key": "importexport",
+      "Key": "transfer",
       "Config": [
         {
-          "Name": "ImportExport API",
+          "Name": "Transfer API",
           "Version": "v1",
-          "Url": "http://importapi/swagger/v1/swagger.json"
+          "Url": "http://transferapi/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "aktivita",
+      "Config": [
+        {
+          "Name": "Aktivita API",
+          "Version": "v1",
+          "Url": "http://aktivitaapi/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "cinnost",
+      "Config": [
+        {
+          "Name": "Cinnost API",
+          "Version": "v1",
+          "Url": "http://cinnostapi/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "mailsender",
+      "Config": [
+        {
+          "Name": "Mailsender API",
+          "Version": "v1",
+          "Url": "http://mailsenderapi/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "mzdy",
+      "Config": [
+        {
+          "Name": "Mzdy API",
+          "Version": "v1",
+          "Url": "http://mzdyapi/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "nastaveni",
+      "Config": [
+        {
+          "Name": "Nastaveni API",
+          "Version": "v1",
+          "Url": "http://nastaveniapi/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "opravneni",
+      "Config": [
+        {
+          "Name": "Opravneni API",
+          "Version": "v1",
+          "Url": "http://opravneniapi/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "Soucast",
+      "Config": [
+        {
+          "Name": "Soucast API",
+          "Version": "v1",
+          "Url": "http://soucastapi/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "struktura",
+      "Config": [
+        {
+          "Name": "Struktura API",
+          "Version": "v1",
+          "Url": "http://strukturaapi/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "ukol",
+      "Config": [
+        {
+          "Name": "Ukol API",
+          "Version": "v1",
+          "Url": "http://ukolapi/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "vykaz",
+      "Config": [
+        {
+          "Name": "Vykaz API",
+          "Version": "v1",
+          "Url": "http://vykazapi/swagger/v1/swagger.json"
         }
       ]
     }

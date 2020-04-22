@@ -22,12 +22,11 @@ namespace Cinnost_Api.Controllers
         }
         [HttpGet]
         [Route("Get/{id?}")]
-        public async Task<ActionResult<Cinnost>> Get(Guid id)
+        public async Task<Cinnost> Get(Guid id)
         {
             var response = await _repository.Get(id);            
-            return Ok(response);
+            return response;
         }
-
         [HttpGet]
         [Route("GetList")]
         public async Task<List<Cinnost>> GetList() {
@@ -35,10 +34,9 @@ namespace Cinnost_Api.Controllers
             var response = await _repository.GetList(); 
             return response;
         }
-
         [HttpPost]
         [Route("Add")]
-        public async Task Add(CommandCinnostCreate cmd)      
+        public async Task Add(CommandCinnostCreate cmd)     
         { 
          await _repository.Add(cmd);            
         }

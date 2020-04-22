@@ -22,10 +22,10 @@ namespace Vykaz_Api.Controllers
         }
         [HttpGet]
         [Route("Get/{id?}")]
-        public async Task<ActionResult<Vykaz>> Get(Guid id)
+        public async Task<Vykaz> Get(Guid id)
         {
             var response = await _repository.Get(id);            
-            return Ok(response);
+            return response;
         }
 
         [HttpGet]

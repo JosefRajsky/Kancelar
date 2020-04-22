@@ -31,7 +31,7 @@ namespace Udalost_Api
             Configuration = configuration;
         }
         public IConfiguration Configuration { get; }
-        public IConnection _connection { get; set; }
+        public IConnection Connection { get; set; }
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<IRepository, Repository>();
@@ -47,7 +47,7 @@ namespace Udalost_Api
                .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
                        healthQuery: "SELECT 1;",
                        name: "DB",
-                       failureStatus: HealthStatus.Degraded).AddRabbitMQ(sp => _connection);
+                       failureStatus: HealthStatus.Degraded).AddRabbitMQ(sp => Connection);
             MessageBrokerConnection(services);
         }
         public async void MessageBrokerConnection(IServiceCollection services)
@@ -61,11 +61,22 @@ namespace Udalost_Api
             var retryPolicy = Policy.Handle<BrokerUnreachableException>().WaitAndRetryAsync(5, i => TimeSpan.FromSeconds(10));
             await retryPolicy.ExecuteAsync(async () =>
             {
-                await Task.Run(() => { _connection = factory.CreateConnection(); });
+                await Task.Run(() => {
+                    try
+                    {
+                        Connection = factory.CreateConnection();
+                    }
+                    catch (Exception)
+                    {
+
+                        
+                    }
+
+                });
             });
-            var _channel = _connection.CreateModel();
+            var _channel = Connection.CreateModel();
             var queueName = _channel.QueueDeclare().QueueName;
-            var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, _connection, _channel, queueName)).BuildServiceProvider().GetService<ISubscriber>().Start();
+            var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, Connection, _channel, queueName)).BuildServiceProvider().GetService<ISubscriber>().Start();
             foreach (var ex in exchanges)
             {
                 _channel.QueueBind(queue: queueName,

@@ -47,14 +47,14 @@ namespace KancelarWeb
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<DochazkaModel> GetAsync(System.Guid id)
+        public System.Threading.Tasks.Task<Dochazka> GetAsync(System.Guid id)
         {
             return GetAsync(id, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<DochazkaModel> GetAsync(System.Guid id, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<Dochazka> GetAsync(System.Guid id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
@@ -91,7 +91,7 @@ namespace KancelarWeb
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200") 
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<DochazkaModel>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Dochazka>(response_, headers_).ConfigureAwait(false);
                             return objectResponse_.Object;
                         }
                         else
@@ -101,7 +101,7 @@ namespace KancelarWeb
                             throw new ApiException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
                         }
             
-                        return default(DochazkaModel);
+                        return default(Dochazka);
                     }
                     finally
                     {
@@ -116,14 +116,14 @@ namespace KancelarWeb
         }
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<DochazkaModel>> GetListAsync()
+        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Dochazka>> GetListAsync()
         {
             return GetListAsync(System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<DochazkaModel>> GetListAsync(System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Dochazka>> GetListAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/dochazka/GetList");
@@ -156,7 +156,7 @@ namespace KancelarWeb
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200") 
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<DochazkaModel>>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<Dochazka>>(response_, headers_).ConfigureAwait(false);
                             return objectResponse_.Object;
                         }
                         else
@@ -166,7 +166,7 @@ namespace KancelarWeb
                             throw new ApiException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
                         }
             
-                        return default(System.Collections.Generic.ICollection<DochazkaModel>);
+                        return default(System.Collections.Generic.ICollection<Dochazka>);
                     }
                     finally
                     {
@@ -477,85 +477,106 @@ namespace KancelarWeb
         }
     }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.11.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class DochazkaModel 
+    public partial class Dochazka
     {
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public System.Guid Id { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("datum", Required = Newtonsoft.Json.Required.Always)]
+
+        [Newtonsoft.Json.JsonProperty("eventGuid", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid? EventGuid { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("generation", Required = Newtonsoft.Json.Required.Always)]
+        public int Generation { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("dochazkaId", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.DateTimeOffset Datum { get; set; }
-    
+        public System.Guid DochazkaId { get; set; }
+
         [Newtonsoft.Json.JsonProperty("uzivatelId", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public System.Guid UzivatelId { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("uzivatelCeleJmeno", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string UzivatelCeleJmeno { get; set; }
-    
+
+        [Newtonsoft.Json.JsonProperty("rok", Required = Newtonsoft.Json.Required.Always)]
+        public int Rok { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("den", Required = Newtonsoft.Json.Required.Always)]
+        public int Den { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("mesic", Required = Newtonsoft.Json.Required.Always)]
+        public int Mesic { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("denTydne", Required = Newtonsoft.Json.Required.Always)]
+        public int DenTydne { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("tick", Required = Newtonsoft.Json.Required.Always)]
+        public long Tick { get; set; }
+
         [Newtonsoft.Json.JsonProperty("prichod", Required = Newtonsoft.Json.Required.Always)]
         public bool Prichod { get; set; }
-    
+
         [Newtonsoft.Json.JsonProperty("cteckaId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string CteckaId { get; set; }
-    
-    
+
+        [Newtonsoft.Json.JsonProperty("datum", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        public System.DateTimeOffset Datum { get; set; }
+
+
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.11.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class CommandDochazkaCreate 
+    public partial class CommandDochazkaCreate
     {
         [Newtonsoft.Json.JsonProperty("uzivatelId", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public System.Guid UzivatelId { get; set; }
-    
+
         [Newtonsoft.Json.JsonProperty("prichod", Required = Newtonsoft.Json.Required.Always)]
         public bool Prichod { get; set; }
-    
+
         [Newtonsoft.Json.JsonProperty("datum", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public System.DateTimeOffset Datum { get; set; }
-    
+
         [Newtonsoft.Json.JsonProperty("cteckaId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string CteckaId { get; set; }
-    
-    
+
+
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.11.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class CommandDochazkaRemove 
+    public partial class CommandDochazkaRemove
     {
         [Newtonsoft.Json.JsonProperty("dochazkaId", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public System.Guid DochazkaId { get; set; }
-    
-    
+
+
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.11.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class CommandDochazkaUpdate 
+    public partial class CommandDochazkaUpdate
     {
         [Newtonsoft.Json.JsonProperty("dochazkaId", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public System.Guid DochazkaId { get; set; }
-    
+
         [Newtonsoft.Json.JsonProperty("uzivatelId", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public System.Guid UzivatelId { get; set; }
-    
+
         [Newtonsoft.Json.JsonProperty("prichod", Required = Newtonsoft.Json.Required.Always)]
         public bool Prichod { get; set; }
-    
+
         [Newtonsoft.Json.JsonProperty("datum", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public System.DateTimeOffset Datum { get; set; }
-    
+
         [Newtonsoft.Json.JsonProperty("cteckaId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string CteckaId { get; set; }
-    
-    
+
+
     }
 
 }

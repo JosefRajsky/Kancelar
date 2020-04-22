@@ -22,10 +22,10 @@ namespace Aktivita_Api.Controllers
         }
         [HttpGet]
         [Route("Get/{id?}")]
-        public async Task<ActionResult<Aktivita>> Get(Guid id)
+        public async Task<Aktivita> Get(Guid id)
         {
             var response = await _repository.Get(id);            
-            return Ok(response);
+            return response;
         }
 
         [HttpGet]

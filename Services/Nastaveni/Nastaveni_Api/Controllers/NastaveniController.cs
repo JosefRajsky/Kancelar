@@ -11,21 +11,21 @@ namespace Nastaveni_Api.Controllers
     
     [ApiController]
     [Route("[controller]")]
-    public class NastavenilateController : ControllerBase
+    public class NastaveniController : ControllerBase
     {
         private readonly IRepository _repository;
        
-        public NastavenilateController(IRepository repository)
+        public NastaveniController(IRepository repository)
         {
             _repository = repository;
           
         }
         [HttpGet]
         [Route("Get/{id?}")]
-        public async Task<ActionResult<Pravidlo>> Get(Guid id)
+        public async Task<Pravidlo> Get(Guid id)
         {
             var response = await _repository.Get(id);            
-            return Ok(response);
+            return response;
         }
 
         [HttpGet]

@@ -39,7 +39,7 @@ namespace Nastaveni_Api.Repositories
                 MessageType.NastaveniUpdated,
                 MessageType.NastaveniRemoved
             };
-            await _handler.RequestReplay("Nastavenilate.ex", entityId, msgTypes);           
+            await _handler.RequestReplay("nastaveni.ex", entityId, msgTypes);           
         }
         public async Task ReplayEvents(List<string> stream, Guid? entityId)
         {
@@ -103,7 +103,6 @@ namespace Nastaveni_Api.Repositories
             item.Value2 = evt.NastaveniValue2;
             return item;
         }
-
         public async Task<Pravidlo> Get(Guid id) => await Task.Run(() => db.Nastaveni.FirstOrDefault(b => b.PravidloId == id));
         public async Task<List<Pravidlo>> GetList() => await db.Nastaveni.ToListAsync();
         public async Task Add(CommandNastaveniCreate cmd)

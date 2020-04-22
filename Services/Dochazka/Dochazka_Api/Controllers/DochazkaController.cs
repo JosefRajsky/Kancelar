@@ -1,4 +1,5 @@
-﻿using Dochazka_Api.Models;
+﻿using CommandHandler;
+using Dochazka_Api.Models;
 using Dochazka_Api.Repositories;
 
 using Microsoft.AspNetCore.Mvc;
@@ -14,69 +15,44 @@ namespace Dochazka_Api.Controllers
     public class DochazkaController : ControllerBase
     {
         private readonly IRepository _repository;
-        public DochazkaController(IRepository dochazkaService)
+
+        public DochazkaController(IRepository repository)
         {
-            _repository = dochazkaService;
+            _repository = repository;
         }
         [HttpGet]
         [Route("Get/{id?}")]
-        public async Task<ActionResult<DochazkaModel>> Get(Guid id)
+        public async Task<Dochazka> Get(Guid id)
         {
-            var item = await _repository.Get(id);
-            var response = new DochazkaModel() {
-                Id = item.Id,
-                Datum = new DateTime(item.Rok, item.Mesic, item.Den),
-                CteckaId = string.Empty,
-                UzivatelId = item.UzivatelId,
-                UzivatelCeleJmeno = " - ",
-                Prichod = item.Prichod,
-            };
-             
-      
-            return Ok(response);
+            var response = await _repository.Get(id);
+            return response;
         }
-
         [HttpGet]
         [Route("GetList")]
-        public async Task<List<DochazkaModel>> GetList()
+        public async Task<List<Dochazka>> GetList()
         {
-
-            var model = await _repository.GetList();
-
-            //TODO: Vytvořit Wiew a nečíst přímo z entity.
-            var response = new List<DochazkaModel>();
-            foreach (var item in model)
-            {
-                var d = new DochazkaModel();
-                d.Id = item.Id;
-                d.Datum = new DateTime(item.Rok, item.Mesic, item.Den);
-                d.CteckaId = string.Empty;
-                d.UzivatelId = item.UzivatelId;
-                d.UzivatelCeleJmeno = " - ";
-                d.Prichod = item.Prichod;
-                response.Add(d);
-            }
+            var response = await _repository.GetList();
             return response;
         }
 
-        [HttpPut]
+        [HttpPost]
         [Route("Add")]
-        public async Task Add(CommandDochazkaCreate cmd)      
-        {         
-         await _repository.Add(cmd, true);            
+        public async Task Add(CommandDochazkaCreate cmd)
+        {
+            await _repository.Add(cmd);
         }
 
-        [HttpPost]
+        [HttpDelete]
         [Route("Remove")]
         public async Task Delete(CommandDochazkaRemove cmd)
         {
-           await _repository.Remove(cmd, true);   
+            await _repository.Remove(cmd);
         }
         [HttpPost]
         [Route("Update")]
         public async Task Update(CommandDochazkaUpdate cmd)
         {
-            await _repository.Update(cmd, true);        
+            await _repository.Update(cmd);
         }
     }
 }

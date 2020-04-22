@@ -8,7 +8,7 @@ using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 
 
-namespace ImportExport_Api.Repositories
+namespace Transfer_Api.Repositories
 {
     public class Repository : IRepository
     {

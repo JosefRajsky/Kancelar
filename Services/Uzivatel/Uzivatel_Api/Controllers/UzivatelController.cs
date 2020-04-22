@@ -26,8 +26,8 @@ namespace Uzivatel_Api.Controllers
         [Route("Get/{id?}")]
         public async Task<Uzivatel> Get(Guid id)
         {
-            var item = await _repository.Get(id);  
-            return item;
+            var response = await _repository.Get(id);  
+            return response;
         }
 
         [HttpGet]

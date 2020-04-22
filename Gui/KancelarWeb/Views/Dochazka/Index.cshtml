@@ -1,17 +1,15 @@
-﻿@model List<KancelarWeb.DochazkaModel>
+﻿@model List<KancelarWeb.Dochazka>
 @{
     ViewData["Title"] = "Docházka";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@*<hr />
-<a class="btn btn-xs btn-success" href='@Url.Action("AddPrichod", "Dochazka", new { @prichod = "true" })'> Zapsat Příchod</a>
-<a class="btn btn-xs btn-warning" href='@Url.Action("AddPrichod", "Dochazka", new {@prichod = "false" })'> Zapsat Odchod</a>*@
+
 <hr/>
 <table class="table table-borderless bg-light">
     <thead>
         <tr>
             <th scope="col">Id</th>
-            <th scope="col">Zaměstnanec</th>
+            @*<th scope="col">Zaměstnanec</th>*@
             <th scope="col">Datum</th>
             <th scope="col">Čas</th>
             <th scope="col">Druh</th>
@@ -23,7 +21,7 @@
         {
         <tr>
             <th scope="row">@item.Id</th>
-            <td>@item.UzivatelCeleJmeno</td>
+            @*<td>@item.UzivatelCeleJmeno</td>*@
             <td>@item.Datum.Date.ToShortDateString() </td>
             <td>@item.Datum.Date.ToShortDateString() </td>
             <td><span class="class=@(item.Prichod ? "btn btn-sm bt-disabled btn-success disabled" : "btn btn-sm bt-disabled btn-warning disabled")">@(item.Prichod ? "Příchod" : "Odchod")</span> </td>
