@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using CommandHandler;
-using EventLibrary;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Nastaveni_Api.Entities;
 using Nastaveni_Api.Repositories;
 
 namespace Nastaveni_Api.Controllers
@@ -14,31 +11,29 @@ namespace Nastaveni_Api.Controllers
     
     [ApiController]
     [Route("[controller]")]
-    public class NastaveniController : ControllerBase
+    public class NastavenilateController : ControllerBase
     {
-        private readonly INastaveniRepository _repository;
+        private readonly IRepository _repository;
        
-        public NastaveniController(INastaveniRepository repository)
+        public NastavenilateController(IRepository repository)
         {
             _repository = repository;
           
         }
         [HttpGet]
         [Route("Get/{id?}")]
-        public async Task<ActionResult<Nastaveni>> Get(int id)
+        public async Task<ActionResult<Pravidlo>> Get(Guid id)
         {
-            var response = await _repository.Get(id.ToString());           
+            var response = await _repository.Get(id);            
             return Ok(response);
         }
 
         [HttpGet]
         [Route("GetList")]
-        public async Task<List<Nastaveni>> GetList() {
+        public async Task<List<Pravidlo>> GetList() {
 
-            var model = await _repository.GetList();
-
-   
-            return model;
+            var response = await _repository.GetList(); 
+            return response;
         }
 
         [HttpPost]

@@ -6,11 +6,11 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["Services/Template/Template/Template.csproj", "Services/Template/Template/"]
-COPY ["RabbitHandlers/CommandHandler/CommandHandler.csproj", "RabbitHandlers/CommandHandler/"]
-RUN dotnet restore "Services/Template/Template/Template.csproj"
+COPY ["Template.csproj", "./"]
+COPY ["../../../RabbitHandlers/CommandHandler/CommandHandler.csproj", "../../../RabbitHandlers/CommandHandler/"]
+RUN dotnet restore "Template.csproj"
 COPY . .
-WORKDIR "/src/Services/Template/Template"
+WORKDIR "/src/"
 RUN dotnet build "Template.csproj" -c Release -o /app/build
 
 FROM build AS publish

@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 
 namespace Dochazka_Api.Repositories
 {
-    public class Listener : IListener
+    public class Listener
     {
         //string _BaseUrl;
-        private readonly IDochazkaRepository _repository;
-        public Listener(IDochazkaRepository repository)
+        private readonly IRepository _repository;
+        public Listener(IRepository repository)
         {
             _repository = repository;
 

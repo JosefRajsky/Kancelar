@@ -20,10 +20,10 @@ namespace Kalendar_Api.Repositories
 {
     public class Repository : IRepository
     {
-        private readonly KalendarDbContext db;
+        private readonly ServiceDbContext db;
         private Publisher _publisher;
         private MessageHandler _handler;
-        public Repository(KalendarDbContext dbContext, Publisher publisher)
+        public Repository(ServiceDbContext dbContext, Publisher publisher)
         {
             db = dbContext;
             _publisher = publisher;

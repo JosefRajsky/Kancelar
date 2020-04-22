@@ -24,112 +24,92 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using Polly;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Exceptions;
 
 namespace Dochazka_Api
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
         public IConfiguration Configuration { get; }
-
+        public IConnection _connection { get; set; }
         public void ConfigureServices(IServiceCollection services)
         {
-        #region HealthCheck
-            //Description: Pøidání služby popisu metod API
+            services.AddTransient<IRepository, Repository>();
+            services.AddDbContext<ServiceDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Dochazka Api", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = Configuration["Modul:Name"], Version = "v1" });
             });
-            services.AddSwaggerDocument();  
-            
-            #endregion
-               
-         
+            services.AddSwaggerDocument();
             services.AddControllers();
-
-            //Description: Vytvoøení factory pro RabbitMQ
-            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
-            var exchanges = new List<string>();
-
-            //exchanges.Add(Configuration.GetValue<string>("Setting:Exchange"));
-            //Description: Seznam zájmových exchage
-            exchanges.Add("dochazka.ex");
-
-            //Description: Vytvoøení repositáøe pro práci s daty
-            services.AddTransient<IDochazkaRepository, DochazkaRepository>();
-
-            //Description: Nastavení publikování zpráv
-            services.AddSingleton<Publisher>(s => new Publisher(factory, exchanges[0], "dochazka.q"));
-
-            //Description: Vytvoøení pøístupu k databázi
-            services.AddDbContext<DochazkaDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
-
-            //Description: Pøihlášení k odbìru zpráv z RabbitMQ
+            services.AddHealthChecks()
+               .AddCheck(Configuration["Modul:Name"], () => HealthCheckResult.Healthy())
+               .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
+                       healthQuery: "SELECT 1;",
+                       name: "DB",
+                       failureStatus: HealthStatus.Degraded).AddRabbitMQ(sp => _connection);
+            MessageBrokerConnection(services);
+        }
+        public async void MessageBrokerConnection(IServiceCollection services)
+        {
+            var exchanges = Configuration.GetSection("RbSetting:Subscription").Get<List<string>>();
+            var factory = new ConnectionFactory() { HostName = Configuration["ConnectionString:RbConn"] };
+            factory.RequestedHeartbeat = 60;
             factory.AutomaticRecoveryEnabled = true;
-            factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(5);
-            
-            var _connection = factory.CreateConnection();
-            //Descripiton: vytvoøení komunikaèního kanálu, pøipojení a definice fronty pro práci se správami
+            factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(15);
+            services.AddSingleton<Publisher>(s => new Publisher(factory, Configuration["RbSetting:Exchange"], Configuration["RbSetting:Queue"]));
+            var retryPolicy = Policy.Handle<BrokerUnreachableException>().WaitAndRetryAsync(5, i => TimeSpan.FromSeconds(10));
+            await retryPolicy.ExecuteAsync(async () =>
+            {
+                await Task.Run(() => { _connection = factory.CreateConnection(); });
+            });
             var _channel = _connection.CreateModel();
             var queueName = _channel.QueueDeclare().QueueName;
-            var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, _connection, _channel, queueName)).BuildServiceProvider()
-                    .GetService<ISubscriber>()
-                    .Start();
-            //Description: Propojení exchange a fronty
+            var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, _connection, _channel, queueName)).BuildServiceProvider().GetService<ISubscriber>().Start();
             foreach (var ex in exchanges)
             {
                 _channel.QueueBind(queue: queueName,
                               exchange: ex,
                               routingKey: "");
             }
-            //Description: vytvoøení smìrovaèe pøijatých zpráv ke kterým je služba pøihlášena
-            var repository = new Listener(services.BuildServiceProvider().GetService<IDochazkaRepository>());
-
-            //Description: Zpracování a odeslání zprávy do smìrovaèe
+            var listener = new Listener(services.BuildServiceProvider().GetService<IRepository>());
             consumer.Received += (model, ea) =>
             {
-                //-------------Description: Formátování pøijaté zprávy
                 var body = ea.Body;
                 var message = Encoding.UTF8.GetString(body);
-
-                //-------------Description: Odeslání zprávy do smìrovaèe
-                repository.AddCommand(message);
+                listener.AddCommand(message);
             };
-            //Description: Kontrola stavu služby
-            services.AddHealthChecks()
-                .AddCheck("API Dochazka", () => HealthCheckResult.Healthy())
-                .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
-                        healthQuery: "SELECT 1;",
-                        name: "DB",
-                        failureStatus: Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Degraded)
-                 .AddRabbitMQ(sp => _connection);
-
-
         }
-      
-
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseHealthChecks("/hc");
             app.UseStaticFiles();
             app.UseOpenApi();
             app.UseSwaggerUi3();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Dochazka Api v1"));
-           
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", $"{Configuration["Modul:Name"]} v1");
+            });
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseAuthorization();
             app.UseHealthChecks("/healthcheck", new HealthCheckOptions
             {
                 Predicate = _ => true,
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-            });  
+            });
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -138,8 +118,7 @@ namespace Dochazka_Api
                 pattern: "{controller}/{action}/{id?}");
             });
         }
-
     }
 
-    
+
 }

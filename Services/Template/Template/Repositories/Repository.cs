@@ -15,9 +15,9 @@ namespace Template.Repositories
 {
     public class Repository : IRepository
     {
-        private readonly TemplateDbContext db;
+        private readonly ServiceDbContext db;
         private MessageHandler _handler;
-        public Repository(TemplateDbContext dbContext, Publisher publisher)
+        public Repository(ServiceDbContext dbContext, Publisher publisher)
         {
             db = dbContext;          
             _handler = new MessageHandler(publisher);

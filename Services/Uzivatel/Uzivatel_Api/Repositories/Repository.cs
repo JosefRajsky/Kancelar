@@ -12,9 +12,9 @@ namespace Uzivatel_Api.Repositories
 {
     public class Repository : IRepository
     {
-        private readonly UzivatelDbContext db; 
-        private MessageHandler _handler;
-        public Repository(UzivatelDbContext dbContext, Publisher publisher)
+        private readonly ServiceDbContext db; 
+        private readonly MessageHandler _handler;
+        public Repository(ServiceDbContext dbContext, Publisher publisher)
         {
             db = dbContext;           
             _handler = new MessageHandler(publisher);
@@ -29,17 +29,19 @@ namespace Uzivatel_Api.Repositories
                     await RequestEvents(entityId);
                 }
                 else {
-                    item.Generation = item.Generation + 1;
+                    item.Generation += 1;
                    await db.SaveChangesAsync();
                 }
             }
         }
         public async Task RequestEvents(Guid? entityId)
         {
-            var msgTypes = new List<MessageType>();
-            msgTypes.Add(MessageType.UzivatelCreated);
-            msgTypes.Add(MessageType.UzivatelUpdated);
-            msgTypes.Add(MessageType.UzivatelRemoved);
+            var msgTypes = new List<MessageType>
+            {
+                MessageType.UzivatelCreated,
+                MessageType.UzivatelUpdated,
+                MessageType.UzivatelRemoved
+            };
             await _handler.RequestReplay("uzivatel.ex", entityId, msgTypes);           
         }
         public async Task ReplayEvents(List<string> stream, Guid? entityId)
@@ -140,7 +142,7 @@ namespace Uzivatel_Api.Repositories
                 db.Uzivatele.Add(item);                
                 await db.SaveChangesAsync();
                 ev.UzivatelId = item.UzivatelId;
-                ev.Generation = ev.Generation + 1;
+                ev.Generation += 1;
                 await _handler.PublishEvent(ev, MessageType.UzivatelCreated, ev.EventId, null, ev.Generation, ev.UzivatelId);
             
         }

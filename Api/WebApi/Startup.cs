@@ -15,14 +15,11 @@ using System.IO;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-using Ocelot.Provider.Kubernetes;
 using OcelotSwagger.Extensions;
 using OcelotSwagger.Configuration;
 using Ocelot.Administration;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.OpenApi.Models;
-using Ocelot.Provider.Consul;
-
 namespace WebApi
 {
     public class Startup

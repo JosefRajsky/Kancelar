@@ -6,22 +6,22 @@ using System.Text;
 
 namespace EventStore
 { 
-        public class EventStoreDbContextFactory : IDesignTimeDbContextFactory<EventStoreDbContext>
+        public class EventStoreDbContextFactory : IDesignTimeDbContextFactory<ServiceDbContext>
         {
-            private string _connectionString;
+            private readonly string _connectionString;
             public EventStoreDbContextFactory(string connectionString)
             {
                 _connectionString = connectionString;
             }
-        public EventStoreDbContext CreateDbContext()
+        public ServiceDbContext CreateDbContext()
             {
                 return CreateDbContext(null);
             }
-            public EventStoreDbContext CreateDbContext(string[] args)
+            public ServiceDbContext CreateDbContext(string[] args)
             {
-                var builder = new DbContextOptionsBuilder<EventStoreDbContext>();
+                var builder = new DbContextOptionsBuilder<ServiceDbContext>();
                 builder.UseSqlServer(_connectionString);
-                return new EventStoreDbContext(builder.Options);
+                return new ServiceDbContext(builder.Options);
             }
         }    
 }

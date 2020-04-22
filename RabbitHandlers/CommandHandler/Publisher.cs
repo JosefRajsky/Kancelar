@@ -36,13 +36,20 @@ namespace CommandHandler
             await Task.Run(() =>
                 {
                     var body = Encoding.UTF8.GetBytes(message);
+
                     _channel.TxSelect();
 
+                    #region EventStore Exchange
+                    //Description: Kontrola existence eventstore.ex
+                    var args = new Dictionary<string, object>();
+                    args.Add("x-message-ttl", 432000);
+                    _channel.ExchangeDeclare("eventstore.ex", ExchangeType.Fanout, false, false, args);
                     _channel.BasicPublish(
                       exchange: "eventstore.ex",
                       routingKey: "",
                       basicProperties: null,
-                      body: body);  
+                      body: body);
+                    #endregion
                     _channel.BasicPublish(
                          exchange: _exchange,                        
                          routingKey: "",

@@ -24,87 +24,69 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Polly;
 using RabbitMQ.Client;
-
+using RabbitMQ.Client.Exceptions;
+//services.AddSingleton<Publisher>(s => new Publisher(factory, "recovery.ex", "eventstore.q"));
 namespace EventStore
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
         public IConfiguration Configuration { get; }
-
+        public IConnection Connection { get; set; }
         public void ConfigureServices(IServiceCollection services)
         {
-            //Description: Pøidání služby popisu metod API
+            services.AddTransient<IRepository, Repository>();
+            services.AddDbContext<ServiceDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "EventStore Api", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = Configuration["Modul:Name"], Version = "v1" });
             });
             services.AddSwaggerDocument();
-            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
-
-            //Description: Kontrola stavu služby
-            services.AddHealthChecks()
-                .AddCheck("API EventStore", () => HealthCheckResult.Healthy())
-                .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
-                        healthQuery: "SELECT 1;",
-                        name: "DB",
-                        failureStatus: Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Degraded)
-                 .AddRabbitMQ(sp => factory);         
-
             services.AddControllers();
-
-            //Description: Vytvoøení factory pro RabbitMQ
-
-            var exchanges = new List<string>();
-
-            //exchanges.Add(Configuration.GetValue<string>("Setting:Exchange"));
-            //Description: Seznam zájmových exchage
-            exchanges.Add("eventstore.ex");
-
-            //Description: Vytvoøení repositáøe pro práci s daty
-            services.AddTransient<IEventStoreRepository, EventStoreRepository>();
-
-            //Description: Nastavení publikování zpráv
-            services.AddSingleton<Publisher>(s => new Publisher(factory, "recovery.ex", "eventstore.q"));
-
-            //Description: Vytvoøení pøístupu k databázi
-            services.AddDbContext<EventStoreDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
-
-            //Description: Pøihlášení k odbìru zpráv z RabbitMQ
+            services.AddHealthChecks()
+               .AddCheck(Configuration["Modul:Name"], () => HealthCheckResult.Healthy())
+               .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
+                       healthQuery: "SELECT 1;",
+                       name: "DB",
+                       failureStatus: HealthStatus.Degraded).AddRabbitMQ(sp => Connection);
+            MessageBrokerConnection(services);
+        }
+        public async void MessageBrokerConnection(IServiceCollection services)
+        {
+            var exchanges = Configuration.GetSection("RbSetting:Subscription").Get<List<string>>();
+            var factory = new ConnectionFactory() { HostName = Configuration["ConnectionString:RbConn"] };
+            factory.RequestedHeartbeat = 60;
             factory.AutomaticRecoveryEnabled = true;
-            factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(5);
-            
-            var _connection = factory.CreateConnection();
-            //Descripiton: vytvoøení komunikaèního kanálu, pøipojení a definice fronty pro práci se správami
-            var _channel = _connection.CreateModel();
+            factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(15);
+            services.AddSingleton<Publisher>(s => new Publisher(factory, "recovery.ex", "eventstore.q"));            
+            var retryPolicy = Policy.Handle<BrokerUnreachableException>().WaitAndRetryAsync(5, i => TimeSpan.FromSeconds(10));
+            await retryPolicy.ExecuteAsync(async () =>
+            {
+                await Task.Run(() => { Connection = factory.CreateConnection(); });
+            });
+            var _channel = Connection.CreateModel();
             var queueName = _channel.QueueDeclare().QueueName;
-            var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, _connection, _channel, queueName)).BuildServiceProvider()
-                    .GetService<ISubscriber>()
-                    .Start();
-            //Description: Propojení exchange a fronty
+            var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, Connection, _channel, queueName)).BuildServiceProvider().GetService<ISubscriber>().Start();
             foreach (var ex in exchanges)
             {
                 _channel.QueueBind(queue: queueName,
                               exchange: ex,
                               routingKey: "");
             }
-            //Description: vytvoøení smìrovaèe pøijatých zpráv ke kterým je služba pøihlášena
-            var repository = new Listener(services.BuildServiceProvider().GetService<IEventStoreRepository>());
-
-            //Description: Zpracování a odeslání zprávy do smìrovaèe
+            var listener = new Listener(services.BuildServiceProvider().GetService<IRepository>());
             consumer.Received += (model, ea) =>
             {
-                //-------------Description: Formátování pøijaté zprávy
                 var body = ea.Body;
                 var message = Encoding.UTF8.GetString(body);
-
-                //-------------Description: Odeslání zprávy do smìrovaèe
-                repository.AddCommand(message);
+                listener.AddCommand(message);
             };
+           
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -112,18 +94,23 @@ namespace EventStore
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseHealthChecks("/hc");
             app.UseStaticFiles();
             app.UseOpenApi();
             app.UseSwaggerUi3();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EventStore Api v1"));
-           
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", $"{Configuration["Modul:Name"]} v1");
+            });
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseAuthorization();
             app.UseHealthChecks("/healthcheck", new HealthCheckOptions
             {
                 Predicate = _ => true,
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-            });  
+            });
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -132,8 +119,7 @@ namespace EventStore
                 pattern: "{controller}/{action}/{id?}");
             });
         }
-
     }
 
-    
+
 }

@@ -34,44 +34,41 @@ namespace ImportExport_Api
             Configuration = configuration;
         }
         public IConfiguration Configuration { get; }
-        public IConnection _connection { get; set; }
+        public IConnection Connection { get; set; }
         public void ConfigureServices(IServiceCollection services)
         {
-
-
             services.AddTransient<IRepository, Repository>();
-            services.AddDbContext<ImportExportDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
+            services.AddDbContext<ServiceDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ImportExport Api", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = Configuration["Modul:Name"], Version = "v1" });
             });
             services.AddSwaggerDocument();
             services.AddControllers();
             services.AddHealthChecks()
-               .AddCheck("ImportExport API", () => HealthCheckResult.Healthy())
+               .AddCheck(Configuration["Modul:Name"], () => HealthCheckResult.Healthy())
                .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
                        healthQuery: "SELECT 1;",
                        name: "DB",
-                       failureStatus: HealthStatus.Degraded).AddRabbitMQ(sp => _connection);
+                       failureStatus: HealthStatus.Degraded).AddRabbitMQ(sp => Connection);
             MessageBrokerConnection(services);
         }
         public async void MessageBrokerConnection(IServiceCollection services)
         {
-            var exchanges = new List<string>();
-            exchanges.Add("importexport.ex");
+            var exchanges = Configuration.GetSection("RbSetting:Subscription").Get<List<string>>();
             var factory = new ConnectionFactory() { HostName = Configuration["ConnectionString:RbConn"] };
             factory.RequestedHeartbeat = 60;
             factory.AutomaticRecoveryEnabled = true;
             factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(15);
-            services.AddSingleton<Publisher>(s => new Publisher(factory, exchanges[0], "importexport.q"));
-            var retryPolicy = Policy.Handle<RabbitMQ.Client.Exceptions.BrokerUnreachableException>().WaitAndRetryAsync(5, i => TimeSpan.FromSeconds(10));
+            services.AddSingleton<Publisher>(s => new Publisher(factory, Configuration["RbSetting:Exchange"], Configuration["RbSetting:Queue"]));
+            var retryPolicy = Policy.Handle<BrokerUnreachableException>().WaitAndRetryAsync(5, i => TimeSpan.FromSeconds(10));
             await retryPolicy.ExecuteAsync(async () =>
             {
-                await Task.Run(() => { _connection = factory.CreateConnection(); });
+                await Task.Run(() => { Connection = factory.CreateConnection(); });
             });
-            var _channel = _connection.CreateModel();
+            var _channel = Connection.CreateModel();
             var queueName = _channel.QueueDeclare().QueueName;
-            var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, _connection, _channel, queueName)).BuildServiceProvider().GetService<ISubscriber>().Start();
+            var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, Connection, _channel, queueName)).BuildServiceProvider().GetService<ISubscriber>().Start();
             foreach (var ex in exchanges)
             {
                 _channel.QueueBind(queue: queueName,
@@ -98,7 +95,7 @@ namespace ImportExport_Api
             app.UseSwaggerUi3();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ImportExport Api v1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", $"{Configuration["Modul:Name"]} v1");
             });
             app.UseHttpsRedirection();
             app.UseRouting();

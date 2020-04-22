@@ -26,9 +26,9 @@ namespace ImportExport_Api.Repositories
 
             switch (envelope.MessageType)
             {
-                //case MessageType.ExportPritomnost:
-                //    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUdalostCreated>(envelope.Event).EventId, envelope.EntityId);
-                //    break;               
+                case MessageType.ExportPritomnost:
+                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventUdalostCreated>(envelope.Event).EventId, envelope.EntityId);
+                    break;
             }
         } 
     }

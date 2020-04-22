@@ -15,8 +15,8 @@ namespace EventStore.Repositories
     public class Listener 
     {
         //string _BaseUrl;
-        private readonly IEventStoreRepository _repository;
-        public Listener(IEventStoreRepository repository)
+        private readonly IRepository _repository;
+        public Listener(IRepository repository)
         {
             _repository = repository;
         }

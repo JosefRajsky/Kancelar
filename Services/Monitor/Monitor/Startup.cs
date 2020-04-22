@@ -17,8 +17,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
-
+using Polly;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Exceptions;
+
 namespace Monitor
 {
     public class Startup
@@ -27,18 +29,12 @@ namespace Monitor
         {
             Configuration = configuration;
         }
-
         public IConfiguration Configuration { get; }
-
-       
+        public IConnection Connection { get; set; }
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-
-            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
+            services.AddControllers();            
             services.AddHealthChecks().AddCheck("Monitor", () => HealthCheckResult.Healthy());
-            services.AddHealthChecks().AddRabbitMQ(sp => factory);    
-         
             services.AddHealthChecksUI(setupSettings: setup =>
             {
                 setup.AddHealthCheckEndpoint("Template", "http://template/healthcheck");
@@ -50,17 +46,45 @@ namespace Monitor
                 setup.AddHealthCheckEndpoint("Kalendar", "http://kalendarapi/healthcheck");
                 setup.AddHealthCheckEndpoint("Pritomnost", "http://pritomnostapi/healthcheck");
                 setup.AddHealthCheckEndpoint("ImportExport", "http://importexportapi/healthcheck");
-            });    
+                setup.AddHealthCheckEndpoint("Aktivita", "http://aktivitaapi/healthcheck");
+                setup.AddHealthCheckEndpoint("Cinnost", "http://cinnostapi/healthcheck");
+                setup.AddHealthCheckEndpoint("MailSender", "http://mailsenderapi/healthcheck");
+                setup.AddHealthCheckEndpoint("Mzdy", "http://mzdyapi/healthcheck");
+                setup.AddHealthCheckEndpoint("Nastaveni", "http://nastaveniapi/healthcheck");
+                setup.AddHealthCheckEndpoint("Opravneni", "http://opravneniapi/healthcheck");
+                setup.AddHealthCheckEndpoint("Soucast", "http://soucastapi/healthcheck");
+                setup.AddHealthCheckEndpoint("Struktura", "http://strukturaapi/healthcheck");
+                setup.AddHealthCheckEndpoint("Ukol", "http://ukolapi/healthcheck");
+                setup.AddHealthCheckEndpoint("Vykaz", "http://vykazapi/healthcheck");
+            });
+            MessageBrokerConnection(services);
+        services.AddHealthChecks().AddRabbitMQ(sp => Connection);
         }
+        public async void MessageBrokerConnection(IServiceCollection services)
+        {
+            if (services is null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
 
-        
+            var factory = new ConnectionFactory() { HostName = Configuration["ConnectionString:RbConn"] };
+            factory.RequestedHeartbeat = 60;
+            factory.AutomaticRecoveryEnabled = true;
+            factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(15);
+            
+            var retryPolicy = Policy.Handle<BrokerUnreachableException>().WaitAndRetryAsync(5, i => TimeSpan.FromSeconds(10));
+            await retryPolicy.ExecuteAsync(async () =>
+            {
+                await Task.Run(() => { Connection = factory.CreateConnection(); });
+            });
+          
+        }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-
             app.UseRouting();
 
             app.UseAuthorization();

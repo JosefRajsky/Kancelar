@@ -1,0 +1,46 @@
+version: '3.4'
+
+services:
+  sqlserver:
+    image: ${DOCKER_REGISTRY-}mcr.microsoft.com/mssql/server:2017-latest-ubuntu 
+    hostname: 'sqlTemplate'  
+    container_name: 'sqlTemplate'
+    environment:  
+      ACCEPT_EULA: Y  
+      SA_PASSWORD: "Password123"     
+    ports:  
+      - '1433:1433'
+    expose:
+      - 1433
+    volumes:  
+      - /var/container_data/mysql:/var/lib/mysql mysql_image
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    hostname: "rabbit"
+    container_name: 'RabbitMq'
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    labels:
+      NAME: "rabbitmq"
+    volumes:
+      - ./rabbitmq-isolated.conf:/etc/rabbitmq/rabbitmq.config
+    depends_on:
+      - sqlserver
+
+  template:
+    image: ${DOCKER_REGISTRY-}template
+    hostname: "template"
+    container_name: 'Template'
+    ports:
+      - "8052:80"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - sqlserver
+      - rabbitmq

@@ -22,69 +22,66 @@ using Microsoft.OpenApi.Models;
 using Polly;
 using Polly.Extensions.Http;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Exceptions;
 
 namespace Kalendar_Api
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
         public IConfiguration Configuration { get; }
-
-
-
-         
+        public IConnection _connection { get; set; }
         public void ConfigureServices(IServiceCollection services)
         {
-         
-
-            var exchanges = new List<string>();
-            exchanges.Add("kalendar.ex");
-            exchanges.Add("dochazka.ex");
-            exchanges.Add("udalost.ex");
-            exchanges.Add("uzivatel.ex");
-
-            var factory = new ConnectionFactory() { HostName = Configuration["ConnectionString:RbConn"] };
             services.AddTransient<IRepository, Repository>();
-            services.AddSingleton<Publisher>(s => new Publisher(factory, exchanges[0], "kalendar.q"));
-            services.AddDbContext<KalendarDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
+            services.AddDbContext<ServiceDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = Configuration["Modul:Name"], Version = "v1" });
+            });
+            services.AddSwaggerDocument();
             services.AddControllers();
+            services.AddHealthChecks()
+               .AddCheck(Configuration["Modul:Name"], () => HealthCheckResult.Healthy())
+               .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
+                       healthQuery: "SELECT 1;",
+                       name: "DB",
+                       failureStatus: HealthStatus.Degraded).AddRabbitMQ(sp => _connection);
+            MessageBrokerConnection(services);
+        }
+        public async void MessageBrokerConnection(IServiceCollection services)
+        {
+            var exchanges = Configuration.GetSection("RbSetting:Subscription").Get<List<string>>();
+            var factory = new ConnectionFactory() { HostName = Configuration["ConnectionString:RbConn"] };
+            factory.RequestedHeartbeat = 60;
             factory.AutomaticRecoveryEnabled = true;
-            factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(5);
-            var _connection = factory.CreateConnection();
+            factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(15);
+            services.AddSingleton<Publisher>(s => new Publisher(factory, Configuration["RbSetting:Exchange"], Configuration["RbSetting:Queue"]));
+            var retryPolicy = Policy.Handle<BrokerUnreachableException>().WaitAndRetryAsync(5, i => TimeSpan.FromSeconds(10));
+            await retryPolicy.ExecuteAsync(async () =>
+            {
+                await Task.Run(() => { _connection = factory.CreateConnection(); });
+            });
             var _channel = _connection.CreateModel();
             var queueName = _channel.QueueDeclare().QueueName;
-            var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, _connection, _channel, queueName)).BuildServiceProvider().GetService<ISubscriber>().Start();    
+            var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, _connection, _channel, queueName)).BuildServiceProvider().GetService<ISubscriber>().Start();
             foreach (var ex in exchanges)
             {
                 _channel.QueueBind(queue: queueName,
                               exchange: ex,
                               routingKey: "");
-            }           
-            var repository = new Listener(services.BuildServiceProvider().GetService<IRepository>());           
+            }
+            var listener = new Listener(services.BuildServiceProvider().GetService<IRepository>());
             consumer.Received += (model, ea) =>
-            {              
-                var body = ea.Body;
-                var message = Encoding.UTF8.GetString(body);               
-                repository.AddCommand(message);
-            };        
-            
-            services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Kalendar Api", Version = "v1" });
-            });
-            services.AddSwaggerDocument();
-            services.AddControllers();
-            services.AddHealthChecks()
-                .AddCheck("API Kalendar", () => HealthCheckResult.Healthy())
-                .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
-                        healthQuery: "SELECT 1;",
-                        name: "DB",
-                        failureStatus: HealthStatus.Degraded)
-                 .AddRabbitMQ(sp => _connection);
-
+                var body = ea.Body;
+                var message = Encoding.UTF8.GetString(body);
+                listener.AddCommand(message);
+            };
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -98,7 +95,7 @@ namespace Kalendar_Api
             app.UseSwaggerUi3();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Kalendar Api v1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", $"{Configuration["Modul:Name"]} v1");
             });
             app.UseHttpsRedirection();
             app.UseRouting();

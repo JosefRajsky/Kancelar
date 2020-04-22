@@ -13,7 +13,7 @@ namespace ImportExport_Api.Repositories
     public class Repository : IRepository
     {
      
-        private MessageHandler _handler;
+        private readonly MessageHandler _handler;
         public Repository(Publisher publisher)
         {         
             _handler = new MessageHandler(publisher);
@@ -47,7 +47,9 @@ namespace ImportExport_Api.Repositories
                {
                    switch (msg.MessageType)
                    {
-
+                       case MessageType.ImportUzivatel:
+                           
+                           break;
                    }
                }
            }); 

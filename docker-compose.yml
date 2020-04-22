@@ -69,8 +69,6 @@ services:
     depends_on:
       - sqlserver
       - rabbitmq
-      - eventstore
-      - monitor
 
   importexportapi:
     image: ${DOCKER_REGISTRY-}importexport_api
@@ -150,6 +148,126 @@ services:
     build:
       context: .
       dockerfile: Services/Pritomnost/Pritomnost_Api/Dockerfile
+    depends_on:
+      - sqlserver
+      - rabbitmq
+
+  aktivitaapi:
+    image: ${DOCKER_REGISTRY-}aktivita_api
+    hostname: "aktivitaapi"       
+    ports:
+      - "8060:80"
+    build:
+      context: .
+      dockerfile: Services/Aktivita/Aktivita_Api/Dockerfile
+    depends_on:
+      - sqlserver
+      - rabbitmq
+
+  cinnostapi:
+    image: ${DOCKER_REGISTRY-}cinnost_api
+    hostname: "cinnostapi"       
+    ports:
+      - "8061:80"
+    build:
+      context: .
+      dockerfile: Services/Cinnost/Cinnost_Api/Dockerfile
+    depends_on:
+      - sqlserver
+      - rabbitmq
+
+  mailsenderapi:
+    image: ${DOCKER_REGISTRY-}mailsender_api
+    hostname: "mailsenderapi"       
+    ports:
+      - "8062:80"
+    build:
+      context: .
+      dockerfile: Services/MailSender/MailSender_Api/Dockerfile
+    depends_on:
+      - sqlserver
+      - rabbitmq
+
+  mzdyapi:
+    image: ${DOCKER_REGISTRY-}mzdy_api
+    hostname: "mzdyapi"       
+    ports:
+      - "8063:80"
+    build:
+      context: .
+      dockerfile: Services/Mzdy/Mzdy_Api/Dockerfile
+    depends_on:
+      - sqlserver
+      - rabbitmq
+
+  nastaveniapi:
+    image: ${DOCKER_REGISTRY-}nastaveni_api
+    hostname: "nastaveniapi"       
+    ports:
+      - "8064:80"
+    build:
+      context: .
+      dockerfile: Services/Nastaveni/Nastaveni_Api/Dockerfile
+    depends_on:
+      - sqlserver
+      - rabbitmq
+
+  opravneniapi:
+    image: ${DOCKER_REGISTRY-}opravneni_api
+    hostname: "popravneniapi"       
+    ports:
+      - "8065:80"
+    build:
+      context: .
+      dockerfile: Services/Opravneni/Opravneni_Api/Dockerfile
+    depends_on:
+      - sqlserver
+      - rabbitmq
+     
+  soucastapi:
+    image: ${DOCKER_REGISTRY-}soucast_api
+    hostname: "soucastapi"       
+    ports:
+      - "8066:80"
+    build:
+      context: .
+      dockerfile: Services/Soucast/Soucast_Api/Dockerfile
+    depends_on:
+      - sqlserver
+      - rabbitmq
+
+  strukturaapi:
+    image: ${DOCKER_REGISTRY-}struktura_api
+    hostname: "strukturaapi"       
+    ports:
+      - "8067:80"
+    build:
+      context: .
+      dockerfile: Services/Struktura/Struktura_Api/Dockerfile
+    depends_on:
+      - sqlserver
+      - rabbitmq
+
+  ukolapi:
+    image: ${DOCKER_REGISTRY-}ukol_api
+    hostname: "ukolapi"       
+    ports:
+      - "8068:80"
+    build:
+      context: .
+      dockerfile: Services/Ukol/Ukol_Api/Dockerfile
+    depends_on:
+      - sqlserver
+      - rabbitmq
+
+  vykazapi:
+    image: ${DOCKER_REGISTRY-}vykaz_api
+    hostname: "vykazapi"       
+    ports:
+      - "8069:80"
+    build:
+      context: .
+      dockerfile: Services/Vykaz/Vykaz_Api/Dockerfile
     depends_on:
       - sqlserver
       - rabbitmq

@@ -36,18 +36,16 @@ namespace Template
         public IConnection _connection { get; set; }
         public void ConfigureServices(IServiceCollection services)
         {
-
-           
             services.AddTransient<IRepository, Repository>();
-            services.AddDbContext<TemplateDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
+            services.AddDbContext<ServiceDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Template Api", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = Configuration["Modul:Name"], Version = "v1" });
             });
-            services.AddSwaggerDocument();           
-            services.AddControllers();  
+            services.AddSwaggerDocument();
+            services.AddControllers();
             services.AddHealthChecks()
-               .AddCheck("Template API", () => HealthCheckResult.Healthy())
+               .AddCheck(Configuration["Modul:Name"], () => HealthCheckResult.Healthy())
                .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
                        healthQuery: "SELECT 1;",
                        name: "DB",
@@ -56,18 +54,17 @@ namespace Template
         }
         public async void MessageBrokerConnection(IServiceCollection services)
         {
-            var exchanges = new List<string>();
-            exchanges.Add("template.ex");
+            var exchanges = Configuration.GetSection("RbSetting:Subscription").Get<List<string>>();
             var factory = new ConnectionFactory() { HostName = Configuration["ConnectionString:RbConn"] };
             factory.RequestedHeartbeat = 60;
             factory.AutomaticRecoveryEnabled = true;
             factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(15);
-            services.AddSingleton<Publisher>(s => new Publisher(factory, exchanges[0], "template.q"));
-            var retryPolicy = Policy.Handle<RabbitMQ.Client.Exceptions.BrokerUnreachableException>().WaitAndRetryAsync(5, i => TimeSpan.FromSeconds(10));
+            services.AddSingleton<Publisher>(s => new Publisher(factory, Configuration["RbSetting:Exchange"], Configuration["RbSetting:Queue"]));
+            var retryPolicy = Policy.Handle<BrokerUnreachableException>().WaitAndRetryAsync(5, i => TimeSpan.FromSeconds(10));
             await retryPolicy.ExecuteAsync(async () =>
             {
                 await Task.Run(() => { _connection = factory.CreateConnection(); });
-            });            
+            });
             var _channel = _connection.CreateModel();
             var queueName = _channel.QueueDeclare().QueueName;
             var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, _connection, _channel, queueName)).BuildServiceProvider().GetService<ISubscriber>().Start();
@@ -97,7 +94,7 @@ namespace Template
             app.UseSwaggerUi3();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Template Api v1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", $"{Configuration["Modul:Name"]} v1");
             });
             app.UseHttpsRedirection();
             app.UseRouting();

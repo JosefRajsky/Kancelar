@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +17,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using Polly;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Exceptions;
 
 using Uzivatel_Api;
 using Uzivatel_Api.Repositories;
@@ -31,31 +35,47 @@ namespace Uzivatel_Api
             Configuration = configuration;
         }
         public IConfiguration Configuration { get; }
+        public IConnection _connection { get; set; }
         public void ConfigureServices(IServiceCollection services)
         {
-
-            var exchanges = new List<string>();
-            exchanges.Add("uzivatel.ex");
-            exchanges.Add("importexport.ex");
-            var factory = new ConnectionFactory() { HostName = Configuration["ConnectionString:RbConn"] };
             services.AddTransient<IRepository, Repository>();
-            services.AddSingleton<Publisher>(s => new Publisher(factory, exchanges[0], "uzivatel.q"));
-            services.AddDbContext<UzivatelDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
+            services.AddDbContext<ServiceDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = Configuration["Modul:Name"], Version = "v1" });
+            });
+            services.AddSwaggerDocument();
             services.AddControllers();
+            services.AddHealthChecks()
+               .AddCheck(Configuration["Modul:Name"], () => HealthCheckResult.Healthy())
+               .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
+                       healthQuery: "SELECT 1;",
+                       name: "DB",
+                       failureStatus: HealthStatus.Degraded).AddRabbitMQ(sp => _connection);
+            MessageBrokerConnection(services);
+        }
+        public async void MessageBrokerConnection(IServiceCollection services)
+        {
+            var exchanges = Configuration.GetSection("RbSetting:Subscription").Get<List<string>>();           
+            var factory = new ConnectionFactory() { HostName = Configuration["ConnectionString:RbConn"] };
+            factory.RequestedHeartbeat = 60;
             factory.AutomaticRecoveryEnabled = true;
-            factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(5);
-            var _connection = factory.CreateConnection();
+            factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(15);
+            services.AddSingleton<Publisher>(s => new Publisher(factory, Configuration["RbSetting:Exchange"], Configuration["RbSetting:Queue"]));
+            var retryPolicy = Policy.Handle<BrokerUnreachableException>().WaitAndRetryAsync(5, i => TimeSpan.FromSeconds(10));
+            await retryPolicy.ExecuteAsync(async () =>
+            {
+                await Task.Run(() => { _connection = factory.CreateConnection(); });
+            });
             var _channel = _connection.CreateModel();
             var queueName = _channel.QueueDeclare().QueueName;
             var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, _connection, _channel, queueName)).BuildServiceProvider().GetService<ISubscriber>().Start();
-
             foreach (var ex in exchanges)
             {
                 _channel.QueueBind(queue: queueName,
                               exchange: ex,
                               routingKey: "");
             }
-
             var listener = new Listener(services.BuildServiceProvider().GetService<IRepository>());
             consumer.Received += (model, ea) =>
             {
@@ -63,18 +83,6 @@ namespace Uzivatel_Api
                 var message = Encoding.UTF8.GetString(body);
                 listener.AddCommand(message);
             };
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Uzivatel Api", Version = "v1" });
-            });
-            services.AddSwaggerDocument();
-            services.AddHealthChecks()
-                .AddCheck("Uzivatel API", () => HealthCheckResult.Healthy())
-                .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
-                        healthQuery: "SELECT 1;",
-                        name: "DB",
-                        failureStatus: HealthStatus.Degraded)
-                .AddRabbitMQ(sp => _connection);
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -88,7 +96,7 @@ namespace Uzivatel_Api
             app.UseSwaggerUi3();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Uzivatel Api v1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", $"{Configuration["Modul:Name"]} v1");
             });
             app.UseHttpsRedirection();
             app.UseRouting();

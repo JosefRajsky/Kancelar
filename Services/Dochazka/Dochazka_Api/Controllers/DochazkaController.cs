@@ -13,8 +13,8 @@ namespace Dochazka_Api.Controllers
     [Route("[controller]")]
     public class DochazkaController : ControllerBase
     {
-        private readonly IDochazkaRepository _repository;
-        public DochazkaController(IDochazkaRepository dochazkaService)
+        private readonly IRepository _repository;
+        public DochazkaController(IRepository dochazkaService)
         {
             _repository = dochazkaService;
         }

@@ -18,10 +18,10 @@ namespace Pritomnost_Api.Repositories
 {
     public class Repository : IRepository
     {
-        private readonly PritomnostDbContext db;
-        private Publisher _publisher;
-        private MessageHandler _handler;
-        public Repository(PritomnostDbContext dbContext, Publisher publisher)
+        private readonly ServiceDbContext db;
+        private readonly Publisher _publisher;
+        private readonly MessageHandler _handler;
+        public Repository(ServiceDbContext dbContext, Publisher publisher)
         {
             db = dbContext;
             _publisher = publisher;
@@ -38,29 +38,33 @@ namespace Pritomnost_Api.Repositories
                 }
                 else
                 {
-                    item.Generation = item.Generation + 1;
+                    item.Generation += 1;
                     await db.SaveChangesAsync();
                 }
             }
         }
         public async Task RequestEvents(Guid? entityId)
         {
-            var msgTypes = new List<MessageType>();
-            msgTypes.Add(MessageType.UzivatelCreated);
-            msgTypes.Add(MessageType.UzivatelUpdated);
-            msgTypes.Add(MessageType.UzivatelRemoved);
+            var msgTypes = new List<MessageType>
+            {
+                MessageType.UzivatelCreated,
+                MessageType.UzivatelUpdated,
+                MessageType.UzivatelRemoved
+            };
             await _handler.RequestReplay("pritomnost.ex", entityId, msgTypes);
         }
 
-        private async Task<Pritomnost> Create(EventUzivatelCreated evt)
-        {          
+#pragma warning disable CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+        private Pritomnost Create(EventUzivatelCreated evt)
+#pragma warning restore CS1998 // This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
+        {
             var model = new Pritomnost()
             {
                 PritomnostId = Guid.NewGuid(),
-                UzivatelId = evt.UzivatelId,               
+                UzivatelId = evt.UzivatelId,
                 Generation = evt.Generation,
                 EventGuid = evt.EventId,
-                UzivatelCeleJmeno = $"{evt.Prijmeni} {evt.Jmeno}",               
+                UzivatelCeleJmeno = $"{evt.Prijmeni} {evt.Jmeno}",
             };
             return model;
         }
@@ -96,7 +100,7 @@ namespace Pritomnost_Api.Repositories
             var kalendar = db.Pritomnosti.Where(k => k.UzivatelId == evt.UzivatelId).FirstOrDefault();
             if (kalendar == null)
             {
-                kalendar = await Create(evt);
+                kalendar = Create(evt);
                 db.Pritomnosti.Add(kalendar);
                 await db.SaveChangesAsync();
             }
