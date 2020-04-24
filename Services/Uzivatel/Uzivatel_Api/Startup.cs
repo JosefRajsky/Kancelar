@@ -29,69 +29,94 @@ namespace Uzivatel_Api
 {
     public class Startup
     {
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-        public IConfiguration Configuration { get; }
-        public IConnection Connection { get; set; }
+        private IConfiguration Configuration { get; }
+        private IConnection Connection { get; set; }
         public void ConfigureServices(IServiceCollection services)
         {
+            //Description: Pøidání objektu obsluhy operací a databáze
             services.AddTransient<IRepository, Repository>();
+            //Description: Vytvoøení DbContextu a pøipojení do databáze. ConnectionString v appsettings.json
             services.AddDbContext<ServiceDbContext>(opts => opts.UseSqlServer(Configuration["ConnectionString:DbConn"]));
+            //Description: Generování popisu metod API. Název modulu v appsettings.json
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = Configuration["Modul:Name"], Version = "v1" });
-            });
+            });        
+            //Description: Pøidání souboru s popisem API
             services.AddSwaggerDocument();
+            //Description: Vytvoøení kontrolerù pro metody API
             services.AddControllers();
+            //Description: Vytvoøení kontroly stavu modulu a databáze a message brokeru
             services.AddHealthChecks()
                .AddCheck(Configuration["Modul:Name"], () => HealthCheckResult.Healthy())
                .AddSqlServer(connectionString: Configuration["ConnectionString:DbConn"],
                        healthQuery: "SELECT 1;",
                        name: "DB",
                        failureStatus: HealthStatus.Degraded).AddRabbitMQ(sp => Connection);
+            //Description: Navání spojení s Message Broker
             MessageBrokerConnection(services);
         }
         public async void MessageBrokerConnection(IServiceCollection services)
         {
-            var exchanges = Configuration.GetSection("RbSetting:Subscription").Get<List<string>>();           
+            //Description: Seznam zájmových Exchange ke konzumaci událostí
+            var exchanges = Configuration.GetSection("RbSetting:Subscription").Get<List<string>>();   
+            //Description: Nastavení pøipojení k MB
             var factory = new ConnectionFactory() { HostName = Configuration["ConnectionString:RbConn"] };
+            //Description: Nastavení cyklické kontroly stavu, automatického obnovení a intervalu
             factory.RequestedHeartbeat = 60;
             factory.AutomaticRecoveryEnabled = true;
             factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(15);
+
+            //Description: Vytvoøení objektu pro Poskytnutí metod Publikace událostí
+            //Description: Pøidìlení základního Exchange a fronty servisu.
             services.AddSingleton<Publisher>(s => new Publisher(factory, Configuration["RbSetting:Exchange"], Configuration["RbSetting:Queue"]));
-            var retryPolicy = Policy.Handle<BrokerUnreachableException>().WaitAndRetryAsync(5, i => TimeSpan.FromSeconds(10));
+          
+            //Description: Nastavení politiky reakce na vyjímku pøi nedostupnosti
+            //Description: v pøípadì vyjímky opakovat 5krát, každých 10 vteøin
+            var retryPolicy = Policy
+                .Handle<BrokerUnreachableException>()
+                .WaitAndRetryAsync(5, i => TimeSpan.FromSeconds(10));
             await retryPolicy.ExecuteAsync(async () =>
             {
                 await Task.Run(() => {
                     try
                     {
+                        //Description: Navázání pøipojení s Message Broker
                         Connection = factory.CreateConnection();
                     }
                     catch (Exception)
-                    {
-
-                       
+                    {     
+                        //ToDo: Prostor pro logování vyjímky a další reakce
                     }
 
                 });
             });
+            //Description: Vytvoøení kanálu na MB pro pøipojení servisu
             var _channel = Connection.CreateModel();
+            //Description: Deklarace fronty pro servis
             var queueName = _channel.QueueDeclare().QueueName;
-            var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, Connection, _channel, queueName)).BuildServiceProvider().GetService<ISubscriber>().Start();
+            //Description: Vytvoøení objektu singleton Konzumaci naslouchání aktivity MB a Konzumace událostí         
+            var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, Connection, _channel, queueName))
+                .BuildServiceProvider().GetService<ISubscriber>().Start();           
+            //Description: Návázání spojení na zájmové Exchange
             foreach (var ex in exchanges)
             {
                 _channel.QueueBind(queue: queueName,
                               exchange: ex,
                               routingKey: "");
             }
+            //Description: Vytvoøení objektu s metodami reakce na konzumované události
             var listener = new Listener(services.BuildServiceProvider().GetService<IRepository>());
+            //Description: Zpracování konzumované zprávy z Message Broker
             consumer.Received += (model, ea) =>
             {
                 var body = ea.Body;
                 var message = Encoding.UTF8.GetString(body);
+                //Description: Pøedání zprávy pro nasmìrování a zpracování.
                 listener.AddCommand(message);
             };
         }
@@ -101,8 +126,10 @@ namespace Uzivatel_Api
             {
                 app.UseDeveloperExceptionPage();
             }
+            //Description: Vystavení adresy pro kontrolu stavu
             app.UseHealthChecks("/hc");
             app.UseStaticFiles();
+            //Description: Aktivace popisu API, Vystavení popisu na rozhraní
             app.UseOpenApi();
             app.UseSwaggerUi3();
             app.UseSwaggerUI(c =>
@@ -112,12 +139,13 @@ namespace Uzivatel_Api
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
+            //Description: Vystavení výsledkù kontroly stavu na rozhraní
             app.UseHealthChecks("/healthcheck", new HealthCheckOptions
             {
                 Predicate = _ => true,
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
             });
-
+            //Description: Pøedpis pro smìrování pøíchozích požadavkù na Controller
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

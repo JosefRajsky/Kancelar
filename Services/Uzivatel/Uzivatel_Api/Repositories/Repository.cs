@@ -14,26 +14,33 @@ namespace Uzivatel_Api.Repositories
     {
         private readonly ServiceDbContext db; 
         private readonly MessageHandler _handler;
+
+        //Description: Vytvoření repositáře. Přiřazení databáze a objektu s metodami pro Publikaci
         public Repository(ServiceDbContext dbContext, Publisher publisher)
         {
             db = dbContext;           
             _handler = new MessageHandler(publisher);
         }
+        //Description: Ověření aktuálního stavu entity po uložení a publikaci
         public async Task LastEventCheck(Guid eventId, Guid entityId)
         {
+            //Description: Nalezení záznamu
             var item = db.Uzivatele.FirstOrDefault(u => u.UzivatelId == entityId);
             if (item != null)
             {
                 if (item.EventGuid != eventId)
                 {
+                    //Description: Pokud nesouhlasi ID události, vyžádej obnovu entity
                     await RequestEvents(entityId);
                 }
                 else {
+                    //Description: Potvrzení úravy entity
                     item.Generation += 1;
                    await db.SaveChangesAsync();
                 }
             }
         }
+        //Description: Metoda pro vyžádání obnovy u zájmových událostí
         public async Task RequestEvents(Guid? entityId)
         {
             var msgTypes = new List<MessageType>
@@ -42,18 +49,24 @@ namespace Uzivatel_Api.Repositories
                 MessageType.UzivatelUpdated,
                 MessageType.UzivatelRemoved
             };
+            //Description: Publikace požadavku na Obnovu. Určení na který exchange a kterou entitu podle ID
             await _handler.RequestReplay("uzivatel.ex", entityId, msgTypes);           
         }
+        //Description: Reakce na přijatou obnovovací sekvenci událostí. Může být určen jen pro entitu
         public async Task ReplayEvents(List<string> stream, Guid? entityId)
         {
+            //Description: Deserializace všech zpráv z Json
             var messages = new List<Message>();
             foreach (var item in stream)
             {
                 messages.Add(JsonConvert.DeserializeObject<Message>(item));
             }
+            //Description: Provedení setřídění podle data vytvoření
             var replayOrderedStream = messages.OrderBy(d => d.Created);
+            //Description: Postupné zpracování zpráv
             foreach (var msg in replayOrderedStream)
             {
+                //Description: Reakce na zprávy podle typu události
                 switch (msg.MessageType)
                 {
                     case MessageType.UzivatelCreated:
@@ -86,6 +99,7 @@ namespace Uzivatel_Api.Repositories
             }
             await db.SaveChangesAsync();
         }
+        //Description: pomocná metoda na vytvoření záznamu na základě události
         private Uzivatel Create(EventUzivatelCreated evt)
         {
             var model = new Uzivatel()
@@ -105,6 +119,7 @@ namespace Uzivatel_Api.Repositories
             };
             return model;
         }
+        //Description: Pomocná metoda na úpravu záznamu na základě události
         private Uzivatel Modify(EventUzivatelUpdated evt, Uzivatel item)
         {
             item.TitulPred = evt.TitulPred;
@@ -118,10 +133,14 @@ namespace Uzivatel_Api.Repositories
             item.EventGuid = evt.EventId;
             return item;
         }
+        //Description: Načtení uživatele podle ID
         public async Task<Uzivatel> Get(Guid id) => await Task.Run(() => db.Uzivatele.FirstOrDefault(b => b.UzivatelId == id));
+        //Description: Načtení listu všech uživatelů
         public async Task<List<Uzivatel>> GetList() => await db.Uzivatele.ToListAsync();
+        //Description: Přidání uživatele, příkaz
         public async Task Add(CommandUzivatelCreate cmd)
         {
+            //Description: Zpracování události na základě obdrženého příkazu
             var ev = new EventUzivatelCreated()
             {
                 EventId = Guid.NewGuid(),
@@ -138,13 +157,19 @@ namespace Uzivatel_Api.Repositories
                 Telefon = cmd.Telefon,
                 Generation = 0,
             };              
+            //Description: Vytvoření uživatele
                 var item = Create(ev);
-                db.Uzivatele.Add(item);                
+            //Description: Přidání uživatele
+                db.Uzivatele.Add(item);     
+            //Description: Uložení uživatele
                 await db.SaveChangesAsync();
+            //Description: Přidání Id uživatele do události
                 ev.UzivatelId = item.UzivatelId;
+            //Description: Přidání generace záznamu do události, zvýšení o stupeň
+            //Description: Záznam v DB bude uveden do generace eventu po jeho zpětné konzumaci
                 ev.Generation += 1;
-                await _handler.PublishEvent(ev, MessageType.UzivatelCreated, ev.EventId, null, ev.Generation, ev.UzivatelId);
-            
+            //Description: Publikace události o vytvoření uživatele
+                await _handler.PublishEvent(ev, MessageType.UzivatelCreated, ev.EventId, null, ev.Generation, ev.UzivatelId);            
         }
         public async Task Update(CommandUzivatelUpdate cmd)
         {
@@ -184,8 +209,6 @@ namespace Uzivatel_Api.Repositories
             await _handler.PublishEvent(ev, MessageType.UzivatelRemoved, ev.EventId, remove.EventGuid, remove.Generation, remove.UzivatelId);
             await db.SaveChangesAsync();
         }
-
-
     }
 
 }

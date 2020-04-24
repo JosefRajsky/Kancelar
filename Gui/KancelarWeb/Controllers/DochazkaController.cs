@@ -32,7 +32,7 @@ namespace KancelarWeb.Controllers
                 var uzivatel = await UzivatelServis.GetAsync(item.UzivatelId);
                 if (uzivatel != null)
                 {
-                    item.UzivatelCeleJmeno = $"{uzivatel.Prijmeni} {uzivatel.Jmeno}";
+                    //item.UzivatelCeleJmeno = $"{uzivatel.Prijmeni} {uzivatel.Jmeno}";
                 }
 
             }
@@ -44,7 +44,7 @@ namespace KancelarWeb.Controllers
         {
             var model = await client.GetAsync(id);
             var uzivatel = await UzivatelServis.GetAsync(model.UzivatelId);
-            model.UzivatelCeleJmeno = $"{uzivatel.Prijmeni} {uzivatel.Jmeno}";
+            //model.UzivatelCeleJmeno = $"{uzivatel.Prijmeni} {uzivatel.Jmeno}";
             return View(model);
         }
         
