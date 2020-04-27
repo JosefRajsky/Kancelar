@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using KancelarWeb.CommandsModels;
 using KancelarWeb.Services;
+using KancelarWeb.ViewModels;
 using Microsoft.AspNetCore.Blazor;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -16,7 +16,7 @@ namespace KancelarWeb.Controllers
 {
     public class UzivatelController : Controller
     {
-        UzivatelClient client;
+        readonly UzivatelClient client;
         public UzivatelController()
         {
             client = new UzivatelClient();
@@ -34,8 +34,10 @@ namespace KancelarWeb.Controllers
         }
         public async Task<IActionResult> Edit(Guid? id)
         {
-            var model = new Uzivatel();
-            model.DatumNarozeni = DateTime.Today;
+            var model = new Uzivatel
+            {
+                DatumNarozeni = DateTime.Today
+            };
             if (id != null) {
                 model = await client.GetAsync(new Guid(id.ToString()));
             }          

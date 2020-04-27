@@ -3,10 +3,12 @@
   <PropertyGroup Label="Globals">
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
-    <ProjectGuid>a47f51b0-1f80-4617-b9f6-fc636b8e60be</ProjectGuid>
+    <ProjectGuid>ead67ab9-6e8b-4568-8944-c80a91b815f9</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
-    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/weatherforecast</DockerServiceUrl>
-    <DockerServiceName>uzivatel_api</DockerServiceName>
+    <DockerServiceName>kancelarWeb</DockerServiceName>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}</DockerServiceUrl>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">

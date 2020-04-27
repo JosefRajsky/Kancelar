@@ -87,6 +87,30 @@ namespace Uzivatel_Api
                     {
                         //Description: Navázání pøipojení s Message Broker
                         Connection = factory.CreateConnection();
+                        //Description: Vytvoøení kanálu na MB pro pøipojení servisu
+                        var _channel = Connection.CreateModel();
+                        //Description: Deklarace fronty pro servis
+                        var queueName = _channel.QueueDeclare().QueueName;
+                        //Description: Vytvoøení objektu singleton Konzumaci naslouchání aktivity MB a Konzumace událostí         
+                        var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, Connection, _channel, queueName))
+                            .BuildServiceProvider().GetService<ISubscriber>().Start();
+                        //Description: Návázání spojení na zájmové Exchange
+                        foreach (var ex in exchanges)
+                        {
+                            _channel.QueueBind(queue: queueName,
+                                          exchange: ex,
+                                          routingKey: "");
+                        }
+                        //Description: Vytvoøení objektu s metodami reakce na konzumované události
+                        var listener = new Listener(services.BuildServiceProvider().GetService<IRepository>());
+                        //Description: Zpracování konzumované zprávy z Message Broker
+                        consumer.Received += (model, ea) =>
+                        {
+                            var body = ea.Body;
+                            var message = Encoding.UTF8.GetString(body);
+                            //Description: Pøedání zprávy pro nasmìrování a zpracování.
+                            listener.AddCommand(message);
+                        };
                     }
                     catch (Exception)
                     {     
@@ -95,30 +119,7 @@ namespace Uzivatel_Api
 
                 });
             });
-            //Description: Vytvoøení kanálu na MB pro pøipojení servisu
-            var _channel = Connection.CreateModel();
-            //Description: Deklarace fronty pro servis
-            var queueName = _channel.QueueDeclare().QueueName;
-            //Description: Vytvoøení objektu singleton Konzumaci naslouchání aktivity MB a Konzumace událostí         
-            var consumer = services.AddSingleton<ISubscriber>(s => new Subscriber(exchanges, Connection, _channel, queueName))
-                .BuildServiceProvider().GetService<ISubscriber>().Start();           
-            //Description: Návázání spojení na zájmové Exchange
-            foreach (var ex in exchanges)
-            {
-                _channel.QueueBind(queue: queueName,
-                              exchange: ex,
-                              routingKey: "");
-            }
-            //Description: Vytvoøení objektu s metodami reakce na konzumované události
-            var listener = new Listener(services.BuildServiceProvider().GetService<IRepository>());
-            //Description: Zpracování konzumované zprávy z Message Broker
-            consumer.Received += (model, ea) =>
-            {
-                var body = ea.Body;
-                var message = Encoding.UTF8.GetString(body);
-                //Description: Pøedání zprávy pro nasmìrování a zpracování.
-                listener.AddCommand(message);
-            };
+          
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

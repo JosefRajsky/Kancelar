@@ -7,7 +7,6 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["Services/Uzivatel/Uzivatel_Api/Uzivatel_Api.csproj", "Services/Uzivatel/Uzivatel_Api/"]
-COPY ["RabbitHandlers/CommandHandler/CommandHandler.csproj", "RabbitHandlers/CommandHandler/"]
 RUN dotnet restore "Services/Uzivatel/Uzivatel_Api/Uzivatel_Api.csproj"
 COPY . .
 WORKDIR "/src/Services/Uzivatel/Uzivatel_Api"

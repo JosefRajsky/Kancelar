@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using KancelarWeb.CommandsModels;
 using KancelarWeb.Services;
 using Microsoft.AspNetCore.Blazor;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +15,7 @@ namespace KancelarWeb.Controllers
 {
     public class KalendarController : Controller
     {
-        KalendarClient client;
+        readonly KalendarClient client;
         public KalendarController()
         {
             client = new KalendarClient();           

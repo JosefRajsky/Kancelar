@@ -38,6 +38,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{44BB78CE-6047-4645-B8F7-157757DB6FA0}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		docker_back.txt = docker_back.txt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Monitor", "Monitor", "{809AD071-815E-4CA3-9563-AFC438280F16}"
@@ -98,7 +99,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ukol_Api", "Services\Ukol\U
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Transfer", "Transfer", "{C9BB9CAF-DB1F-4D97-8F47-D8DBC2979FF8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transfer_Api", "Services\Transfer\Transfer_Api\Transfer_Api.csproj", "{93AB6F31-AECE-4136-A9FF-9B6B7652F96F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Transfer_Api", "Services\Transfer\Transfer_Api\Transfer_Api.csproj", "{93AB6F31-AECE-4136-A9FF-9B6B7652F96F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
