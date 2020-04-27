@@ -1,7 +1,5 @@
 version: '3.4'
-
 services:
-
   sqlserver:
     image: ${DOCKER_REGISTRY-}mcr.microsoft.com/mssql/server:2017-latest-ubuntu 
     hostname: 'sqlserver'  
@@ -15,8 +13,17 @@ services:
     expose:
       - 1433
     volumes:  
-      - /var/container_data/mysql:/var/lib/mysql mysql_image
-      
+      - /var/container_data/mysql:/var/lib/mysql mysql_image  sni
+  gateway:
+    image: ${DOCKER_REGISTRY-}webapi
+    hostname: "gateway"  
+    restart: always
+    ports:
+      - "8030:80"
+    build:
+      context: .
+      dockerfile: Api/WebApi/Dockerfile
+
   rabbitmq:
     image: "rabbitmq:3-management"
     hostname: "rabbit"
@@ -29,17 +36,6 @@ services:
       NAME: "rabbitmq"
     volumes:
       - ./rabbitmq-isolated.conf:/etc/rabbitmq/rabbitmq.config
-
-  gateway:
-    image: ${DOCKER_REGISTRY-}webapi
-    hostname: "gateway"  
-    restart: always
-    ports:
-      - "8030:80"
-    build:
-      context: .
-      dockerfile: Api/WebApi/Dockerfile
-
   monitor:
     image: ${DOCKER_REGISTRY-}monitor
     hostname: "monitor"

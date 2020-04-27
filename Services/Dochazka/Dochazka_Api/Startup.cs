@@ -73,9 +73,9 @@ namespace Dochazka_Api
                     {
                         Connection = factory.CreateConnection();
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
-
+                        var exp = e;
                        
                     }
 

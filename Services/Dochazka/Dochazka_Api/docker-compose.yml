@@ -1,0 +1,66 @@
+version: '3.4'
+
+services:
+  dochazkaapi:
+    image: ${DOCKER_REGISTRY-}dochazkaapi
+    ports:
+      - "8037:80"
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+  sqlserver:
+    image: ${DOCKER_REGISTRY-}mcr.microsoft.com/mssql/server:2017-latest-ubuntu 
+    hostname: 'sqlserver'  
+    restart: always
+    container_name: 'sqlserver'
+    environment:  
+      ACCEPT_EULA: Y  
+      SA_PASSWORD: "Password123"     
+    ports:  
+      - '1433:1433'
+    expose:
+      - 1433
+    volumes:  
+      - /var/container_data/mysql:/var/lib/mysql mysql_image
+      
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    hostname: "rabbit"
+    restart: always
+    container_name: 'RabbitMq'
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    labels:
+      NAME: "rabbitmq"
+    volumes:
+      - ./rabbitmq-isolated.conf:/etc/rabbitmq/rabbitmq.config
+
+  gateway:
+    image: ${DOCKER_REGISTRY-}webapi
+    hostname: "gateway"  
+    restart: always
+    ports:
+      - "8030:80"
+    build:
+      context: ./../../../ 
+      dockerfile: Api/WebApi/Dockerfile
+
+  eventstore:
+    image: ${DOCKER_REGISTRY-}eventstore
+    hostname: "eventstore"  
+    restart: always
+    ports:
+      - "8034:80"
+    build:
+      context: ./../../../ 
+      dockerfile: Services/EventStore/EventStore/Dockerfile
+
+  kancelarweb:
+    image: ${DOCKER_REGISTRY-}kancelarweb
+    ports:
+      - "85:80"
+    build:
+      context: ./../../../ 
+      dockerfile: Gui/KancelarWeb/Dockerfile
