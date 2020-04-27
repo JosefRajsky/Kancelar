@@ -44,27 +44,7 @@ namespace CommandHandler
 
         [Description("Event")]
         DochazkaUpdated = 5,
-        #endregion
-        #region Udalost
-
-        [Description("Command: Založení nové události")]
-        UdalostCreate = 6,
-
-        [Description("Command: Odstranění události")]
-        UdalostRemove = 7,
-
-        [Description("Command: Update události")]
-        UdalostUpdate = 8,
-
-        [Description("Command: Založení nové události")]
-        UdalostCreated = 9,
-
-        [Description("Command: Odstranění události")]
-        UdalostRemoved = 10,
-
-        [Description("Command: Update události")]
-        UdalostUpdated = 11,
-        #endregion
+        #endregion  
         
         #region Kalendar
         [Description("Command: Vytvoření nového kalendáře")]
@@ -78,6 +58,9 @@ namespace CommandHandler
 
         [Description("Event: kalendář byl upraven")]
         KalendarUpdated = 21,
+
+        [Description("Event: kalendář byl upraven")]
+        KalendarRemoved = 106,
         #endregion
         #region Pritomnost
         [Description("Command: Vytvoření nového kalendáře")]

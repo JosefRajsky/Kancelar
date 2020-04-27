@@ -1,4 +1,4 @@
-﻿@model IEnumerable<KancelarWeb.Udalost>
+﻿@model IEnumerable<KancelarWeb.ViewModels.Aktivita>
 
 @{
     ViewData["Title"] = "Index";
@@ -8,7 +8,7 @@
 <h5>Události - přehled</h5>
 
 <p>
-    <a asp-action="Edit" asp-controller="Udalost" class="btn btn-success">Nová událost</a>
+    <a asp-action="Edit" asp-controller="Aktivita" class="btn btn-success">Nová událost</a>
 </p>
 <table class="table">
     <thead>
@@ -43,7 +43,7 @@
                @Html.DisplayFor(modelItem => item.UzivatelCeleJmeno)       
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.UdalostTypId)
+                @Html.DisplayFor(modelItem => item.AktivitaTypId)
             </td>
             <td class="pan">
               <span class="btn btn-dark disabled"> @Html.DisplayFor(modelItem => item.Nazev)</span>
@@ -55,9 +55,9 @@
                 @Html.DisplayFor(modelItem => item.DatumDo)
             </td>           
             <td>
-                <a asp-action="Edit" asp-controller="Udalost" asp-route-id="@item.UdalostId" class="btn btn-xs btn-outline-primary" title="Upravit">upravit</a>
-                <a asp-action="Detail" asp-controller="Udalost" asp-route-id="@item.UdalostId" class="btn btn-xs btn-outline-info" title="Detail">detail</a>
-                <a asp-action="Remove" asp-controller="Udalost" asp-route-id="@item.UdalostId" class="btn btn-xs btn-outline-danger" title="Odstranit">odstranit</a>
+                <a asp-action="Edit" asp-controller="Aktivita" asp-route-id="@item.AktivitaId" class="btn btn-xs btn-outline-primary" title="Upravit">upravit</a>
+                <a asp-action="Detail" asp-controller="Aktivita" asp-route-id="@item.AktivitaId" class="btn btn-xs btn-outline-info" title="Detail">detail</a>
+                <a asp-action="Remove" asp-controller="Aktivita" asp-route-id="@item.AktivitaId" class="btn btn-xs btn-outline-danger" title="Odstranit">odstranit</a>
                               
             </td>
         </tr>

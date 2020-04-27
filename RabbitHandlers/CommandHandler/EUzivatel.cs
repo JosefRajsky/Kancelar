@@ -67,7 +67,7 @@ namespace CommandHandler
         public string Email { get; set; }
         public string Telefon { get; set; }
     }
-    public class EventUzivatelDeleted 
+    public class EventUzivatelRemoved 
     {
         public Guid EventId { get; set; }
         public int Generation { get; set; }

@@ -16,12 +16,12 @@ namespace Pritomnost_Api.Repositories
         Task LastEventCheck(Guid eventId, Guid entityId);
    
         Task RequestEvents(Guid? entityId);
-        Task CreateByUdalost(EventUdalostCreated evt);
-        Task UpdateByUdalost(EventUdalostUpdated evt);
-        Task DeleteByUdalost(EventUdalostRemoved evt);
+        Task CreateByAktivita(EventAktivitaCreated evt);
+        Task UpdateByAktivita(EventAktivitaUpdated evt);
+        Task DeleteByAktivita(EventAktivitaRemoved evt);
 
         Task CreateByUzivatel(EventUzivatelCreated evt);       
         Task UpdateByUzivatel(EventUzivatelUpdated evt);        
-        Task DeleteByUzivatel(EventUzivatelDeleted evt);
+        Task DeleteByUzivatel(EventUzivatelRemoved evt);
     }
 }

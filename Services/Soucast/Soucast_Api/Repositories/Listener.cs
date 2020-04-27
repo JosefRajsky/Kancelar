@@ -34,13 +34,16 @@ namespace Soucast_Api.Repositories
                     var ev = JsonConvert.DeserializeObject<HealingStreamProvided>(envelope.Event);
                     _repository.ReplayEvents(ev.MessageList, envelope.EntityId);
                     break;
-                case MessageType.UzivatelCreated:
+                case MessageType.SoucastCreated:
 
                     _repository.LastEventCheck(JsonConvert.DeserializeObject<EventSoucastCreated>(envelope.Event).EventId, envelope.EntityId);
                     break;
-                case MessageType.UzivatelUpdated:
-                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventSoucastCreated>(envelope.Event).EventId, envelope.EntityId);
-                    break;      
+                case MessageType.SoucastUpdated:
+                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventSoucastUpdated>(envelope.Event).EventId, envelope.EntityId);
+                    break;
+                case MessageType.SoucastRemoved:
+                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventSoucastRemoved>(envelope.Event).EventId, envelope.EntityId);
+                    break;
             }
         }
 

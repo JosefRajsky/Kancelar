@@ -14,46 +14,38 @@ namespace Aktivita_Api.Controllers
     public class AktivitaController : ControllerBase
     {
         private readonly IRepository _repository;
-       
-        public AktivitaController(IRepository repository)
+        public AktivitaController(IRepository AktivitaService)
         {
-            _repository = repository;
-          
+            _repository = AktivitaService;
         }
         [HttpGet]
         [Route("Get/{id?}")]
-        public async Task<Aktivita> Get(Guid id)
-        {
-            var response = await _repository.Get(id);            
-            return response;
-        }
+        public async Task<Aktivita> Get(Guid AktivitaId) => await _repository.Get(AktivitaId);
 
         [HttpGet]
         [Route("GetList")]
-        public async Task<List<Aktivita>> GetList() {
-
-            var response = await _repository.GetList(); 
-            return response;
+        public async Task<List<Aktivita>> GetList()
+        {
+            return await _repository.GetList();
+        }
+        [HttpPut]
+        [Route("Add")]
+        public async Task Add(CommandAktivitaCreate cmd)
+        {
+            await _repository.Add(cmd);
         }
 
         [HttpPost]
-        [Route("Add")]
-        public async Task Add(CommandAktivitaCreate cmd)      
-        { 
-         await _repository.Add(cmd);            
-        }
-
-        [HttpDelete]
         [Route("Remove")]
-        public async Task Delete(CommandAktivitaRemove cmd)
+        public async Task Remove(CommandAktivitaRemove cmd)
         {
-           await _repository.Remove(cmd);   
+            await _repository.Remove(cmd);
         }
         [HttpPost]
         [Route("Update")]
         public async Task Update(CommandAktivitaUpdate cmd)
         {
-            await _repository.Update(cmd);        
+            await _repository.Update(cmd);
         }
     }
 }

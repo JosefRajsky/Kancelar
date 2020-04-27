@@ -14,7 +14,6 @@ namespace Uzivatel_Api
         public int Generation { get; set; }
         public Guid UzivatelId { get; set; }
         public  string ImportedId { get; set; }
-
         public string TitulPred { get; set; }
         public string Jmeno { get; set; }
         public string Prijmeni { get; set; }

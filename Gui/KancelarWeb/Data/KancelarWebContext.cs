@@ -16,7 +16,7 @@ namespace KancelarWeb.Data
         {
         }
 
-        public DbSet<Udalost> Udalost { get; set; }
+        public DbSet<Aktivita> Aktivita { get; set; }
 
         public DbSet<Kalendar> Kalendar { get; set; }
 

@@ -1,4 +1,4 @@
-﻿@model KancelarWeb.Udalost
+﻿@model KancelarWeb.ViewModels.Aktivita
 
 @{
     ViewData["Title"] = "View";
@@ -9,9 +9,9 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Add" asp-controller="Udalost">
+        <form asp-action="Add" asp-controller="Aktivita">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="UdalostId">
+            <input type="hidden" asp-for="AktivitaId">
             <div class="form-group">
                 <div class="form-group">
                     <label asp-for="UzivatelId" class="control-label"></label>
@@ -23,12 +23,12 @@
                 </div>
             </div>
             <div class="form-group">
-                <label asp-for="UdalostTypId" class="control-label"></label>
-                <select asp-for="UdalostTypId" class="form-control" asp-items="@ViewBag.UdalostTypList" onchange="onIndexChange(this,'Nazev')">
+                <label asp-for="AktivitaTypId" class="control-label"></label>
+                <select asp-for="AktivitaTypId" class="form-control" asp-items="@ViewBag.AktivitaTypList" onchange="onIndexChange(this,'Nazev')">
                     <option value="">Vyberte typ události</option>
                 </select>
                 <input asp-for="Nazev" type="hidden" />
-                <span asp-validation-for="UdalostTypId" class="text-danger"></span>
+                <span asp-validation-for="AktivitaTypId" class="text-danger"></span>
 
             </div>
             <div class="form-group">

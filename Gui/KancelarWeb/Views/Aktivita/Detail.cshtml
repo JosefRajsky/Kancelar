@@ -1,27 +1,27 @@
-﻿@model KancelarWeb.Udalost
+﻿@model KancelarWeb.ViewModels.Aktivita
 
 @{
     ViewData["Title"] = "Detail";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-    <h3>Udalost - detail</h3>
+    <h3>Aktivita - detail</h3>
 
-<div>
+<div>j
     
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.UdalostId)
+            @Html.DisplayNameFor(model => model.AktivitaId)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.UdalostId)
+            @Html.DisplayFor(model => model.AktivitaId)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.UdalostTypId)
+            @Html.DisplayNameFor(model => model.AktivitaTypId)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.UdalostTypId)
+            @Html.DisplayFor(model => model.AktivitaTypId)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Nazev)
@@ -65,6 +65,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-controller="Udalost" asp-route-id="Model.Id" class="btn btn-outline-primary">Upravit</a>
+    <a asp-action="Edit" asp-controller="Aktivita" asp-route-id="Model.Id" class="btn btn-outline-primary">Upravit</a>
     <a asp-action="Index">Back to List</a>
 </div>

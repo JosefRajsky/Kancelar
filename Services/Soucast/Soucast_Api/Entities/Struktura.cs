@@ -12,9 +12,16 @@ namespace Soucast_Api
         public Guid Id { get; set; }        
         public Guid? EventGuid { get; set; }
         public int Generation { get; set; }
+        public string ImportedId { get; set; }
+        [Display(Name = "Součást ID")]
         public Guid SoucastId { get; set; }
-        public string Value1 { get; set; }
-        public int Value2 { get; set; }
+        [Display(Name = "Název")]
+        public string Nazev { get; set; }
+        [Display(Name = "Zkratka")]
+        public string Zkratka { get; set; }
+        [Display(Name = "Nadřízená součást")]
+        public Guid ParentId { get; set; }
+
 
     }
 }

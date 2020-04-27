@@ -8,40 +8,34 @@ using System.Net.Http;
 using KancelarWeb.Services;
 using System.Linq;
 using System.Security.Cryptography.Xml;
+using KancelarWeb.ViewModels;
 
 namespace KancelarWeb.Controllers
 {
-    public class UdalostController : Controller
+    public class AktivitaController : Controller
     {
 
-        UdalostClient client;
+        AktivitaClient client;
         UzivatelClient uzivatelService;
-        public UdalostController()
+        public AktivitaController()
         {
-            client = new UdalostClient();
+            client = new AktivitaClient();
             uzivatelService = new UzivatelClient();
         }
-
         public async Task<IActionResult> Index()
         {
-            var model = await client.GetListAsync();
-           
+            var model = await client.GetListAsync();           
             return View(model);
         }
-        public async Task<IActionResult> Detail(Guid udalostId, Guid id)
+        public async Task<IActionResult> Detail(Guid aktivitaId, Guid id)
         {
-            var model = await client.GetAsync(udalostId,id.ToString());
-
-          
-              
-           
-
+            var model = await client.GetAsync(aktivitaId,id.ToString());
             return View(model);
         }
         [HttpPost]
-        public async Task<IActionResult> Add([FromForm]Udalost model)
+        public async Task<IActionResult> Add([FromForm] Aktivita model)
         {
-            var command = new CommandUdalostCreate() {
+            var command = new CommandAktivitaCreate() {
                 UzivatelId = model.UzivatelId,  
                 Nazev = model.Nazev,
                 UzivatelCeleJmeno = model.UzivatelCeleJmeno,
@@ -49,17 +43,16 @@ namespace KancelarWeb.Controllers
                 DatumDo = model.DatumDo,
                 DatumZadal = DateTime.Today,
                 Popis = model.Popis,
-                UdalostTypId = model.UdalostTypId
+                AktivitaTypId = model.AktivitaTypId
             };
             await client.AddAsync(command);
-
             return RedirectToAction("Index");
         }
-        public async Task<IActionResult> Update(Udalost model)
+        public async Task<IActionResult> Update(Aktivita model)
         {
-            var command = new CommandUdalostUpdate()
+            var command = new CommandAktivitaUpdate()
             {
-                UdalostId = model.Id,
+                AktivitaId = model.Id,
                 UzivatelId = model.UzivatelId,
                 DatumDo = model.DatumDo,
                 Nazev = model.Nazev,
@@ -67,7 +60,7 @@ namespace KancelarWeb.Controllers
                 DatumOd = model.DatumDo,
                 DatumZadal = DateTime.Today,
                 Popis = model.Popis,
-                UdalostTypId = model.UdalostTypId
+                AktivitaTypId = model.AktivitaTypId
             };
             await client.UpdateAsync(command);
 
@@ -75,17 +68,17 @@ namespace KancelarWeb.Controllers
         }
         public async Task<IActionResult> Remove(Guid id)
         {
-            var command = new CommandUdalostRemove() { UdalostId = id };
+            var command = new CommandAktivitaRemove() { AktivitaId = id };
             await client.RemoveAsync(command);
             return RedirectToAction("Index");
         }
         public async Task<IActionResult> EditAsync()
         {
-            var model = new Udalost();
+            var model = new Aktivita();
             model.DatumDo = DateTime.Today;
             model.DatumOd = DateTime.Today;
 
-            ViewBag.UdalostTypList = new SelectList(Enum.GetValues(typeof(EUdalostTyp)).Cast<EUdalostTyp>().Select(v => new SelectListItem
+            ViewBag.AktivitaTypList = new SelectList(Enum.GetValues(typeof(EAktivitaTyp)).Cast<EAktivitaTyp>().Select(v => new SelectListItem
             {
                 Text = v.Description(),
                 Value = v.ToString()
