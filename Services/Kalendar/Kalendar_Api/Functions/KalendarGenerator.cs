@@ -12,7 +12,7 @@ namespace Kalendar_Api.Functions
         public int TypId { get; set; }
         public string Nazev { get; set; }
         public bool IsSvatek { get; set; }
-        public int UdalostCount { get; set; }
+        public int AktivitaCount { get; set; }
         public List<Polozka> Polozky { get; set; }
     }
     public class Month {
@@ -30,7 +30,7 @@ namespace Kalendar_Api.Functions
 
     public class Polozka { 
     public Guid Id { get; set; }
-    public int UdalostTypId { get; set; }
+    public int AktivitaTypId { get; set; }
     public string Nazev { get; set; }
     public Guid UzivatelId { get; set; }
     public string CeleJmeno { get; set; }
@@ -68,7 +68,7 @@ namespace Kalendar_Api.Functions
                             IsSvatek = !string.IsNullOrEmpty(IsSvatek(datum)),
                             Nazev = IsSvatek(datum),
                             TypId = (datum.DayOfWeek ==0)? 7 : (int)datum.DayOfWeek,
-                            UdalostCount = 0,
+                            AktivitaCount = 0,
                             Polozky = new List<Polozka>()
                         };
                         Mesic.Days.Add(Den);

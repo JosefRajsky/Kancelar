@@ -13,15 +13,16 @@
 namespace KancelarWeb
 {
     using KancelarWeb.Services;
+    using KancelarWeb.ViewModels;
     using System = global::System;
     
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.4.2.0 (NJsonSchema v10.1.11.0 (Newtonsoft.Json v12.0.0.0))")]
-    public partial class UdalostClient 
+    public partial class AktivitaClient 
     {
         private string _baseUrl = "http://gateway/";
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
     
-        public UdalostClient()
+        public AktivitaClient()
         {
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(CreateSerializerSettings);
         }
@@ -47,24 +48,24 @@ namespace KancelarWeb
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<Udalost> GetAsync(System.Guid? udalostId, string id)
+        public System.Threading.Tasks.Task<Aktivita> GetAsync(System.Guid? AktivitaId, string id)
         {
-            return GetAsync(udalostId, id, System.Threading.CancellationToken.None);
+            return GetAsync(AktivitaId, id, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<Udalost> GetAsync(System.Guid? udalostId, string id, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<Aktivita> GetAsync(System.Guid? AktivitaId, string id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/udalost/Get/{id}?");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Aktivita/Get/{id}?");
             urlBuilder_.Replace("{id}", System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
-            if (udalostId != null) 
+            if (AktivitaId != null) 
             {
-                urlBuilder_.Append(System.Uri.EscapeDataString("udalostId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(udalostId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+                urlBuilder_.Append(System.Uri.EscapeDataString("AktivitaId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(AktivitaId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             }
             urlBuilder_.Length--;
     
@@ -96,7 +97,7 @@ namespace KancelarWeb
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200") 
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Udalost>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Aktivita>(response_, headers_).ConfigureAwait(false);
                             return objectResponse_.Object;
                         }
                         else
@@ -106,7 +107,7 @@ namespace KancelarWeb
                             throw new ApiException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
                         }
             
-                        return default(Udalost);
+                        return default(Aktivita);
                     }
                     finally
                     {
@@ -121,17 +122,17 @@ namespace KancelarWeb
         }
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Udalost>> GetListAsync()
+        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Aktivita>> GetListAsync()
         {
             return GetListAsync(System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Udalost>> GetListAsync(System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Aktivita>> GetListAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/udalost/GetList");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Aktivita/GetList");
     
             var client_ = new System.Net.Http.HttpClient();
             try
@@ -161,7 +162,7 @@ namespace KancelarWeb
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200") 
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<Udalost>>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<Aktivita>>(response_, headers_).ConfigureAwait(false);
                             return objectResponse_.Object;
                         }
                         else
@@ -171,7 +172,7 @@ namespace KancelarWeb
                             throw new ApiException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
                         }
             
-                        return default(System.Collections.Generic.ICollection<Udalost>);
+                        return default(System.Collections.Generic.ICollection<Aktivita>);
                     }
                     finally
                     {
@@ -186,20 +187,20 @@ namespace KancelarWeb
         }
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task AddAsync(CommandUdalostCreate cmd)
+        public System.Threading.Tasks.Task AddAsync(CommandAktivitaCreate cmd)
         {
             return AddAsync(cmd, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task AddAsync(CommandUdalostCreate cmd, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task AddAsync(CommandAktivitaCreate cmd, System.Threading.CancellationToken cancellationToken)
         {
             if (cmd == null)
                 throw new System.ArgumentNullException("cmd");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/udalost/Add");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Aktivita/Add");
     
             var client_ = new System.Net.Http.HttpClient();
             try
@@ -253,20 +254,20 @@ namespace KancelarWeb
         }
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task RemoveAsync(CommandUdalostRemove cmd)
+        public System.Threading.Tasks.Task RemoveAsync(CommandAktivitaRemove cmd)
         {
             return RemoveAsync(cmd, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task RemoveAsync(CommandUdalostRemove cmd, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task RemoveAsync(CommandAktivitaRemove cmd, System.Threading.CancellationToken cancellationToken)
         {
             if (cmd == null)
                 throw new System.ArgumentNullException("cmd");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/udalost/Remove");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Aktivita/Remove");
     
             var client_ = new System.Net.Http.HttpClient();
             try
@@ -320,20 +321,20 @@ namespace KancelarWeb
         }
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task UpdateAsync(CommandUdalostUpdate cmd)
+        public System.Threading.Tasks.Task UpdateAsync(CommandAktivitaUpdate cmd)
         {
             return UpdateAsync(cmd, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task UpdateAsync(CommandUdalostUpdate cmd, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task UpdateAsync(CommandAktivitaUpdate cmd, System.Threading.CancellationToken cancellationToken)
         {
             if (cmd == null)
                 throw new System.ArgumentNullException("cmd");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/udalost/Update");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Aktivita/Update");
     
             var client_ = new System.Net.Http.HttpClient();
             try
@@ -483,58 +484,13 @@ namespace KancelarWeb
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.11.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class Udalost 
+   
+    
+   
+    public partial class CommandAktivitaCreate 
     {
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.Guid Id { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("udalostId", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.Guid UdalostId { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("udalostTypId", Required = Newtonsoft.Json.Required.Always)]
-        public int UdalostTypId { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("popis", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Popis { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("uzivatelId", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.Guid UzivatelId { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("datumOd", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.DateTimeOffset DatumOd { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("datumDo", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.DateTimeOffset DatumDo { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("datumZadal", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.DateTimeOffset DatumZadal { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("nazev", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Nazev { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("uzivatelCeleJmeno", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string UzivatelCeleJmeno { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("eventGuid", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid? EventGuid { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("generation", Required = Newtonsoft.Json.Required.Always)]
-        public int Generation { get; set; }
-    
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.11.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class CommandUdalostCreate 
-    {
-        [Newtonsoft.Json.JsonProperty("udalostTypId", Required = Newtonsoft.Json.Required.Always)]
-        public int UdalostTypId { get; set; }
+        [Newtonsoft.Json.JsonProperty("AktivitaTypId", Required = Newtonsoft.Json.Required.Always)]
+        public int AktivitaTypId { get; set; }
     
         [Newtonsoft.Json.JsonProperty("popis", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Popis { get; set; }
@@ -565,27 +521,27 @@ namespace KancelarWeb
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.11.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class CommandUdalostRemove 
+    public partial class CommandAktivitaRemove 
     {
-        [Newtonsoft.Json.JsonProperty("udalostId", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonProperty("AktivitaId", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.Guid UdalostId { get; set; }
+        public System.Guid AktivitaId { get; set; }
     
     
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.11.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class CommandUdalostUpdate 
+    public partial class CommandAktivitaUpdate 
     {
-        [Newtonsoft.Json.JsonProperty("udalostTypId", Required = Newtonsoft.Json.Required.Always)]
-        public int UdalostTypId { get; set; }
+        [Newtonsoft.Json.JsonProperty("AktivitaTypId", Required = Newtonsoft.Json.Required.Always)]
+        public int AktivitaTypId { get; set; }
     
         [Newtonsoft.Json.JsonProperty("popis", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Popis { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("udalostId", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonProperty("AktivitaId", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.Guid UdalostId { get; set; }
+        public System.Guid AktivitaId { get; set; }
     
         [Newtonsoft.Json.JsonProperty("nazev", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Nazev { get; set; }

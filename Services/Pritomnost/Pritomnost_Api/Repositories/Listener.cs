@@ -51,17 +51,17 @@ namespace Pritomnost_Api.Repositories
                     UpdateByUzivatel(JsonConvert.DeserializeObject<EventUzivatelUpdated>(envelope.Event));
                     break;
                 case MessageType.UzivatelRemoved:
-                    RemoveByUzivatel(JsonConvert.DeserializeObject<EventUzivatelDeleted>(envelope.Event));
+                    RemoveByUzivatel(JsonConvert.DeserializeObject<EventUzivatelRemoved>(envelope.Event));
                     break;
 
-                case MessageType.UdalostCreated:
-                    UpdateByUdalost(JsonConvert.DeserializeObject<EventUdalostUpdated>(envelope.Event));
+                case MessageType.AktivitaCreated:
+                    UpdateByAktivita(JsonConvert.DeserializeObject<EventAktivitaUpdated>(envelope.Event));
                     break;
-                case MessageType.UdalostUpdated:
-                    UpdateByUdalost(JsonConvert.DeserializeObject<EventUdalostUpdated>(envelope.Event));
+                case MessageType.AktivitaUpdated:
+                    UpdateByAktivita(JsonConvert.DeserializeObject<EventAktivitaUpdated>(envelope.Event));
                     break;
-                case MessageType.UdalostRemoved:
-                    RemoveByUdalost(JsonConvert.DeserializeObject<EventUdalostRemoved>(envelope.Event));
+                case MessageType.AktivitaRemoved:
+                    RemoveByAktivita(JsonConvert.DeserializeObject<EventAktivitaRemoved>(envelope.Event));
                     break;
             }
         }
@@ -73,21 +73,21 @@ namespace Pritomnost_Api.Repositories
         {
             _repository.UpdateByUzivatel(evt);
         }
-        private void RemoveByUzivatel(EventUzivatelDeleted evt)
+        private void RemoveByUzivatel(EventUzivatelRemoved evt)
         {
             _repository.DeleteByUzivatel(evt);
         }
-        private void CreateByUdalost(EventUdalostCreated evt)
+        private void CreateByAktivita(EventAktivitaCreated evt)
         {
-            _repository.CreateByUdalost(evt);
+            _repository.CreateByAktivita(evt);
         }
-        private void UpdateByUdalost(EventUdalostUpdated evt)
+        private void UpdateByAktivita(EventAktivitaUpdated evt)
         {
-            _repository.UpdateByUdalost(evt);
+            _repository.UpdateByAktivita(evt);
         }
-        private void RemoveByUdalost(EventUdalostRemoved evt)
+        private void RemoveByAktivita(EventAktivitaRemoved evt)
         {
-            _repository.DeleteByUdalost(evt);
+            _repository.DeleteByAktivita(evt);
         }
         private void ReplayEvents(List<string> stream, Guid? entityId)
         {

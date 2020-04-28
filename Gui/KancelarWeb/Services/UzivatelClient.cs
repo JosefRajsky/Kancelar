@@ -479,7 +479,7 @@ namespace KancelarWeb
         }
     }
 
-
+    
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.11.0 (Newtonsoft.Json v12.0.0.0)")]
     public partial class CommandUzivatelCreate

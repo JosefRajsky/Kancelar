@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+
 using KancelarWeb.Services;
 using Microsoft.AspNetCore.Blazor;
 using Microsoft.AspNetCore.Mvc;
@@ -13,8 +14,8 @@ namespace KancelarWeb.Controllers
 {
     public class DochazkaController : Controller
     {
-        readonly DochazkaClient client;
-        readonly UzivatelClient UzivatelServis;
+        DochazkaClient client;
+        UzivatelClient UzivatelServis;
         public DochazkaController() 
         {
             client = new DochazkaClient();

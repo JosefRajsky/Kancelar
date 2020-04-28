@@ -14,6 +14,7 @@ services:
       - 1433
     volumes:  
       - /var/container_data/mysql:/var/lib/mysql mysql_image  sni
+
   gateway:
     image: ${DOCKER_REGISTRY-}webapi
     hostname: "gateway"  
@@ -36,6 +37,7 @@ services:
       NAME: "rabbitmq"
     volumes:
       - ./rabbitmq-isolated.conf:/etc/rabbitmq/rabbitmq.config
+
   monitor:
     image: ${DOCKER_REGISTRY-}monitor
     hostname: "monitor"
@@ -46,17 +48,6 @@ services:
     build:
       context: .
       dockerfile: Services/Monitor/Monitor/Dockerfile
-
-  template:
-    image: ${DOCKER_REGISTRY-}template
-    hostname: "template"
-    restart: always
-    container_name: 'Template'
-    ports:
-      - "8032:80"
-    build:
-      context: .
-      dockerfile: Services/Template/Template/Dockerfile
 
   transferapi:
     image: ${DOCKER_REGISTRY-}transfer_api
@@ -87,16 +78,6 @@ services:
     build:
       context: .
       dockerfile: Services/Kalendar/Kalendar_Api/Dockerfile
-
-  udalostapi:
-    image: ${DOCKER_REGISTRY-}udalost_api
-    hostname: "udalostapi"  
-    restart: always
-    ports:
-      - "8036:80"
-    build:
-      context: .
-      dockerfile: Services/Udalost/Udalost_Api/Dockerfile
 
   dochazkaapi:
     image: ${DOCKER_REGISTRY-}dochazka_api

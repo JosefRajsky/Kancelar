@@ -34,4 +34,8 @@
     <PackageReference Include="Polly" Version="7.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\RabbitHandlers\CommandHandler\CommandHandler.csproj" />
+  </ItemGroup>
+
 </Project>

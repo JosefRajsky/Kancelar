@@ -19,7 +19,7 @@ namespace Soucast_Api.Repositories
         private MessageHandler _handler;
         public Repository(ServiceDbContext dbContext, Publisher publisher)
         {
-            db = dbContext;          
+            db = dbContext;
             _handler = new MessageHandler(publisher);
 
         }
@@ -37,7 +37,7 @@ namespace Soucast_Api.Repositories
             msgTypes.Add(MessageType.SoucastCreated);
             msgTypes.Add(MessageType.SoucastUpdated);
             msgTypes.Add(MessageType.SoucastRemoved);
-            await _handler.RequestReplay("Soucastlate.ex", entityId, msgTypes);           
+            await _handler.RequestReplay("Soucastlate.ex", entityId, msgTypes);
         }
         public async Task ReplayEvents(List<string> stream, Guid? entityId)
         {
@@ -60,10 +60,10 @@ namespace Soucast_Api.Repositories
                             db.Soucasti.Add(forCreate);
                             db.SaveChanges();
                         }
-                        
+
                         break;
                     case MessageType.UzivatelRemoved:
-                        var remove = JsonConvert.DeserializeObject<EventSoucastDeleted>(msg.Event);
+                        var remove = JsonConvert.DeserializeObject<EventSoucastRemoved>(msg.Event);
                         var forRemove = db.Soucasti.FirstOrDefault(u => u.SoucastId == remove.SoucastId);
                         if (forRemove != null) db.Soucasti.Remove(forRemove);
 
@@ -73,7 +73,7 @@ namespace Soucast_Api.Repositories
                         var forUpdate = db.Soucasti.FirstOrDefault(u => u.SoucastId == update.SoucastId);
                         if (forUpdate != null)
                         {
-                            forUpdate = Modify(update,forUpdate);
+                            forUpdate = Modify(update, forUpdate);
                             db.Soucasti.Update(forUpdate);
                             db.SaveChanges();
                         }
@@ -89,16 +89,23 @@ namespace Soucast_Api.Repositories
                 Generation = evt.Generation,
                 EventGuid = evt.EventId,
                 SoucastId = evt.SoucastId,
-                Value1 = evt.SoucastValue1,
-                Value2 = evt.SoucastValue2
+                ImportedId = evt.ImportedId,
+                ParentId = evt.ParentId,
+                Nazev = evt.Nazev,
+                Zkratka = evt.Zkratka
             };
             return model;
         }
         private Soucast Modify(EventSoucastUpdated evt, Soucast item)
-        {           
+        {
             item.EventGuid = evt.EventId;
-            item.Value1 = evt.SoucastValue1;
-            item.Value2 = evt.SoucastValue2;
+            item.Generation = evt.Generation;
+            item.EventGuid = evt.EventId;
+            item.SoucastId = evt.SoucastId;
+            item.ImportedId = evt.ImportedId;
+            item.ParentId = evt.ParentId;
+            item.Nazev = evt.Nazev;
+            item.Zkratka = evt.Zkratka;
             return item;
         }
 
@@ -108,25 +115,33 @@ namespace Soucast_Api.Repositories
         {
             var ev = new EventSoucastCreated()
             {
-                EventId = Guid.NewGuid(),                           
+                EventId = Guid.NewGuid(),
                 Generation = 0,
                 SoucastId = Guid.NewGuid(),
-            };              
-                var item = Create(ev);
-                db.Soucasti.Add(item);
-                await db.SaveChangesAsync();                
-                await _handler.PublishEvent(ev, MessageType.UzivatelCreated, ev.EventId, null, ev.Generation, item.SoucastId);
-            
+                ImportedId = cmd.ImportedId,
+                ParentId = cmd.ParentId,
+                Nazev = cmd.Nazev,
+                Zkratka = cmd.Zkratka
+            };
+            var item = Create(ev);
+            db.Soucasti.Add(item);
+            await db.SaveChangesAsync();
+            await _handler.PublishEvent(ev, MessageType.UzivatelCreated, ev.EventId, null, ev.Generation, item.SoucastId);
+
         }
         public async Task Update(CommandSoucastUpdate cmd)
         {
-            var item = db.Soucasti.FirstOrDefault(u => u.SoucastId == cmd.SoucastId);                   
-            if (item != null) {
+            var item = db.Soucasti.FirstOrDefault(u => u.SoucastId == cmd.SoucastId);
+            if (item != null)
+            {
                 var ev = new EventSoucastUpdated()
                 {
                     EventId = Guid.NewGuid(),
-                    SoucastValue1 = cmd.SoucastValue1,
-                    SoucastValue2 = cmd.SoucastValue2,
+                    Zkratka = cmd.Zkratka,
+                    Nazev = cmd.Nazev,
+                    ParentId = cmd.ParentId,
+                    ImportedId = cmd.ImportedId,
+                    SoucastId = cmd.SoucastId
 
                 };
                 ev.Generation = item.Generation + 1;
@@ -139,9 +154,10 @@ namespace Soucast_Api.Repositories
         public async Task Remove(CommandSoucastRemove cmd)
         {
             var remove = db.Soucasti.FirstOrDefault(u => u.SoucastId == cmd.SoucastId);
-            if (remove != null) {
-                
-                var ev = new EventSoucastDeleted()
+            if (remove != null)
+            {
+
+                var ev = new EventSoucastRemoved()
                 {
                     Generation = remove.Generation + 1,
                     EventId = Guid.NewGuid(),

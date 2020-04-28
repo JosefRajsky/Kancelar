@@ -80,7 +80,7 @@ namespace Uzivatel_Api.Repositories
                         }
                         break;
                     case MessageType.UzivatelRemoved:
-                        var remove = JsonConvert.DeserializeObject<EventUzivatelDeleted>(msg.Event);
+                        var remove = JsonConvert.DeserializeObject<EventUzivatelRemoved>(msg.Event);
                         var forRemove = db.Uzivatele.FirstOrDefault(u => u.UzivatelId == remove.UzivatelId);
                         if (forRemove != null) db.Uzivatele.Remove(forRemove);
 
@@ -200,7 +200,7 @@ namespace Uzivatel_Api.Repositories
         {
             var remove = db.Uzivatele.FirstOrDefault(u => u.UzivatelId == cmd.UzivatelId);
             db.Uzivatele.Remove(remove);
-            var ev = new EventUzivatelDeleted()
+            var ev = new EventUzivatelRemoved()
             {
                 Generation = remove.Generation + 1,
                 EventId = Guid.NewGuid(),

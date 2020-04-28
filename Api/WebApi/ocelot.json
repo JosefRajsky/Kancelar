@@ -1,17 +1,6 @@
 {
   "ReRoutes": [
-    {
-      "DownstreamPathTemplate": "/template/{everything}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "template/"
-        }
-      ],
-      "UpstreamPathTemplate": "/api/template/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-      "SwaggerKey": "template"
-    },
+   
     {
       "DownstreamPathTemplate": "/dochazka/{everything}",
       "DownstreamScheme": "http",
@@ -23,19 +12,7 @@
       "UpstreamPathTemplate": "/api/dochazka/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "SwaggerKey": "dochazka"
-    },
-    {
-      "DownstreamPathTemplate": "/udalost/{everything}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "udalostapi/"
-        }
-      ],
-      "UpstreamPathTemplate": "/api/udalost/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-      "SwaggerKey": "udalost"
-    },
+    }, 
     {
       "DownstreamPathTemplate": "/uzivatel/{everything}",
       "DownstreamScheme": "http",
@@ -206,17 +183,7 @@
     }
   ],
   "SwaggerEndPoints": [
-    {
-      "Key": "template",
-      "Config": [
-        {
-          "Name": "Template API",
-          "Version": "v1",
-          "Url": "http://template/swagger/v1/swagger.json"
-        }
-      ]
-    },
-    {
+       {
       "Key": "dochazka",
       "Config": [
         {
@@ -225,17 +192,7 @@
           "Url": "http://dochazkaapi/swagger/v1/swagger.json"
         }
       ]
-    },
-    {
-      "Key": "udalost",
-      "Config": [
-        {
-          "Name": "Udalost API",
-          "Version": "v1",
-          "Url": "http://udalostapi/swagger/v1/swagger.json"
-        }
-      ]
-    },
+    },   
     {
       "Key": "uzivatel",
       "Config": [

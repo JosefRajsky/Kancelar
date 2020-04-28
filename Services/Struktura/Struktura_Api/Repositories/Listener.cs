@@ -33,15 +33,53 @@ namespace Struktura_Api.Repositories
                     //-------------Description: Deserializace zprávy do správného typu a odeslání k uložení do DB; 
                     var ev = JsonConvert.DeserializeObject<HealingStreamProvided>(envelope.Event);
                     _repository.ReplayEvents(ev.MessageList, envelope.EntityId);
-                    break;
-                case MessageType.UzivatelCreated:
+                    break;               
 
-                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventStrukturaCreated>(envelope.Event).EventId, envelope.EntityId);
+                case MessageType.UzivatelCreated:
+                    CreateByUzivatel(JsonConvert.DeserializeObject<EventUzivatelCreated>(envelope.Event));
                     break;
                 case MessageType.UzivatelUpdated:
-                    _repository.LastEventCheck(JsonConvert.DeserializeObject<EventStrukturaCreated>(envelope.Event).EventId, envelope.EntityId);
-                    break;      
+
+                    UpdateByUzivatel(JsonConvert.DeserializeObject<EventUzivatelUpdated>(envelope.Event));
+                    break;
+                case MessageType.UzivatelRemoved:
+                    RemoveByUzivatel(JsonConvert.DeserializeObject<EventUzivatelRemoved>(envelope.Event));
+                    break;
+                case MessageType.SoucastCreated:
+                    CreateBySoucast(JsonConvert.DeserializeObject<EventSoucastCreated>(envelope.Event));
+                    break;
+                case MessageType.SoucastUpdated:
+
+                    UpdateBySoucast(JsonConvert.DeserializeObject<EventSoucastUpdated>(envelope.Event));
+                    break;
+                case MessageType.SoucastRemoved:
+                    RemoveBySoucast(JsonConvert.DeserializeObject<EventSoucastRemoved>(envelope.Event));
+                    break;
             }
+        }
+        private void CreateByUzivatel(EventUzivatelCreated evt)
+        {
+            _repository.CreateByUzivatel(evt);
+        }
+        private void UpdateByUzivatel(EventUzivatelUpdated evt)
+        {
+            _repository.UpdateByUzivatel(evt);
+        }
+        private void RemoveByUzivatel(EventUzivatelRemoved evt)
+        {
+            _repository.DeleteByUzivatel(evt);
+        }
+        private void CreateBySoucast(EventSoucastCreated evt)
+        {
+            _repository.CreateBySoucast(evt);
+        }
+        private void UpdateBySoucast(EventSoucastUpdated evt)
+        {
+            _repository.UpdateBySoucast(evt);
+        }
+        private void RemoveBySoucast(EventSoucastRemoved evt)
+        {
+            _repository.DeleteBySoucast(evt);
         }
 
 

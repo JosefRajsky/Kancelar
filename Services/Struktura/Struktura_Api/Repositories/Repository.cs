@@ -19,7 +19,7 @@ namespace Struktura_Api.Repositories
         private MessageHandler _handler;
         public Repository(ServiceDbContext dbContext, Publisher publisher)
         {
-            db = dbContext;          
+            db = dbContext;
             _handler = new MessageHandler(publisher);
 
         }
@@ -34,10 +34,14 @@ namespace Struktura_Api.Repositories
         public async Task RequestEvents(Guid? entityId)
         {
             var msgTypes = new List<MessageType>();
-            msgTypes.Add(MessageType.StrukturaCreated);
-            msgTypes.Add(MessageType.StrukturaUpdated);
-            msgTypes.Add(MessageType.StrukturaRemoved);
-            await _handler.RequestReplay("Strukturalate.ex", entityId, msgTypes);           
+            msgTypes.Add(MessageType.SoucastCreated);
+            msgTypes.Add(MessageType.SoucastUpdated);
+            msgTypes.Add(MessageType.SoucastRemoved);
+            msgTypes.Add(MessageType.UzivatelCreated);
+            msgTypes.Add(MessageType.UzivatelUpdated);
+            msgTypes.Add(MessageType.UzivatelRemoved);
+
+            await _handler.RequestReplay("Struktura.ex", entityId, msgTypes);
         }
         public async Task ReplayEvents(List<string> stream, Guid? entityId)
         {
@@ -51,32 +55,17 @@ namespace Struktura_Api.Repositories
             {
                 switch (msg.MessageType)
                 {
+                    case MessageType.SoucastCreated:
+                        break;
+                    case MessageType.SoucastRemoved:
+                        break;
+                    case MessageType.SoucastUpdated:
+                        break;
                     case MessageType.UzivatelCreated:
-                        var create = JsonConvert.DeserializeObject<EventStrukturaCreated>(msg.Event);
-                        var forCreate = db.Struktury.FirstOrDefault(u => u.StrukturaId == create.StrukturaId);
-                        if (forCreate == null)
-                        {
-                            forCreate = Create(create);
-                            db.Struktury.Add(forCreate);
-                            db.SaveChanges();
-                        }
-                        
                         break;
                     case MessageType.UzivatelRemoved:
-                        var remove = JsonConvert.DeserializeObject<EventStrukturaDeleted>(msg.Event);
-                        var forRemove = db.Struktury.FirstOrDefault(u => u.StrukturaId == remove.StrukturaId);
-                        if (forRemove != null) db.Struktury.Remove(forRemove);
-
                         break;
                     case MessageType.UzivatelUpdated:
-                        var update = JsonConvert.DeserializeObject<EventStrukturaUpdated>(msg.Event);
-                        var forUpdate = db.Struktury.FirstOrDefault(u => u.StrukturaId == update.StrukturaId);
-                        if (forUpdate != null)
-                        {
-                            forUpdate = Modify(update,forUpdate);
-                            db.Struktury.Update(forUpdate);
-                            db.SaveChanges();
-                        }
                         break;
                 }
             }
@@ -89,72 +78,172 @@ namespace Struktura_Api.Repositories
                 Generation = evt.Generation,
                 EventGuid = evt.EventId,
                 StrukturaId = evt.StrukturaId,
-                Value1 = evt.StrukturaValue1,
-                Value2 = evt.StrukturaValue2
+                DatumAktualizace = DateTime.Now,
+                Nazev = evt.Nazev,
+                SoucastId = evt.SoucastId,
+                Clenove = evt.Clenove,
+                Zkratka = evt.Zkratka,
             };
             return model;
         }
         private Struktura Modify(EventStrukturaUpdated evt, Struktura item)
-        {           
+        {
             item.EventGuid = evt.EventId;
-            item.Value1 = evt.StrukturaValue1;
-            item.Value2 = evt.StrukturaValue2;
+
             return item;
         }
 
         public async Task<Struktura> Get(Guid id) => await Task.Run(() => db.Struktury.FirstOrDefault(b => b.StrukturaId == id));
         public async Task<List<Struktura>> GetList() => await db.Struktury.ToListAsync();
-        public async Task Add(CommandStrukturaCreate cmd)
+
+        //public async Task Add(CommandStrukturaCreate cmd)
+        //{
+        //    var ev = new EventStrukturaCreated()
+        //    {
+        //        EventId = Guid.NewGuid(),                           
+        //        Generation = 0,
+        //        StrukturaId = Guid.NewGuid(),
+        //    };              
+        //        var item = Create(ev);
+        //        db.Struktury.Add(item);
+        //        await db.SaveChangesAsync();                
+        //        await _handler.PublishEvent(ev, MessageType.UzivatelCreated, ev.EventId, null, ev.Generation, item.StrukturaId);
+
+        //}
+        //public async Task Update(CommandStrukturaUpdate cmd)
+        //{
+        //    var item = db.Struktury.FirstOrDefault(u => u.StrukturaId == cmd.StrukturaId);                   
+        //    if (item != null) {
+        //        var ev = new EventStrukturaUpdated()
+        //        {
+        //            EventId = Guid.NewGuid(),
+        //            StrukturaValue1 = cmd.StrukturaValue1,
+        //            StrukturaValue2 = cmd.StrukturaValue2,
+
+        //        };
+        //        ev.Generation = item.Generation + 1;
+        //        item = Modify(ev, item);
+        //        await _handler.PublishEvent(ev, MessageType.StrukturaUpdated, ev.EventId, item.EventGuid, ev.Generation, cmd.StrukturaId);
+        //        db.Struktury.Update(item);
+        //        await db.SaveChangesAsync();
+        //    }
+        //}
+        //public async Task Remove(CommandStrukturaRemove cmd)
+        //{
+        //    var remove = db.Struktury.FirstOrDefault(u => u.StrukturaId == cmd.StrukturaId);
+        //    if (remove != null) {
+
+        //        var ev = new EventStrukturaRemoved()
+        //        {
+        //            Generation = remove.Generation + 1,
+        //            EventId = Guid.NewGuid(),
+        //            StrukturaId = cmd.StrukturaId,
+        //        };
+        //        db.Struktury.Remove(remove);
+        //        await _handler.PublishEvent(ev, MessageType.StrukturaRemoved, ev.EventId, remove.EventGuid, remove.Generation, remove.StrukturaId);
+        //        await db.SaveChangesAsync();
+        //    }
+
+        //}
+
+        public async Task CreateBySoucast(EventSoucastCreated evt)
         {
             var ev = new EventStrukturaCreated()
             {
-                EventId = Guid.NewGuid(),                           
-                Generation = 0,
-                StrukturaId = Guid.NewGuid(),
-            };              
-                var item = Create(ev);
-                db.Struktury.Add(item);
-                await db.SaveChangesAsync();                
-                await _handler.PublishEvent(ev, MessageType.UzivatelCreated, ev.EventId, null, ev.Generation, item.StrukturaId);
-            
+                Zkratka = evt.Zkratka,
+                Clenove = string.Empty,
+                SoucastId = evt.SoucastId,
+                Nazev = evt.Nazev,
+                DatumVytvoreni = DateTime.Now,
+                EventId = evt.EventId,
+                Generation = evt.Generation,
+                ParentId = evt.ParentId,
+                StrukturaId = Guid.NewGuid()
+            };
+            var item = Create(ev);
+            db.Struktury.Add(item);
+            await db.SaveChangesAsync();
+            await _handler.PublishEvent(ev, MessageType.StrukturaCreated, ev.EventId, null, ev.Generation, item.StrukturaId);
         }
-        public async Task Update(CommandStrukturaUpdate cmd)
+
+        public async Task UpdateBySoucast(EventSoucastUpdated evt)
         {
-            var item = db.Struktury.FirstOrDefault(u => u.StrukturaId == cmd.StrukturaId);                   
-            if (item != null) {
-                var ev = new EventStrukturaUpdated()
-                {
-                    EventId = Guid.NewGuid(),
-                    StrukturaValue1 = cmd.StrukturaValue1,
-                    StrukturaValue2 = cmd.StrukturaValue2,
+            var struktury = db.Struktury.Where(s => s.SoucastId == evt.SoucastId);
 
-                };
-                ev.Generation = item.Generation + 1;
-                item = Modify(ev, item);
-                await _handler.PublishEvent(ev, MessageType.StrukturaUpdated, ev.EventId, item.EventGuid, ev.Generation, cmd.StrukturaId);
-                db.Struktury.Update(item);
-                await db.SaveChangesAsync();
+            if (struktury.Any())
+            {
+                foreach (var item in struktury)
+                {
+                    var ev = new EventStrukturaUpdated()
+                    {
+                        Zkratka = evt.Zkratka,
+                        Clenove = string.Empty,
+                        SoucastId = evt.SoucastId,
+                        Nazev = evt.Nazev,
+                        DatumAktualizace = DateTime.Now,
+                        EventId = evt.EventId,
+                        Generation = evt.Generation,
+                        ParentId = evt.ParentId,
+                        StrukturaId = Guid.NewGuid()
+                    };
+                    var struktura = Modify(ev, item);
+                    db.Struktury.Update(struktura);
+                    await db.SaveChangesAsync();
+                    await _handler.PublishEvent(ev, MessageType.StrukturaUpdated, ev.EventId, null, ev.Generation, struktura.StrukturaId);
+                }
             }
+
         }
-        public async Task Remove(CommandStrukturaRemove cmd)
+
+        public async Task DeleteBySoucast(EventSoucastRemoved evt)
         {
-            var remove = db.Struktury.FirstOrDefault(u => u.StrukturaId == cmd.StrukturaId);
-            if (remove != null) {
-                
-                var ev = new EventStrukturaDeleted()
+            var struktury = db.Struktury.Where(s => s.SoucastId == evt.SoucastId);
+
+            if (struktury.Any())
+            {
+                foreach (var item in struktury)
                 {
-                    Generation = remove.Generation + 1,
-                    EventId = Guid.NewGuid(),
-                    StrukturaId = cmd.StrukturaId,
-                };
-                db.Struktury.Remove(remove);
-                await _handler.PublishEvent(ev, MessageType.StrukturaRemoved, ev.EventId, remove.EventGuid, remove.Generation, remove.StrukturaId);
-                await db.SaveChangesAsync();
+                    await DeleteStruktura(item);
+                }
+            }
+            await db.SaveChangesAsync();
+           
+        }
+        public async Task DeleteStruktura(Struktura struktura) {
+
+            var childs = db.Struktury.Where(c => c.ParentStrukturaId == struktura.StrukturaId);
+            foreach (var item in childs)
+            {
+                await DeleteStruktura(item);
             }
 
+            var ev = new EventStrukturaRemoved()
+            {
+                EventId = Guid.NewGuid(),
+                StrukturaId = struktura.StrukturaId,
+                Generation = struktura.Generation + 1
+            };
+               await _handler.PublishEvent(ev, MessageType.StrukturaRemoved, ev.EventId, null, ev.Generation, struktura.StrukturaId);
+            db.Struktury.Remove(struktura);
+         
         }
 
 
+        public Task CreateByUzivatel(EventUzivatelCreated evt)
+        {
+        
+            return null;
+        }
+
+        public Task UpdateByUzivatel(EventUzivatelUpdated evt)
+        {
+            return null;
+        }
+
+        public Task DeleteByUzivatel(EventUzivatelRemoved evt)
+        {
+            return null;
+        }
     }
 
 }

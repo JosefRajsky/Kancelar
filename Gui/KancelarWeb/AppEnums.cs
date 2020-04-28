@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace KancelarWeb
 {
 
-    public enum EUdalostTyp
+    public enum EAktivitaTyp
         {
             [Display(Description = "Přítomen")]
             Pritomen = 0,

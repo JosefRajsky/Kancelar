@@ -36,24 +36,24 @@ namespace Struktura_Api.Controllers
             return response;
         }
 
-        [HttpPost]
-        [Route("Add")]
-        public async Task Add(CommandStrukturaCreate cmd)      
-        { 
-         await _repository.Add(cmd);            
-        }
+        //[HttpPost]
+        //[Route("Add")]
+        //public async Task Add(CommandStrukturaCreate cmd)      
+        //{ 
+        // await _repository.Add(cmd);            
+        //}
 
-        [HttpDelete]
-        [Route("Remove")]
-        public async Task Delete(CommandStrukturaRemove cmd)
-        {
-           await _repository.Remove(cmd);   
-        }
-        [HttpPost]
-        [Route("Update")]
-        public async Task Update(CommandStrukturaUpdate cmd)
-        {
-            await _repository.Update(cmd);        
-        }
+        //[HttpDelete]
+        //[Route("Remove")]
+        //public async Task Delete(CommandStrukturaRemove cmd)
+        //{
+        //   await _repository.Remove(cmd);   
+        //}
+        //[HttpPost]
+        //[Route("Update")]
+        //public async Task Update(CommandStrukturaUpdate cmd)
+        //{
+        //    await _repository.Update(cmd);        
+        //}
     }
 }

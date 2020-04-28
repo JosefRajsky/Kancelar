@@ -77,19 +77,19 @@ namespace Pritomnost_Api.Repositories
      
             return item;
         }
-        public async Task CreateByUdalost(EventUdalostCreated evt)
+        public async Task CreateByAktivita(EventAktivitaCreated evt)
         {
          
                     await db.SaveChangesAsync(); 
          
         }
-        public async Task UpdateByUdalost(EventUdalostUpdated evt)
+        public async Task UpdateByAktivita(EventAktivitaUpdated evt)
         {
           
                     await db.SaveChangesAsync();
            
         }
-        public async Task DeleteByUdalost(EventUdalostRemoved evt)
+        public async Task DeleteByAktivita(EventAktivitaRemoved evt)
         {
             
             await db.SaveChangesAsync();
@@ -123,7 +123,7 @@ namespace Pritomnost_Api.Repositories
             await db.SaveChangesAsync();
 
         }
-        public async Task DeleteByUzivatel(EventUzivatelDeleted evt)
+        public async Task DeleteByUzivatel(EventUzivatelRemoved evt)
         {
             var forRemove = db.Pritomnosti.Where(k => k.UzivatelId == evt.UzivatelId);
             db.Pritomnosti.RemoveRange(forRemove);

@@ -37,10 +37,9 @@ namespace Monitor
             services.AddHealthChecks().AddCheck("Monitor", () => HealthCheckResult.Healthy());
             services.AddHealthChecksUI(setupSettings: setup =>
             {
-                setup.AddHealthCheckEndpoint("Template", "http://template/healthcheck");
+                
                 setup.AddHealthCheckEndpoint("Monitor", "http://monitor/healthcheck");
-                setup.AddHealthCheckEndpoint("Dochazka", "http://dochazkaapi/healthcheck");           
-                setup.AddHealthCheckEndpoint("Udalost", "http://udalostapi/healthcheck");
+                setup.AddHealthCheckEndpoint("Dochazka", "http://dochazkaapi/healthcheck");
                 setup.AddHealthCheckEndpoint("Uzivatel", "http://uzivatelapi/healthcheck");
                 setup.AddHealthCheckEndpoint("Eventstore", "http://eventstore/healthcheck");
                 setup.AddHealthCheckEndpoint("Kalendar", "http://kalendarapi/healthcheck");
