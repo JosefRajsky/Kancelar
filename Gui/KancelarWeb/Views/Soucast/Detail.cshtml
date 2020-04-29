@@ -1,0 +1,43 @@
+﻿@model KancelarWeb.ViewModels.Soucast
+
+@{
+    ViewData["Title"] = "Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>Součást - Detail</h3>
+
+<div>   
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.SoucastId)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.SoucastId)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Nazev)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Nazev)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Zkratka)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Zkratka)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ParentId)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ParentId)
+        </dd>           
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-controller="Soucast"  asp-route-id="Model.SoucastId" class="btn btn-outline-primary">Upravit</a>
+    
+    <a asp-action="Index">Zpět na přehled</a>
+</div>

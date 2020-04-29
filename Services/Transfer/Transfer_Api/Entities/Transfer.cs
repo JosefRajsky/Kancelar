@@ -13,8 +13,9 @@ namespace Transfer_Api
         public Guid? EventGuid { get; set; }
         public int Generation { get; set; }
         public Guid TransferId { get; set; }
-        public string Value1 { get; set; }
-        public int Value2 { get; set; }
+        public bool IsImport { get; set; }
+        public int MessagetypeId { get; set; }
+        public string CommandList { get; set; }
 
     }
 }

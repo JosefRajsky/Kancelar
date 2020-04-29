@@ -81,77 +81,39 @@ namespace Transfer_Api.Repositories
             }
             await db.SaveChangesAsync();
         }
-        private Transfer Create(EventTransferCreated evt)
+          
+        public async Task ImportUzivatel(List<CommandUzivatelCreate> cmds)
         {
-            var model = new Transfer()
+            foreach (var cmd in cmds)
             {
-                Generation = evt.Generation,
-                EventGuid = evt.EventId,
-                TransferId = evt.TransferId,
-                Value1 = evt.Value1,
-                Value2 = evt.Value2
-            };
-            return model;
-        }
-        private Transfer Modify(EventTransferUpdated evt, Transfer item)
-        {           
-            item.EventGuid = evt.EventId;
-            item.Value1 = evt.Value1;
-            item.Value2 = evt.Value2;
-            return item;
-        }
+                var client = new System.Net.Http.HttpClient();
+               
+                await _handler.PublishEvent(, MessageType.UzivatelCreated, ev.EventId, null, ev.Generation, item.TransferId);
 
-        public async Task<Transfer> Get(Guid id) => await Task.Run(() => db.Transfers.FirstOrDefault(b => b.TransferId == id));
-        public async Task<List<Transfer>> GetList() => await db.Transfers.ToListAsync();
-        public async Task Add(CommandTransferCreate cmd)
-        {
+                var request = new System.Net.Http.HttpRequestMessage();
+                var content = new System.Net.Http.StringContent(JsonConvert.SerializeObject(cmd, _settings.Value));
+                content.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                request.Content = content;
+                request.Method = new System.Net.Http.HttpMethod("POST");
+                PrepareRequest(client, request, urlBuilder);
+                var url = urlBuilder.ToString();
+                request.RequestUri = new System.Uri(url, RelativeOrAbsolute);
+                PrepareRequest(client, request, url);
+                var response_ = await client.SendAsync(request, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+
+            }
             var ev = new EventTransferCreated()
             {
                 EventId = Guid.NewGuid(),                           
                 Generation = 0,
                 TransferId = Guid.NewGuid(),
-            };              
-                var item = Create(ev);
-                db.Transfers.Add(item);
-                await db.SaveChangesAsync();                
-                await _handler.PublishEvent(ev, MessageType.UzivatelCreated, ev.EventId, null, ev.Generation, item.TransferId);
-            
-        }
-        public async Task Update(CommandTransferUpdate cmd)
-        {
-            var item = db.Transfers.FirstOrDefault(u => u.TransferId == cmd.TransferId);                   
-            if (item != null) {
-                var ev = new EventTransferUpdated()
-                {
-                    EventId = Guid.NewGuid(),
-                    Value1 = cmd.Value1,
-                    Value2 = cmd.Value2,
+            }; db.Transfers.Add(item);
+            await db.SaveChangesAsync();
 
-                };
-                ev.Generation = item.Generation + 1;
-                item = Modify(ev, item);
-                await _handler.PublishEvent(ev, MessageType.TransferUpdated, ev.EventId, item.EventGuid, ev.Generation, cmd.TransferId);
-                db.Transfers.Update(item);
-                await db.SaveChangesAsync();
-            }
-        }
-        public async Task Remove(CommandTransferRemove cmd)
-        {
-            var remove = db.Transfers.FirstOrDefault(u => u.TransferId == cmd.TransferId);
-            if (remove != null) {
-                
-                var ev = new EventTransferDeleted()
-                {
-                    Generation = remove.Generation + 1,
-                    EventId = Guid.NewGuid(),
-                    TransferId = cmd.TransferId,
-                };
-                db.Transfers.Remove(remove);
-                await _handler.PublishEvent(ev, MessageType.TransferRemoved, ev.EventId, remove.EventGuid, remove.Generation, remove.TransferId);
-                await db.SaveChangesAsync();
-            }
+
 
         }
+      
 
 
     }

@@ -1,0 +1,58 @@
+﻿@model IEnumerable<KancelarWeb.ViewModels.Soucast>
+
+@{
+    ViewData["Title"] = "Součást - Přehled";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h5>Uživatel - Přehled</h5>
+
+<p>
+    <a asp-action="Edit" asp-controller="Soucast" class="btn btn-success">Přidat Součást</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th hidden>
+                @Html.DisplayNameFor(model => model.SoucastId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nazev)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Zkratka)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ParentId)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td hidden>
+                @Html.DisplayFor(modelItem => item.SoucastId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nazev)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Zkratka)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ParentId)
+            </td>
+           
+            
+            <td>
+                <a asp-action="Edit" asp-controller="Soucast" asp-route-id="@item.SoucastId" class="btn btn-xs btn-outline-primary" title="Upravit">upravit</a>
+                <a asp-action="Detail" asp-controller="Soucast" asp-route-id="@item.SoucastId" class="btn btn-xs btn-outline-info" title="Detail">detail</a>
+                <a asp-action="Remove" asp-controller="Soucast" asp-route-id="@item.SoucastId" class="btn btn-xs btn-outline-danger" title="Odstranit">odstranit</a>
+          
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -8,11 +8,8 @@ namespace Transfer_Api.Repositories
 {
     public interface IRepository
     {
-        Task<List<Transfer>> GetList();
-        Task<Transfer> Get(Guid id);
-        Task Add(CommandTransferCreate cmd);
-        Task Update(CommandTransferUpdate cmd);
-        Task Remove(CommandTransferRemove cmd);       
+        Task ImportUzivatel(List<CommandUzivatelCreate> cmds);
+        Task ImportSoucast(List<CommandSoucastCreate> cmds);        
         Task LastEventCheck(Guid eventId, Guid entityId);
         Task ReplayEvents(List<string> msgstream,Guid? entityId);
         Task RequestEvents(Guid? entityId);

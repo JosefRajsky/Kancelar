@@ -18,12 +18,12 @@ namespace KancelarWeb
     using System = global::System;
     
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.4.2.0 (NJsonSchema v10.1.11.0 (Newtonsoft.Json v12.0.0.0))")]
-    public partial class UzivatelClient 
+    public partial class SoucastClient 
     {
         private string _baseUrl = "http://gateway/";
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
     
-        public UzivatelClient()
+        public SoucastClient()
         {
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(CreateSerializerSettings);
         }
@@ -49,20 +49,20 @@ namespace KancelarWeb
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<Uzivatel> GetAsync(System.Guid id)
+        public System.Threading.Tasks.Task<Soucast> GetAsync(System.Guid id)
         {
             return GetAsync(id, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<Uzivatel> GetAsync(System.Guid id, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<Soucast> GetAsync(System.Guid id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/uzivatel/Get/{id}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Soucast/Get/{id}");
             urlBuilder_.Replace("{id}", System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = new System.Net.Http.HttpClient();
@@ -93,7 +93,7 @@ namespace KancelarWeb
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200") 
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Uzivatel>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<Soucast>(response_, headers_).ConfigureAwait(false);
                             return objectResponse_.Object;
                         }
                         else
@@ -103,7 +103,7 @@ namespace KancelarWeb
                             throw new ApiException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
                         }
             
-                        return default(Uzivatel);
+                        return default(Soucast);
                     }
                     finally
                     {
@@ -118,17 +118,17 @@ namespace KancelarWeb
         }
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Uzivatel>> GetListAsync()
+        public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Soucast>> GetListAsync()
         {
             return GetListAsync(System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Uzivatel>> GetListAsync(System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Soucast>> GetListAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/uzivatel/GetList");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Soucast/GetList");
     
             var client_ = new System.Net.Http.HttpClient();
             try
@@ -158,7 +158,7 @@ namespace KancelarWeb
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200") 
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<Uzivatel>>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<Soucast>>(response_, headers_).ConfigureAwait(false);
                             return objectResponse_.Object;
                         }
                         else
@@ -168,7 +168,7 @@ namespace KancelarWeb
                             throw new ApiException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
                         }
             
-                        return default(System.Collections.Generic.ICollection<Uzivatel>);
+                        return default(System.Collections.Generic.ICollection<Soucast>);
                     }
                     finally
                     {
@@ -183,19 +183,21 @@ namespace KancelarWeb
         }
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task AddAsync(CommandUzivatelCreate cmd)
+        public System.Threading.Tasks.Task AddAsync(CommandSoucastCreate cmd)
         {
             return AddAsync(cmd, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task AddAsync(CommandUzivatelCreate cmd, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task AddAsync(CommandSoucastCreate cmd, System.Threading.CancellationToken cancellationToken)
         {
-            if (cmd == null) throw new System.ArgumentNullException("cmd");
+            if (cmd == null)
+                throw new System.ArgumentNullException("cmd");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/uzivatel/Add");    
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Soucast/Add");
+    
             var client_ = new System.Net.Http.HttpClient();
             try
             {
@@ -204,11 +206,13 @@ namespace KancelarWeb
                     var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(cmd, _settings.Value));
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("POST");    
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+    
                     PrepareRequest(client_, request_, urlBuilder_);
                     var url_ = urlBuilder_.ToString();
                     request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-                    PrepareRequest(client_, request_, url_);    
+                    PrepareRequest(client_, request_, url_);
+    
                     var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
                     try
                     {
@@ -217,8 +221,10 @@ namespace KancelarWeb
                         {
                             foreach (var item_ in response_.Content.Headers)
                                 headers_[item_.Key] = item_.Value;
-                        }    
-                        ProcessResponse(client_, response_);    
+                        }
+    
+                        ProcessResponse(client_, response_);
+    
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200") 
                         {
@@ -244,20 +250,20 @@ namespace KancelarWeb
         }
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task DeleteAsync(CommandUzivatelRemove cmd)
+        public System.Threading.Tasks.Task DeleteAsync(CommandSoucastRemove cmd)
         {
             return DeleteAsync(cmd, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task DeleteAsync(CommandUzivatelRemove cmd, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task DeleteAsync(CommandSoucastRemove cmd, System.Threading.CancellationToken cancellationToken)
         {
             if (cmd == null)
                 throw new System.ArgumentNullException("cmd");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/uzivatel/Remove");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Soucast/Remove");
     
             var client_ = new System.Net.Http.HttpClient();
             try
@@ -311,20 +317,20 @@ namespace KancelarWeb
         }
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task UpdateAsync(CommandUzivatelUpdate cmd)
+        public System.Threading.Tasks.Task UpdateAsync(CommandSoucastUpdate cmd)
         {
             return UpdateAsync(cmd, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task UpdateAsync(CommandUzivatelUpdate cmd, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task UpdateAsync(CommandSoucastUpdate cmd, System.Threading.CancellationToken cancellationToken)
         {
             if (cmd == null)
                 throw new System.ArgumentNullException("cmd");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/uzivatel/Update");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Soucast/Update");
     
             var client_ = new System.Net.Http.HttpClient();
             try
@@ -476,82 +482,45 @@ namespace KancelarWeb
     
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.11.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class CommandUzivatelCreate
+    public partial class CommandSoucastCreate
     {
         [Newtonsoft.Json.JsonProperty("importedId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string ImportedId { get; set; }
-        [Newtonsoft.Json.JsonProperty("uzivatelId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public Guid UzivatelId { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("titulPred", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string TitulPred { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("jmeno", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Jmeno { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("prijmeni", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Prijmeni { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("titulZa", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string TitulZa { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("pohlavi", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Pohlavi { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("datumNarozeni", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.DateTimeOffset DatumNarozeni { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("email", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Email { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("telefon", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Telefon { get; set; }
+        [Newtonsoft.Json.JsonProperty("SoucastId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Guid SoucastId { get; set; }
+        [Newtonsoft.Json.JsonProperty("Nazev", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]    
+        public string Nazev { get; set; }
+        [Newtonsoft.Json.JsonProperty("Zkratka", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Zkratka { get; set; }
+        [Newtonsoft.Json.JsonProperty("ParentId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Guid ParentId { get; set; }
 
 
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.11.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class CommandUzivatelRemove
+    public partial class CommandSoucastRemove
     {
-        [Newtonsoft.Json.JsonProperty("uzivatelId", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonProperty("SoucastId", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.Guid UzivatelId { get; set; }
+        public System.Guid SoucastId { get; set; }
 
 
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.11.0 (Newtonsoft.Json v12.0.0.0)")]
-    public partial class CommandUzivatelUpdate
+    public partial class CommandSoucastUpdate
     {
-        [Newtonsoft.Json.JsonProperty("uzivatelId", Required = Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonProperty("SoucastId", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.Guid UzivatelId { get; set; }
+        public System.Guid SoucastId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("titulPred", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string TitulPred { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("jmeno", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Jmeno { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("prijmeni", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Prijmeni { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("titulZa", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string TitulZa { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("pohlavi", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Pohlavi { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("datumNarozeni", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.DateTimeOffset DatumNarozeni { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("email", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Email { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("telefon", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Telefon { get; set; }
+        [Newtonsoft.Json.JsonProperty("Nazev", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Nazev { get; set; }
+        [Newtonsoft.Json.JsonProperty("Zkratka", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Zkratka { get; set; }
+        [Newtonsoft.Json.JsonProperty("ParentId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Guid ParentId { get; set; }
 
 
     }
