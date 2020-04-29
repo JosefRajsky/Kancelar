@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Struktura_Api.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -30,12 +31,7 @@ namespace Struktura_Api
         }
 
     }
-    public class Clen { 
-        public Guid MemberId { get; set; }
-        public string Jmeno { get; set; }
-        public string Prijmeni { get; set; }
-        public Guid CeleJmeno { get; set; }
-    }
+
     
 
 }

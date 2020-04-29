@@ -16,7 +16,6 @@ namespace Kalendar_Api.Functions
         public List<Polozka> Polozky { get; set; }
     }
     public class Month {
-
         public int Id { get; set; }
         public List<Day> Days {get;set;}
         public int DayCount { get; set; }
@@ -27,7 +26,6 @@ namespace Kalendar_Api.Functions
         public int Id { get; set; }
         public List<Month> Months { get; set; }
     }
-
     public class Polozka { 
     public Guid Id { get; set; }
     public int AktivitaTypId { get; set; }
@@ -37,7 +35,6 @@ namespace Kalendar_Api.Functions
     public DateTime DatumOd { get; set; }
     public DateTime DatumDo { get; set; }
     }
-
     public class KalendarGenerator {
         public async Task<Year> KalendarNew()
         {
@@ -45,10 +42,7 @@ namespace Kalendar_Api.Functions
             var Rok = new Year()
             {
                 Id = baseDate.Year
-            };
-
-             
-
+            }; 
             await Task.Run(() =>
             {
          
@@ -83,19 +77,18 @@ namespace Kalendar_Api.Functions
     public string IsSvatek(DateTime datum)
     {
         var svatek = string.Empty;
-
-            //if (datum == DateTime.Parse("30.3.2018") ||
-            //    datum == DateTime.Parse("19.4.2019") ||
-            //    datum == DateTime.Parse("10.4.2020") ||
-            //    datum == DateTime.Parse("2.4.2021") ||
-            //    datum == DateTime.Parse("15.4.2022") ||
-            //    datum == DateTime.Parse("7.4.2023") ||
-            //    datum == DateTime.Parse("29.3.2024") ||
-            //    datum == DateTime.Parse("18.4.2025"))
-            //{
-            //    svatek = "Velký pátek";
-            //}
-         if (datum == new DateTime(2018,3,30) ||
+            if (datum == DateTime.Parse("30.3.2018") ||
+                datum == DateTime.Parse("19.4.2019") ||
+                datum == DateTime.Parse("10.4.2020") ||
+                datum == DateTime.Parse("2.4.2021") ||
+                datum == DateTime.Parse("15.4.2022") ||
+                datum == DateTime.Parse("7.4.2023") ||
+                datum == DateTime.Parse("29.3.2024") ||
+                datum == DateTime.Parse("18.4.2025"))
+            {
+                svatek = "Velký pátek";
+            }
+            if (datum == new DateTime(2018,3,30) ||
         datum == new DateTime(2019, 4, 19) ||
         datum == new DateTime(2020, 4, 10) ||
         datum == new DateTime(2021, 4, 2)
@@ -103,11 +96,9 @@ namespace Kalendar_Api.Functions
             {
                 svatek = "Velký pátek";
             }
-
             // Pohyblivé velikonoce
             if (2199 >= datum.Year && datum.Year >= 1800)
-        {
-          
+        {          
             if (datum.Year == 1954 || datum.Year == 1981)
             {
                 if (datum.Year == 1954 && datum.Month == 4 && datum.Day == 12)
@@ -127,8 +118,6 @@ namespace Kalendar_Api.Functions
                     svatek = "Velký pátek (Vyjímka)";
                 }
             }
-
-           
             else
             {
                 var m = 0;

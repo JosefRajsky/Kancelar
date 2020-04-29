@@ -20,13 +20,11 @@ namespace Kalendar_Api.Repositories
 {
     public class Repository : IRepository
     {
-        private readonly ServiceDbContext db;
-        private Publisher _publisher;
+        private readonly ServiceDbContext db;     
         private MessageHandler _handler;
         public Repository(ServiceDbContext dbContext, Publisher publisher)
         {
-            db = dbContext;
-            _publisher = publisher;
+            db = dbContext;         
             _handler = new MessageHandler(publisher);
         }
         public async Task LastEventCheck(Guid eventId, Guid entityId)
@@ -56,7 +54,6 @@ namespace Kalendar_Api.Repositories
             msgTypes.Add(MessageType.AktivitaRemoved);
             await _handler.RequestReplay("kalendar.ex", entityId, msgTypes);
         }
-
         private async Task<Kalendar> Create(EventUzivatelCreated evt)
         {
             var body = JsonConvert.SerializeObject(await new KalendarGenerator().KalendarNew());
@@ -72,17 +69,7 @@ namespace Kalendar_Api.Repositories
                 DatumAktualizace = DateTime.Now
             };
             return model;
-        }
-        private Kalendar Modify(EventUzivatelUpdated evt, Kalendar item)
-        {
-            item.UzivatelId = evt.UzivatelId;
-            item.Rok = evt.EventCreated.Year;
-            item.Generation = evt.Generation;
-            item.EventGuid = evt.EventId;
-            item.UzivatelCeleJmeno = $"{evt.Prijmeni} {evt.Jmeno}";
-            item.DatumAktualizace = DateTime.Now;
-            return item;
-        }
+        }       
         public async Task CreateByAktivita(EventAktivitaCreated evt)
         {
             var interval = (evt.DatumDo - evt.DatumOd).TotalDays;
@@ -231,15 +218,20 @@ namespace Kalendar_Api.Repositories
             }
             await db.SaveChangesAsync();
         }
+        //Description: Reakce na událost vytvoření uživatele
         public async Task CreateByUzivatel(EventUzivatelCreated evt)
         {
+            //Description: Pokus o vyhledání existujícího kalendáře
             var item = db.Kalendare.Where(k => k.UzivatelId == evt.UzivatelId && k.Rok == evt.EventCreated.Year).FirstOrDefault();
+            //Description: Kalendář není nalezen
             if (item == null)
             {
+                //Description: Vytvoření nového kalendáře
                 item = await Create(evt);
                 db.Kalendare.Add(item);
                 await db.SaveChangesAsync();
 
+                //Description: Publikace události o tom, že byl kalendář vytvořen
                 var ev = new EventKalendarCreated()
                 {
                     CeleJmeno = $"{evt.Prijmeni} {evt.Jmeno}",
@@ -308,7 +300,6 @@ namespace Kalendar_Api.Repositories
             return await db.Kalendare.ToListAsync();
         }
         public async Task<Kalendar> Get(Guid id) => await Task.Run(() => db.Kalendare.FirstOrDefault(b => b.KalendarId == id));
-
 
     }
 }

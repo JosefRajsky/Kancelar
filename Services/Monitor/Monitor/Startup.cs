@@ -33,12 +33,12 @@ namespace Monitor
         public IConnection Connection { get; set; }
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();            
+            services.AddControllers();     
+            //Description: Nastavení stavu servisu Monitor
             services.AddHealthChecks().AddCheck("Monitor", () => HealthCheckResult.Healthy());
             services.AddHealthChecksUI(setupSettings: setup =>
-            {
-                
-                setup.AddHealthCheckEndpoint("Monitor", "http://monitor/healthcheck");
+            { 
+                //Description: Adresy na endpoind kontroly stavu servisù
                 setup.AddHealthCheckEndpoint("Dochazka", "http://dochazkaapi/healthcheck");
                 setup.AddHealthCheckEndpoint("Uzivatel", "http://uzivatelapi/healthcheck");
                 setup.AddHealthCheckEndpoint("Eventstore", "http://eventstore/healthcheck");
@@ -56,35 +56,26 @@ namespace Monitor
                 setup.AddHealthCheckEndpoint("Vykaz", "http://vykazapi/healthcheck");
                 setup.AddHealthCheckEndpoint("Transfer", "http://transferapi/healthcheck");
             });
+            //Description: Kontrola stavu serveru RabbitMQ
             MessageBrokerConnection(services);
         services.AddHealthChecks().AddRabbitMQ(sp => Connection);
         }
+        //Description: Pøipojení k RabbitMQ
         public async void MessageBrokerConnection(IServiceCollection services)
         {
             if (services is null)
             {
                 throw new ArgumentNullException(nameof(services));
             }
-
             var factory = new ConnectionFactory() { HostName = Configuration["ConnectionString:RbConn"] };
             factory.RequestedHeartbeat = 60;
             factory.AutomaticRecoveryEnabled = true;
-            factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(15);
-            
+            factory.NetworkRecoveryInterval = TimeSpan.FromSeconds(15);            
             var retryPolicy = Policy.Handle<BrokerUnreachableException>().WaitAndRetryAsync(5, i => TimeSpan.FromSeconds(10));
             await retryPolicy.ExecuteAsync(async () =>
             {
-                await Task.Run(() => {
-                    try
-                    {
-                        Connection = factory.CreateConnection();
-                    }
-                    catch (Exception)
-                    {
-
-                        
-                    }
-                    
+                await Task.Run(() => {         
+                        Connection = factory.CreateConnection();                  
                 });
             });
           
@@ -96,7 +87,6 @@ namespace Monitor
                 app.UseDeveloperExceptionPage();
             }
             app.UseRouting();
-
             app.UseAuthorization();
             app.UseHealthChecks("/healthcheck", new HealthCheckOptions
             {

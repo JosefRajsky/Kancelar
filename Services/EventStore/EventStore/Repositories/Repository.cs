@@ -16,13 +16,11 @@ namespace EventStore.Repositories
 {
     public class Repository : IRepository
     {
-        private readonly ServiceDbContext db;
-        //private Publisher _publisher;
+        private readonly ServiceDbContext db;       
         private readonly MessageHandler _handler;
         public Repository(ServiceDbContext dbContext, Publisher publisher)
         {
-            db = dbContext;
-            //_publisher = publisher;
+            db = dbContext;            
             _handler = new MessageHandler(publisher);
         }
         public async Task<List<StoreMessage>> GetListByDate(DateTime datum)
@@ -31,6 +29,7 @@ namespace EventStore.Repositories
         }
         public async Task AddMessageAsync(string msg)
         {
+            //Description: Deserializace události jako obecné zprávy a uložení do DB
             var origin = JsonConvert.DeserializeObject<Message>(msg);
             var message = new StoreMessage
             {
@@ -48,16 +47,18 @@ namespace EventStore.Repositories
         {
             return await Task.Run(() => db.Messages.FirstOrDefault(m => m.Guid == Guid.Parse(guid)));
         }
-
+        //Description: Metoda poskytující proud událostí pro obnovu na základě požadavku
         public async Task ProvideHealingStream(string message)
         {
             var envelope = JsonConvert.DeserializeObject<Message>(message);
             var ev = JsonConvert.DeserializeObject<ProvideHealingStream>(envelope.Event);
+            //Description: Vytvoření události o poskytnuté obnově
             var responseEvent = new HealingStreamProvided()
             {
                 EntityId = ev.EntityId,
                 MessageList = new List<string>()
             };
+            //Description: Obnova pouze jedné entity
             if (ev.EntityId != Guid.Empty)
             {
                 foreach (var type in ev.MessageTypes)
@@ -65,6 +66,7 @@ namespace EventStore.Repositories
                     responseEvent.MessageList.AddRange(db.Messages.Where(m => m.MessageType == type & m.EntityId == ev.EntityId).Select(m => m.Message));
                 }
             }
+            //Description: Načtení všech požadovaných typů zpráv
             else
             {
                 foreach (var type in ev.MessageTypes)
@@ -74,25 +76,10 @@ namespace EventStore.Repositories
             }
             if (responseEvent.MessageList.Any()) {
                 var msg = new Message();
+                //Description: Publikace obnovovací události
                 await _handler.PublishEventToExchange(responseEvent, MessageType.HealingStreamProvided, Guid.NewGuid(), null, 0, (ev.EntityId == Guid.Empty) ? Guid.Empty : Guid.Parse(ev.EntityId.ToString()), ev.Exchange);
 
-                //await _publisher.PushToExchange(ev.Exchange, JsonConvert.SerializeObject(response));
-                //await AddMessageAsync(message);
-                //var response = new StoreMessage();
-                //response.Guid = Guid.NewGuid();
-                //response.ParentGuid = null;
-                //response.MessageType = MessageType.HealingStreamProvided;
-                //response.MessageTypeText = MessageType.HealingStreamProvided.ToString();
-                //response.Created = DateTime.Now;
-                //response.Generation = 0;
-                //response.EntityId = (ev.EntityId == Guid.Empty) ? Guid.Empty : Guid.Parse(ev.EntityId.ToString());
-                //response.Message = JsonConvert.SerializeObject(responseEvent);
-                //await AddMessageAsync(JsonConvert.SerializeObject(response));
             }
-          
-
-
-
         }
     }
 }

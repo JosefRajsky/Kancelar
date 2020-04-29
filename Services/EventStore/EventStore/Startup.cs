@@ -27,7 +27,7 @@ using Microsoft.OpenApi.Models;
 using Polly;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Exceptions;
-//services.AddSingleton<Publisher>(s => new Publisher(factory, "recovery.ex", "eventstore.q"));
+
 namespace EventStore
 {
     public class Startup
@@ -68,17 +68,8 @@ namespace EventStore
             var retryPolicy = Policy.Handle<BrokerUnreachableException>().WaitAndRetryAsync(5, i => TimeSpan.FromSeconds(10));
             await retryPolicy.ExecuteAsync(async () =>
             {
-                await Task.Run(() => {
-                    try
-                    {
-                        Connection = factory.CreateConnection();
-                    }
-                    catch (Exception)
-                    {
-
-                        
-                    }
-
+                await Task.Run(() => {                 
+                        Connection = factory.CreateConnection();   
                 });
             });
             var _channel = Connection.CreateModel();

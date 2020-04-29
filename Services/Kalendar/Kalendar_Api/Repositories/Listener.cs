@@ -24,14 +24,15 @@ namespace Kalendar_Api.Repositories
             _repository = repository;
            
         }
-
         public void AddCommand(string message)
         {
+            //Description: Deserializace zprávy
             var envelope = JsonConvert.DeserializeObject<Message>(message);
+            //Description: Kontrola typu zprávy a rozhodnutí o způsobu konzumace
             switch (envelope.MessageType)
             {
                 case MessageType.HealingStreamProvided:
-                    //-------------Description: Deserializace zprávy do správného typu a odeslání k uložení do DB; 
+                  
                     var ev = JsonConvert.DeserializeObject<HealingStreamProvided>(envelope.Event);
                     ReplayEvents(ev.MessageList, envelope.EntityId);
                     break;
@@ -41,7 +42,7 @@ namespace Kalendar_Api.Repositories
                 case MessageType.KalendarUpdated:
 
                     _repository.LastEventCheck(JsonConvert.DeserializeObject<EventKalendarUpdated>(envelope.Event).EventId, envelope.EntityId);
-                    break;              
+                    break;             
 
                 case MessageType.UzivatelCreated:
                     CreateByUzivatel(JsonConvert.DeserializeObject<EventUzivatelCreated>(envelope.Event));
@@ -65,7 +66,7 @@ namespace Kalendar_Api.Repositories
                     break;
             }
         }
-
+        //Description: Reakce na událost vytvoření uživatele
         private void CreateByUzivatel(EventUzivatelCreated evt) {
             _repository.CreateByUzivatel(evt);
         }

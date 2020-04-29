@@ -32,12 +32,6 @@ namespace EventStore.Repositories
                     _repository.AddMessageAsync(message);
                     break;
             }
-        }       
-        
-
-
-
-
-
+        } 
     }
 }
