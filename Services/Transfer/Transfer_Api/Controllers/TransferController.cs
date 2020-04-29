@@ -20,40 +20,21 @@ namespace Transfer_Api.Controllers
             _repository = repository;
           
         }
-        [HttpGet]
-        [Route("Get/{id?}")]
-        public async Task<Transfer> Get(Guid id)
-        {
-            var response = await _repository.Get(id);            
-            return response;
-        }
-
-        [HttpGet]
-        [Route("GetList")]
-        public async Task<List<Transfer>> GetList() {
-
-            var response = await _repository.GetList(); 
-            return response;
-        }
-
+      
         [HttpPost]
-        [Route("Add")]
-        public async Task Add(CommandTransferCreate cmd)      
+        [Route("ImportUzivatel")]
+        public async Task Add(List<CommandUzivatelCreate> cmds)      
         { 
-         await _repository.Add(cmd);            
-        }
-
-        [HttpDelete]
-        [Route("Remove")]
-        public async Task Delete(CommandTransferRemove cmd)
-        {
-           await _repository.Remove(cmd);   
+         await _repository.ImportUzivatel(cmds);            
         }
         [HttpPost]
-        [Route("Update")]
-        public async Task Update(CommandTransferUpdate cmd)
+        [Route("ImportSoucast")]
+        public async Task Add(List<CommandSoucastCreate> cmds)
         {
-            await _repository.Update(cmd);        
+            await _repository.ImportSoucast(cmds);
+            
+            var client = client().
         }
+      
     }
 }
