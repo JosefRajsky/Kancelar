@@ -33,7 +33,7 @@ namespace Transfer_Api.Controllers
         {
             await _repository.ImportSoucast(cmds);
             
-            var client = client().
+           
         }
       
     }
